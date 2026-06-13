@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/contexts/ToastContext';
 import './ProductQuickView.css';
 
 export default function ProductQuickView({ product, onClose }) {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [selectedColor, setSelectedColor] = useState(product.color || (product.colors && product.colors.length > 0 ? product.colors[0].name : ''));
   const [selectedSize, setSelectedSize] = useState('');
 
@@ -19,16 +21,17 @@ export default function ProductQuickView({ product, onClose }) {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert('PLEASE SELECT A SIZE BEFORE ADDING TO BAG.');
+      showToast('warning', 'PLEASE SELECT A SIZE BEFORE ADDING TO BAG.');
       return;
     }
     // Logic to add to cart goes here
-    alert('ADDED TO CART');
+    showToast('success', 'PRODUCT ADDED TO CART');
+    onClose();
   };
 
   const handleBuyNow = () => {
     if (!selectedSize) {
-      alert('PLEASE SELECT A SIZE BEFORE BUYING.');
+      showToast('warning', 'PLEASE SELECT A SIZE BEFORE BUYING.');
       return;
     }
     // Logic to add to cart goes here

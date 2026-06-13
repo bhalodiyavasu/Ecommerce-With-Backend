@@ -1,0 +1,112 @@
+.premium-toast-container {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  width: 320px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  pointer-events: none; /* Let clicks pass through empty areas */
+}
+
+.premium-toast-box {
+  padding: 18px 24px;
+  border-radius: 0;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto; /* Enable clicks on the toast itself */
+  animation: slideInRightToast 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  border: 1px solid var(--color-black, #000);
+}
+
+@keyframes slideInRightToast {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-noise-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/noise.svg');
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Vibrant Full Background Colors */
+.toast-success {
+  background-color: #59b85d; /* Vibrant Green */
+  color: #ffffff;
+}
+
+.toast-error {
+  background-color: #ee6249; /* Vibrant Red */
+  color: #ffffff;
+}
+
+.toast-info {
+  background-color: #4092e4; /* Vibrant Blue */
+  color: #ffffff;
+}
+
+.toast-warning {
+  background-color: #eeb736; /* Vibrant Yellow/Orange */
+  color: #000000;
+}
+
+.toast-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+  z-index: 1; /* Above noise */
+}
+
+.toast-message {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.toast-close-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: inherit; /* Matches text color */
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.toast-close-btn:hover {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .premium-toast-container {
+    width: calc(100% - 40px);
+    right: 20px;
+  }
+}
