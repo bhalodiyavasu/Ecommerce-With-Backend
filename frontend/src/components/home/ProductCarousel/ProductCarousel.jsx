@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef } from 'react';
+import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickView';
+import { ALL_PRODUCTS } from '@/data/products';
 
 import item1 from '@/assets/extracted/image7_2_63.jpg';
 import item2 from '@/assets/extracted/image6_2_63.jpg';
@@ -56,15 +57,19 @@ const PRODUCTS = [
 ];
 
 export default function ProductCarousel({ carouselRef }) {
+  const localCarouselRef = useRef(null);
+  const refToUse = carouselRef || localCarouselRef;
+  const [quickViewProductId, setQuickViewProductId] = useState(null);
+
   const handleScrollLeft = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -330, behavior: 'smooth' });
+    if (refToUse.current) {
+      refToUse.current.scrollBy({ left: -330, behavior: 'smooth' });
     }
   };
 
   const handleScrollRight = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 330, behavior: 'smooth' });
+    if (refToUse.current) {
+      refToUse.current.scrollBy({ left: 330, behavior: 'smooth' });
     }
   };
 
@@ -84,9 +89,14 @@ export default function ProductCarousel({ carouselRef }) {
         </div>
       </div>
 
-      <div className="carousel-container" ref={carouselRef}>
+      <div className="carousel-container" ref={refToUse}>
         {PRODUCTS.map((prod) => (
-          <Link to={`/collections/${prod.id}`} className="product-card-link" key={prod.id}>
+          <div 
+            className="product-card-link" 
+            key={prod.id}
+            onClick={() => setQuickViewProductId(prod.id)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="product-card">
               <div className="product-img-container">
                 <img src={prod.image} alt={prod.name} className="product-img" />
@@ -99,9 +109,17 @@ export default function ProductCarousel({ carouselRef }) {
                 <h3 className="product-name">{prod.name}</h3>
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
+
+      {/* Quick View Modal */}
+      {quickViewProductId && (
+        <ProductQuickView 
+          product={ALL_PRODUCTS.find(p => p.id === quickViewProductId) || PRODUCTS.find(p => p.id === quickViewProductId)} 
+          onClose={() => setQuickViewProductId(null)} 
+        />
+      )}
     </section>
   );
 }

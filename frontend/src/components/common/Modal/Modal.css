@@ -1,0 +1,88 @@
+.common-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(2px);
+  animation: fadeInOverlay 0.2s ease-out;
+}
+
+.common-modal-box {
+  background-color: var(--color-white, #ffffff);
+  border: 1px solid var(--color-border-light, #d9d9d9);
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 0;
+  position: relative;
+  animation: slideUpModal 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.common-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.common-modal-title {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.common-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  color: var(--color-black, #000000);
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.common-modal-close-btn:hover {
+  background-color: var(--color-gray-light, #f5f5f5);
+}
+
+.common-modal-close-btn.absolute-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+.common-modal-body {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickView';
+import { ALL_PRODUCTS } from '@/data/products';
 import searchIcon from '@/assets/icons/search.svg';
 import './CollectionsPage.css';
-
-import { ALL_PRODUCTS } from '@/data/products';
-
+import { Link } from 'react-router-dom';
 const CATEGORY_TAGS_ROW_1 = ['NEW', 'SHORTS', 'POLOS', 'SWEATER', 'SUITS'];
 const CATEGORY_TAGS_ROW_2 = ['BEST SELLER', 'SHIRTS', 'JEANS', 'JACKETS', 'COATS'];
 
@@ -39,6 +38,9 @@ export default function CollectionsPage() {
   const [expandPrice, setExpandPrice] = useState(true);
   const [expandStatus, setExpandStatus] = useState(true);
   const [expandRating, setExpandRating] = useState(true);
+
+  // Quick View State
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
 
   // Toggle handlers
   const handleGenderToggle = (gender) => {
@@ -375,7 +377,12 @@ export default function CollectionsPage() {
         <div className="collections-grid">
           {filteredProducts.length > 0 ? (
             filteredProducts.map(product => (
-              <Link to={`/collections/${product.id}`} className="collections-card-link" key={product.id}>
+              <div 
+                className="collections-card-link" 
+                key={product.id} 
+                onClick={() => setQuickViewProduct(product)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="collections-card">
                   <div className="card-image-wrapper">
                     <img src={product.image} alt={product.name} className="card-product-image" />
@@ -386,7 +393,7 @@ export default function CollectionsPage() {
                     <div className="card-price">${product.price}</div>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))
           ) : (
             <div className="no-products-message">
@@ -396,6 +403,14 @@ export default function CollectionsPage() {
           )}
         </div>
       </main>
+
+      {/* Quick View Modal */}
+      {quickViewProduct && (
+        <ProductQuickView 
+          product={quickViewProduct} 
+          onClose={() => setQuickViewProduct(null)} 
+        />
+      )}
     </div>
   );
 }

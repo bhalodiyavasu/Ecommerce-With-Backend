@@ -236,24 +236,24 @@
   width: 24px;
   height: 24px;
   border-radius: 0;
-  border: 1px solid var(--color-border-light, #c9c9c9);
+  border: 2px solid var(--color-white, #ffffff);
+  outline: 1px solid var(--color-border-light, #c9c9c9);
   cursor: pointer;
   position: relative;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: all 0.2s ease;
   padding: 0;
 }
 
 .color-swatch-btn:focus {
-  outline: none;
+  outline: 1px solid var(--color-black);
 }
 
 .color-swatch-btn:hover {
-  transform: scale(1.1);
-  border-color: var(--color-black);
+  outline: 1px solid var(--color-black);
 }
 
 .color-swatch-btn.active {
-  border-color: var(--color-black);
+  outline: 1px solid var(--color-black);
 }
 
 /* Size Grid Filters */

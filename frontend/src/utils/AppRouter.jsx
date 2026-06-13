@@ -4,8 +4,6 @@ import Header from '@/components/common/Header/Header';
 import Footer from '@/components/common/Footer/Footer';
 import HomePage from '@/pages/HomePage';
 import CollectionsPage from '@/pages/CollectionsPage/CollectionsPage';
-import ProductDetailPage from '@/pages/ProductDetailPage/ProductDetailPage';
-
 function ScrollToHashElement() {
   const { hash, pathname } = useLocation();
 
@@ -33,7 +31,6 @@ export default function AppRouter() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/collections" element={<CollectionsPage />} />
-            <Route path="/collections/:id" element={<ProductDetailPage />} />
           </Routes>
         </main>
         <Footer />
