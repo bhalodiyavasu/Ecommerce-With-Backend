@@ -1,0 +1,46 @@
+.approach-section {
+  padding: 80px 50px;
+  background: transparent;
+}
+
+.approach-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.approach-section .section-title {
+  margin-bottom: 40px;
+  line-height: 1.2;
+}
+
+.approach-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+.approach-paragraph {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--color-dark);
+  font-weight: 400;
+}
+
+@media (max-width: 900px) {
+  .approach-section {
+    padding: 40px 20px;
+  }
+  .approach-section .section-title {
+    margin-bottom: 30px;
+  }
+  .approach-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .approach-paragraph {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+}
