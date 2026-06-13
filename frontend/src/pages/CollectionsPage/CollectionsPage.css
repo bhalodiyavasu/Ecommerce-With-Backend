@@ -41,7 +41,6 @@
 }
 
 .breadcrumb-separator {
-  color: var(--color-black);
   opacity: 0.3;
 }
 
@@ -130,7 +129,7 @@
   height: 16px;
   width: 16px;
   background-color: var(--color-white);
-  border: 1px solid var(--color-black);
+  border: 1px solid var(--color-border-light, #c9c9c9);
   box-sizing: border-box;
 }
 
@@ -204,7 +203,7 @@
 }
 
 .radio-container input:checked ~ .radio-custom {
-  border-color: var(--color-black);
+  border-color: var(--color-border-light, #c9c9c9);
 }
 
 .radio-container input:checked ~ .radio-custom::after {
@@ -230,6 +229,7 @@
 .color-swatches {
   flex-direction: row !important;
   gap: 12px !important;
+  flex-wrap: wrap !important;
 }
 
 .color-swatch-btn {
@@ -243,22 +243,17 @@
   padding: 0;
 }
 
+.color-swatch-btn:focus {
+  outline: none;
+}
+
 .color-swatch-btn:hover {
   transform: scale(1.1);
+  border-color: var(--color-black);
 }
 
 .color-swatch-btn.active {
   border-color: var(--color-black);
-  outline: 2px solid var(--color-black);
-  outline-offset: 1.5px;
-}
-
-.color-beige {
-  background-color: #ebe7db;
-}
-
-.color-black {
-  background-color: #1d2122;
 }
 
 /* Size Grid Filters */
@@ -289,7 +284,7 @@
 .size-grid-btn.active {
   background-color: var(--color-black);
   color: var(--color-white);
-  border-color: var(--color-black);
+  border-color: var(--color-border-light, #c9c9c9);
 }
 
 /* Price Range Slider */
@@ -312,7 +307,7 @@
   width: 14px;
   height: 14px;
   background: var(--color-black);
-  border: 1px solid var(--color-black);
+  border: 1px solid var(--color-border-light, #c9c9c9);
   cursor: pointer;
   border-radius: 0;
 }
@@ -321,7 +316,7 @@
   width: 14px;
   height: 14px;
   background: var(--color-black);
-  border: 1px solid var(--color-black);
+  border: 1px solid var(--color-border-light, #c9c9c9);
   cursor: pointer;
   border-radius: 0;
 }
@@ -373,6 +368,7 @@
 .collections-search-icon {
   width: 18px;
   height: 18px;
+  opacity: 0.4;
 }
 
 .collections-search-input {
@@ -393,112 +389,20 @@
   color: rgba(0, 0, 0, 0.4);
 }
 
-/* Category Tag Pills */
-.category-tags-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 110px);
-  gap: 3px 8px;
-  justify-content: end;
-}
-
-.tag-pill-btn {
-  height: 32px;
-  width: 110px;
-  background-color: var(--color-white);
-  border: 1px solid var(--color-border-light, #c9c9c9);
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-black);
-  cursor: pointer;
-  border-radius: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-.tag-pill-btn:hover {
-  background-color: var(--color-gray-light);
-}
-
-.tag-pill-btn.active {
-  background-color: var(--color-black);
-  color: var(--color-white);
-  border-color: var(--color-black);
-}
 
 /* Active Filters Summary */
-.active-filters-summary {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background-color: #e8e8e8;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-}
-
-.summary-label {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-black);
-  letter-spacing: 0.5px;
-}
-
-.active-pills-list {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.filter-pill {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 600;
-  background-color: var(--color-white);
-  color: var(--color-black);
-  border: 1px solid var(--color-black);
-  padding: 4px 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.filter-pill:hover {
-  background-color: var(--color-black);
-  color: var(--color-white);
-}
-
-.clear-all-btn {
-  background: none;
-  border: none;
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  color: #000e8a;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-  letter-spacing: 0.5px;
-}
-
-.clear-all-btn:hover {
-  opacity: 0.8;
-}
 
 /* Product Grid */
 .collections-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+}
+
+.collections-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 /* Card Design styling matching Collections & ProductCarousel style */

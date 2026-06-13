@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import item1 from '@/assets/extracted/image7_2_63.jpg';
 import item2 from '@/assets/extracted/image6_2_63.jpg';
@@ -11,42 +12,42 @@ import './ProductCarousel.css';
 
 const PRODUCTS = [
   {
-    id: 1,
+    id: 4,
     image: item1,
     name: 'EMBROIDERED SEERSUCKER SHIRT',
     price: '$ 99',
     category: 'NEW IN / SHIRTS'
   },
   {
-    id: 2,
+    id: 5,
     image: item2,
     name: 'CASUAL OVERSIZED LINEN BLAZER',
     price: '$ 149',
     category: 'NEW IN / JACKETS'
   },
   {
-    id: 3,
+    id: 6,
     image: item3,
     name: 'RELAXED COTTON DRAWSTRING TROUSERS',
     price: '$ 89',
     category: 'NEW IN / PANTS'
   },
   {
-    id: 4,
+    id: 7,
     image: item4,
     name: 'CLASSIC LEATHER STRAP SANDALS',
     price: '$ 120',
     category: 'NEW IN / ACCESSORIES'
   },
   {
-    id: 5,
+    id: 8,
     image: item1,
     name: 'TEXTURED CAMP COLLAR SHIRT',
     price: '$ 79',
     category: 'NEW IN / SHIRTS'
   },
   {
-    id: 6,
+    id: 9,
     image: item2,
     name: 'RELAXED LINEN TROUSERS',
     price: '$ 110',
@@ -85,18 +86,20 @@ export default function ProductCarousel({ carouselRef }) {
 
       <div className="carousel-container" ref={carouselRef}>
         {PRODUCTS.map((prod) => (
-          <div className="product-card" key={prod.id}>
-            <div className="product-img-container">
-              <img src={prod.image} alt={prod.name} className="product-img" />
-            </div>
-            <div className="product-info">
-              <div className="product-meta">
-                <span className="product-category">{prod.category}</span>
-                <span className="product-price">{prod.price}</span>
+          <Link to={`/collections/${prod.id}`} className="product-card-link" key={prod.id}>
+            <div className="product-card">
+              <div className="product-img-container">
+                <img src={prod.image} alt={prod.name} className="product-img" />
               </div>
-              <h3 className="product-name">{prod.name}</h3>
+              <div className="product-info">
+                <div className="product-meta">
+                  <span className="product-category">{prod.category}</span>
+                  <span className="product-price">{prod.price}</span>
+                </div>
+                <h3 className="product-name">{prod.name}</h3>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

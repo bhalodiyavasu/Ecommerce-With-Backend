@@ -59,6 +59,12 @@
   display: none; /* Safari and Chrome */
 }
 
+.product-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .product-card {
   flex: 0 0 303px;
   display: flex;

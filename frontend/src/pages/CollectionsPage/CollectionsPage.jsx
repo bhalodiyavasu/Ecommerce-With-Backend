@@ -3,155 +3,21 @@ import { Link } from 'react-router-dom';
 import searchIcon from '@/assets/icons/search.svg';
 import './CollectionsPage.css';
 
-// Product images
-import suitImg from '@/assets/extracted/image1_2_63.jpg';
-import coatImg from '@/assets/extracted/image10_2_63.jpg';
-import jacketImg from '@/assets/extracted/image11_2_63.jpg';
-import item1 from '@/assets/extracted/image7_2_63.jpg';
-import item2 from '@/assets/extracted/image6_2_63.jpg';
-import item3 from '@/assets/extracted/image8_2_63.jpg';
-import item4 from '@/assets/extracted/image9_2_63.jpg';
-import photo1 from '@/assets/extracted/image4_2_63.jpg';
-import photo2 from '@/assets/extracted/image3_2_63.jpg';
-import photo3 from '@/assets/extracted/image1_2_63.jpg';
-
-const ALL_PRODUCTS = [
-  {
-    id: 1,
-    name: 'LINEN TRENCH COAT',
-    price: 199,
-    category: 'COATS',
-    gender: 'men',
-    color: 'beige',
-    size: 'L',
-    status: 'NEW',
-    rating: 5,
-    image: coatImg,
-    tag: 'NEW IN / COATS'
-  },
-  {
-    id: 2,
-    name: 'DOUBLE BREASTED WOOL SUIT',
-    price: 249,
-    category: 'SUITS',
-    gender: 'women',
-    color: 'black',
-    size: 'M',
-    status: 'BEST SELLER',
-    rating: 5,
-    image: suitImg,
-    tag: 'WOMEN / SUITS'
-  },
-  {
-    id: 3,
-    name: 'STRUCTURED OVERSIZED JACKET',
-    price: 189,
-    category: 'JACKETS',
-    gender: 'women',
-    color: 'beige',
-    size: 'S',
-    status: 'NEW',
-    rating: 4,
-    image: jacketImg,
-    tag: 'WOMEN / OUTERWEAR'
-  },
-  {
-    id: 4,
-    name: 'EMBROIDERED SEERSUCKER SHIRT',
-    price: 99,
-    category: 'SHIRTS',
-    gender: 'men',
-    color: 'beige',
-    size: 'M',
-    status: 'NEW',
-    rating: 4,
-    image: item1,
-    tag: 'NEW IN / SHIRTS'
-  },
-  {
-    id: 5,
-    name: 'CASUAL OVERSIZED LINEN BLAZER',
-    price: 149,
-    category: 'JACKETS',
-    gender: 'women',
-    color: 'black',
-    size: 'L',
-    status: 'BEST SELLER',
-    rating: 5,
-    image: item2,
-    tag: 'NEW IN / JACKETS'
-  },
-  {
-    id: 6,
-    name: 'RELAXED COTTON DRAWSTRING PANTS',
-    price: 89,
-    category: 'JEANS',
-    gender: 'men',
-    color: 'beige',
-    size: 'XL',
-    status: 'NEW',
-    rating: 4,
-    image: item3,
-    tag: 'NEW IN / PANTS'
-  },
-  {
-    id: 7,
-    name: 'CLASSIC LEATHER STRAP SANDALS',
-    price: 120,
-    category: 'SHORTS',
-    gender: 'women',
-    color: 'black',
-    size: 'S',
-    status: 'NEW',
-    rating: 3,
-    image: item4,
-    tag: 'NEW IN / ACCESSORIES'
-  },
-  {
-    id: 8,
-    name: 'TEXTURED CAMP COLLAR SHIRT',
-    price: 79,
-    category: 'POLOS',
-    gender: 'men',
-    color: 'beige',
-    size: 'XL',
-    status: 'BEST SELLER',
-    rating: 5,
-    image: photo1,
-    tag: 'NEW IN / POLOS'
-  },
-  {
-    id: 9,
-    name: 'RELAXED LINEN TROUSERS',
-    price: 110,
-    category: 'JEANS',
-    gender: 'women',
-    color: 'beige',
-    size: 'M',
-    status: 'NEW',
-    rating: 4,
-    image: photo2,
-    tag: 'NEW IN / PANTS'
-  },
-  {
-    id: 10,
-    name: 'FINE KNIT POLO SWEATER',
-    price: 130,
-    category: 'SWEATER',
-    gender: 'men',
-    color: 'black',
-    size: '2XL',
-    status: 'BEST SELLER',
-    rating: 4,
-    image: photo3,
-    tag: 'MEN / SWEATER'
-  }
-];
+import { ALL_PRODUCTS } from '@/data/products';
 
 const CATEGORY_TAGS_ROW_1 = ['NEW', 'SHORTS', 'POLOS', 'SWEATER', 'SUITS'];
 const CATEGORY_TAGS_ROW_2 = ['BEST SELLER', 'SHIRTS', 'JEANS', 'JACKETS', 'COATS'];
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
+const COLORS = [
+  { name: 'beige', hex: '#ebe7db' },
+  { name: 'grey', hex: '#A9A9A9' },
+  { name: 'charcoal', hex: '#1E1E1E' },
+  { name: 'black', hex: '#000000' },
+  { name: 'mint', hex: '#A6D6CA' },
+  { name: 'white', hex: '#FFFFFF' },
+  { name: 'lavender', hex: '#B9C1E8' }
+];
 
 export default function CollectionsPage() {
   // Filter States
@@ -285,10 +151,10 @@ export default function CollectionsPage() {
         <div className="breadcrumb">
           <Link to="/" className="breadcrumb-link">HOME</Link>
           <span className="breadcrumb-separator">/</span>
-          <span className="breadcrumb-current">PRODUCTS</span>
+          <span className="breadcrumb-current">COLLECTIONS</span>
         </div>
 
-        <h1 className="sidebar-title">PRODUCTS</h1>
+        <h1 className="sidebar-title">COLLECTIONS</h1>
 
         {/* Gender Accordion */}
         <div className="filter-section">
@@ -328,16 +194,15 @@ export default function CollectionsPage() {
           </div>
           {expandColor && (
             <div className="filter-content color-swatches">
-              <button
-                className={`color-swatch-btn color-beige ${selectedColors.includes('beige') ? 'active' : ''}`}
-                onClick={() => handleColorToggle('beige')}
-                aria-label="Filter Beige"
-              ></button>
-              <button
-                className={`color-swatch-btn color-black ${selectedColors.includes('black') ? 'active' : ''}`}
-                onClick={() => handleColorToggle('black')}
-                aria-label="Filter Black"
-              ></button>
+              {COLORS.map(c => (
+                <button
+                  key={c.name}
+                  className={`color-swatch-btn ${selectedColors.includes(c.name) ? 'active' : ''}`}
+                  style={{ backgroundColor: c.hex }}
+                  onClick={() => handleColorToggle(c.name)}
+                  aria-label={`Filter ${c.name}`}
+                ></button>
+              ))}
             </div>
           )}
         </div>
@@ -502,98 +367,26 @@ export default function CollectionsPage() {
             />
           </div>
 
-          {/* Category Tag Pills Layout (Flat Grid Layout) */}
-          <div className="category-tags-grid">
-            {['NEW', 'SHORTS', 'POLOS', 'SWEATER', 'SUITS', 'BEST SELLER', 'SHIRTS', 'JEANS', 'JACKETS', 'COATS'].map(tag => (
-              <button
-                key={tag}
-                className={`tag-pill-btn ${selectedTags.includes(tag) ? 'active' : ''}`}
-                onClick={() => handleTagToggle(tag)}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
         </div>
 
-        {/* Active Filters Summary */}
-        {(selectedGenders.length > 0 ||
-          selectedColors.length > 0 ||
-          selectedSizes.length > 0 ||
-          selectedTags.length > 0 ||
-          selectedRatings.length > 0 ||
-          selectedStatuses.length > 0 ||
-          searchQuery !== '') && (
-          <div className="active-filters-summary">
-            <span className="summary-label">ACTIVE FILTERS:</span>
-            <div className="active-pills-list">
-              {selectedGenders.map(g => (
-                <span key={g} className="filter-pill" onClick={() => handleGenderToggle(g)}>
-                  {g.toUpperCase()} &times;
-                </span>
-              ))}
-              {selectedColors.map(c => (
-                <span key={c} className="filter-pill" onClick={() => handleColorToggle(c)}>
-                  COLOR: {c.toUpperCase()} &times;
-                </span>
-              ))}
-              {selectedSizes.map(s => (
-                <span key={s} className="filter-pill" onClick={() => handleSizeToggle(s)}>
-                  SIZE: {s} &times;
-                </span>
-              ))}
-              {selectedTags.map(t => (
-                <span key={t} className="filter-pill" onClick={() => handleTagToggle(t)}>
-                  {t} &times;
-                </span>
-              ))}
-              {selectedStatuses.map(s => (
-                <span key={s} className="filter-pill" onClick={() => handleStatusToggle(s)}>
-                  {s} &times;
-                </span>
-              ))}
-              {selectedRatings.map(r => (
-                <span key={r} className="filter-pill" onClick={() => handleRatingToggle(r)}>
-                  {r} STARS &amp; UP &times;
-                </span>
-              ))}
-              {searchQuery !== '' && (
-                <span className="filter-pill" onClick={() => setSearchQuery('')}>
-                  "{searchQuery}" &times;
-                </span>
-              )}
-              <button
-                className="clear-all-btn"
-                onClick={() => {
-                  setSelectedGenders([]);
-                  setSelectedColors([]);
-                  setSelectedSizes([]);
-                  setSelectedTags([]);
-                  setSelectedRatings([]);
-                  setSelectedStatuses([]);
-                  setSearchQuery('');
-                }}
-              >
-                CLEAR ALL
-              </button>
-            </div>
-          </div>
-        )}
+
 
         {/* Product Grid */}
         <div className="collections-grid">
           {filteredProducts.length > 0 ? (
             filteredProducts.map(product => (
-              <div className="collections-card" key={product.id}>
-                <div className="card-image-wrapper">
-                  <img src={product.image} alt={product.name} className="card-product-image" />
+              <Link to={`/collections/${product.id}`} className="collections-card-link" key={product.id}>
+                <div className="collections-card">
+                  <div className="card-image-wrapper">
+                    <img src={product.image} alt={product.name} className="card-product-image" />
+                  </div>
+                  <div className="card-details">
+                    <div className="card-category">{product.tag}</div>
+                    <h3 className="card-title">{product.name}</h3>
+                    <div className="card-price">${product.price}</div>
+                  </div>
                 </div>
-                <div className="card-details">
-                  <div className="card-category">{product.tag}</div>
-                  <h3 className="card-title">{product.name}</h3>
-                  <div className="card-price">${product.price}</div>
-                </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div className="no-products-message">
