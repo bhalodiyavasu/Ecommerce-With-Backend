@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logoIcon from '@/assets/icons/logo.svg';
 import cartIcon from '@/assets/icons/cart.svg';
 import profileIcon from '@/assets/icons/profile.svg';
@@ -6,8 +6,18 @@ import './Header.css';
 
 export default function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === '/';
   const isCollections = location.pathname === '/collections';
+
+  const handleProfileClick = () => {
+    const session = localStorage.getItem('xiv_user_session');
+    if (session) {
+      navigate('/profile');
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
     <header className="header">
@@ -34,7 +44,11 @@ export default function Header() {
             <div className="cart-badge-pill">3</div>
           </Link>
           
-          <button className="circular-btn profile-btn" aria-label="Profile">
+          <button 
+            className="circular-btn profile-btn" 
+            aria-label="Profile" 
+            onClick={handleProfileClick}
+          >
             <img src={profileIcon} alt="" className="inverted-icon" />
           </button>
         </div>
@@ -42,3 +56,4 @@ export default function Header() {
     </header>
   );
 }
+
