@@ -1,34 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
-import { ALL_PRODUCTS } from '@/data/products';
+import { getCartItemsWithProducts } from '@/data/mockData';
 import './CheckoutPage.css';
 
 export default function CheckoutPage() {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  // Active Tab state: 'info' or 'payment'
   const [activeTab, setActiveTab] = useState('info');
+  const [cartItems] = useState(getCartItemsWithProducts);
 
-  // Local state for order items
-  const [cartItems, setCartItems] = useState(() => {
-    const item1 = ALL_PRODUCTS.find((p) => p.id === 4);
-    const item2 = ALL_PRODUCTS.find((p) => p.id === 6);
-    const item3 = ALL_PRODUCTS.find((p) => p.id === 7);
-
-    return [
-      { product: item1, size: 'M', color: 'beige', quantity: 1 },
-      { product: item2, size: 'M', color: 'beige', quantity: 1 },
-      { product: item3, size: '37', color: 'black', quantity: 1 },
-    ].filter((item) => item.product !== undefined);
-  });
-
-  const cartTotal = cartItems.reduce(
-    (total, item) => total + item.product.price * item.quantity,
-    0
-  );
-
+  const cartTotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const [formData, setFormData] = useState({
@@ -43,11 +26,9 @@ export default function CheckoutPage() {
     zip: ''
   });
 
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('card');
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const isFormValid = () => {
@@ -72,12 +53,10 @@ export default function CheckoutPage() {
   };
 
   const handleCompletePayment = () => {
-    // Generate a mock Order ID
     const mockId = 'XIV-' + Math.floor(100000 + Math.random() * 900000);
-    
+
     showToast('success', 'ORDER PLACED SUCCESSFULLY!');
-    
-    // Redirect to separate payment success page, passing transaction metadata
+
     navigate('/payment-success', {
       state: {
         orderId: mockId,
@@ -93,7 +72,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="checkout-page-container">
-      {/* Back Navigation Arrow - Custom long arrow matching image */}
+      {/* Back Navigation Arrow */}
       <div className="checkout-back-nav">
         <Link to="/cart" className="back-arrow-link-custom" aria-label="Back to bag">
           <svg width="48" height="16" viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -113,9 +92,8 @@ export default function CheckoutPage() {
         </div>
       ) : (
         <div className="checkout-layout">
-          {/* Left Form: Tabbed panel matching design details */}
+          {/* Left Form: Tabbed panel */}
           <div className="checkout-form-section">
-            {/* Tabs Header Navigation - Shipping Tab Removed */}
             <div className="checkout-tabs-header-custom">
               <button 
                 type="button"
@@ -139,58 +117,25 @@ export default function CheckoutPage() {
               <form onSubmit={handleContinueToPayment} className="checkout-form-block-custom">
                 <h3 className="form-section-title-custom">CONTACT INFO</h3>
                 <div className="form-input-group-custom">
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="Email"
-                    required
-                  />
+                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" required />
                 </div>
                 <div className="form-input-group-custom">
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="Phone"
-                    required
-                  />
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" required />
                 </div>
 
                 <h3 className="form-section-title-custom shipping-title-custom">SHIPPING ADDRESS</h3>
                 
                 <div className="form-row-custom">
                   <div className="form-input-group-custom flex-1">
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      placeholder="First Name"
-                      required
-                    />
+                    <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" required />
                   </div>
                   <div className="form-input-group-custom flex-1">
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      placeholder="Last Name"
-                      required
-                    />
+                    <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" required />
                   </div>
                 </div>
 
                 <div className="form-input-group-custom select-wrapper-custom">
-                  <select
-                    name="country"
-                    value={formData.country}
-                    onChange={handleInputChange}
-                    required
-                  >
+                  <select name="country" value={formData.country} onChange={handleInputChange} required>
                     <option value="United States">United States</option>
                     <option value="Canada">Canada</option>
                     <option value="United Kingdom">United Kingdom</option>
@@ -200,47 +145,19 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="form-input-group-custom">
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleInputChange}
-                    placeholder="State / Region"
-                    required
-                  />
+                  <input type="text" name="state" value={formData.state} onChange={handleInputChange} placeholder="State / Region" required />
                 </div>
 
                 <div className="form-input-group-custom">
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    placeholder="Address"
-                    required
-                  />
+                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} placeholder="Address" required />
                 </div>
 
                 <div className="form-row-custom">
                   <div className="form-input-group-custom flex-1">
-                    <input
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      placeholder="City"
-                      required
-                    />
+                    <input type="text" name="city" value={formData.city} onChange={handleInputChange} placeholder="City" required />
                   </div>
                   <div className="form-input-group-custom flex-1">
-                    <input
-                      type="text"
-                      name="zip"
-                      value={formData.zip}
-                      onChange={handleInputChange}
-                      placeholder="Postal Code"
-                      required
-                    />
+                    <input type="text" name="zip" value={formData.zip} onChange={handleInputChange} placeholder="Postal Code" required />
                   </div>
                 </div>
 
@@ -293,7 +210,7 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* Right Column: Sticky Order Summary info */}
+          {/* Right Column: Sticky Order Summary */}
           <div className="checkout-summary-section-custom">
             <div className="checkout-summary-card-custom">
               <div className="summary-card-header-custom">
@@ -309,8 +226,6 @@ export default function CheckoutPage() {
                     </div>
                     <div className="checkout-item-details-col-custom">
                       <span className="checkout-item-name-custom">{item.product.name}</span>
-                      
-                      {/* Specs visually rendered (boxes & color swatch) */}
                       <div className="checkout-item-specs-row-custom">
                         <div className="checkout-spec-box-custom">{item.size}</div>
                         <div 
@@ -319,7 +234,6 @@ export default function CheckoutPage() {
                             backgroundColor: item.product.colors?.find(c => c.name.toLowerCase() === item.color.toLowerCase())?.hex || item.color 
                           }}
                         ></div>
-                        {/* Blue highlighted quantity in brackets */}
                         <span className="checkout-qty-highlight-custom">
                           ({item.quantity})
                         </span>

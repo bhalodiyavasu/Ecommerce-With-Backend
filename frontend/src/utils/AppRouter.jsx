@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Header from '@/components/common/Header/Header';
 import Footer from '@/components/common/Footer/Footer';
-import HomePage from '@/pages/HomePage';
+import HomePage from '@/pages/HomePage/HomePage';
 import CollectionsPage from '@/pages/CollectionsPage/CollectionsPage';
 import CartPage from '@/pages/CartPage/CartPage';
 import CheckoutPage from '@/pages/CheckoutPage/CheckoutPage';

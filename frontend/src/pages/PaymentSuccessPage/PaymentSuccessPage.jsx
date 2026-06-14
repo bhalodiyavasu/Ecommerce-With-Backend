@@ -1,52 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { DEFAULT_ORDER_DATA } from '@/data/mockData';
 import './PaymentSuccessPage.css';
 
 export default function PaymentSuccessPage() {
   const location = useLocation();
   const [showReceiptModal, setShowReceiptModal] = useState(false);
 
-  // Fallback dummy data if accessed directly
-  const orderData = location.state || {
-    orderId: 'XIV-308420',
-    email: 'info@ecommerce.com',
-    customerName: 'VASU BHALODIYA',
-    phone: '+91 98765 43210',
-    address: '45 Fashion Blvd, Design District, Gujarat - 360001, India',
-    cartTotal: 308,
-    cartItems: [
-      {
-        product: { 
-          name: 'EMBROIDERED SEERSUCKER SHIRT', 
-          price: 99, 
-          image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=100' 
-        },
-        size: 'M',
-        color: 'beige',
-        quantity: 1
-      },
-      {
-        product: { 
-          name: 'RELAXED COTTON DRAWSTRING TROUSERS', 
-          price: 89, 
-          image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100' 
-        },
-        size: 'M',
-        color: 'beige',
-        quantity: 1
-      },
-      {
-        product: { 
-          name: 'CLASSIC LEATHER STRAP SANDALS', 
-          price: 120, 
-          image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=100' 
-        },
-        size: '37',
-        color: 'black',
-        quantity: 1
-      }
-    ]
-  };
+  const orderData = location.state || DEFAULT_ORDER_DATA;
 
   const handlePrint = (e) => {
     e.preventDefault();

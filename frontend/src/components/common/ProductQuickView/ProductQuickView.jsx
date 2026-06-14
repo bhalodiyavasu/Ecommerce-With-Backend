@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import './ProductQuickView.css';
@@ -11,14 +11,6 @@ export default function ProductQuickView({ product, onClose }) {
     product ? (product.color || (product.colors && product.colors.length > 0 ? product.colors[0].name : '')) : ''
   );
   const [selectedSize, setSelectedSize] = useState('');
-
-  // Reset states when product changes
-  useEffect(() => {
-    if (product) {
-      setSelectedColor(product.color || (product.colors && product.colors.length > 0 ? product.colors[0].name : ''));
-      setSelectedSize('');
-    }
-  }, [product]);
 
   if (!product) return null;
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import AppRouter from '@/utils/AppRouter';
 import { ToastProvider } from '@/contexts/ToastContext';
 

@@ -1,43 +1,26 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getCartItemsWithProducts } from '@/data/mockData';
 import minusIcon from '@/assets/icons/minus.svg';
 import plusIcon from '@/assets/icons/plus.svg';
-import { ALL_PRODUCTS } from '@/data/products';
 import './CartPage.css';
 
 export default function CartPage() {
   const navigate = useNavigate();
-
-  // Local state containing the 3 dummy items
-  const [cartItems, setCartItems] = useState(() => {
-    const item1 = ALL_PRODUCTS.find((p) => p.id === 4);
-    const item2 = ALL_PRODUCTS.find((p) => p.id === 6);
-    const item3 = ALL_PRODUCTS.find((p) => p.id === 7);
-
-    return [
-      { product: item1, size: 'M', color: 'beige', quantity: 1 },
-      { product: item2, size: 'M', color: 'beige', quantity: 1 },
-      { product: item3, size: '37', color: 'black', quantity: 1 },
-    ].filter((item) => item.product !== undefined);
-  });
+  const [cartItems, setCartItems] = useState(getCartItemsWithProducts);
 
   const removeFromCart = (productId, size, color) => {
-    setCartItems((prevItems) =>
-      prevItems.filter(
-        (item) =>
-          !(item.product.id === productId && item.size === size && item.color === color)
+    setCartItems(prev =>
+      prev.filter(item =>
+        !(item.product.id === productId && item.size === size && item.color === color)
       )
     );
   };
 
   const updateQuantity = (productId, size, color, delta) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) => {
-        if (
-          item.product.id === productId &&
-          item.size === size &&
-          item.color === color
-        ) {
+    setCartItems(prev =>
+      prev.map(item => {
+        if (item.product.id === productId && item.size === size && item.color === color) {
           const newQty = item.quantity + delta;
           if (newQty < 1) return item;
           return { ...item, quantity: newQty };
@@ -48,14 +31,7 @@ export default function CartPage() {
   };
 
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-  const cartTotal = cartItems.reduce(
-    (total, item) => total + item.product.price * item.quantity,
-    0
-  );
-
-  const handleCheckoutRedirect = () => {
-    navigate('/checkout');
-  };
+  const cartTotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
 
   return (
     <div className="cart-page-container">
@@ -196,7 +172,7 @@ export default function CartPage() {
 
                 <button
                   className="cart-checkout-continue-btn"
-                  onClick={handleCheckoutRedirect}
+                  onClick={() => navigate('/checkout')}
                 >
                   CONTINUE
                 </button>

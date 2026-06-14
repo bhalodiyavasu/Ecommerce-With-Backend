@@ -9,12 +9,13 @@ import photo1 from '@/assets/extracted/image4_2_63.jpg';
 import photo2 from '@/assets/extracted/image3_2_63.jpg';
 import photo3 from '@/assets/extracted/image1_2_63.jpg';
 
-// Other images for gallery support
+// Gallery images
 import gall1 from '@/assets/extracted/image2_2_63.jpg';
 import gall2 from '@/assets/extracted/image3_2_63.jpg';
 import gall3 from '@/assets/extracted/image4_2_63.jpg';
 import gall4 from '@/assets/extracted/image5_2_63.png';
 
+// ─── All Products ───────────────────────────────────────────────
 export const ALL_PRODUCTS = [
   {
     id: 1,
@@ -214,3 +215,48 @@ export const ALL_PRODUCTS = [
     tag: 'MEN / SWEATER'
   }
 ];
+
+// ─── Carousel Products (subset of ALL_PRODUCTS for home carousel) ───
+export const CAROUSEL_PRODUCT_IDS = [4, 5, 6, 7, 8, 9];
+
+// ─── Filter Options ─────────────────────────────────────────────
+export const FILTER_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
+
+export const FILTER_COLORS = [
+  { name: 'beige', hex: '#ebe7db' },
+  { name: 'grey', hex: '#A9A9A9' },
+  { name: 'charcoal', hex: '#1E1E1E' },
+  { name: 'black', hex: '#000000' },
+  { name: 'mint', hex: '#A6D6CA' },
+  { name: 'white', hex: '#FFFFFF' },
+  { name: 'lavender', hex: '#B9C1E8' }
+];
+
+// ─── Cart Items (dummy defaults) ────────────────────────────────
+export const INITIAL_CART_ITEMS = [
+  { productId: 4, size: 'M', color: 'beige', quantity: 1 },
+  { productId: 6, size: 'M', color: 'beige', quantity: 1 },
+  { productId: 7, size: '37', color: 'black', quantity: 1 }
+];
+
+// Helper to resolve cart items with product data
+export const getCartItemsWithProducts = () => {
+  return INITIAL_CART_ITEMS
+    .map(item => {
+      const product = ALL_PRODUCTS.find(p => p.id === item.productId);
+      if (!product) return null;
+      return { product, size: item.size, color: item.color, quantity: item.quantity };
+    })
+    .filter(Boolean);
+};
+
+// ─── Default Order Data (fallback for PaymentSuccessPage) ───────
+export const DEFAULT_ORDER_DATA = {
+  orderId: 'XIV-308420',
+  email: 'info@ecommerce.com',
+  customerName: 'VASU BHALODIYA',
+  phone: '+91 98765 43210',
+  address: '45 Fashion Blvd, Design District, Gujarat - 360001, India',
+  cartTotal: 308,
+  cartItems: getCartItemsWithProducts()
+};

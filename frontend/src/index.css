@@ -85,7 +85,6 @@ html {
   ::-webkit-scrollbar-thumb {
     background: var(--color-gray-dark);
     border-radius: 0;
-    /* Sharp scrollbars matching design */
   }
 
   ::-webkit-scrollbar-thumb:hover {

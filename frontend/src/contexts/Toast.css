@@ -1,7 +1,8 @@
 .premium-toast-container {
   position: fixed;
   top: 30px;
-  right: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 320px;
   z-index: 9999;
   display: flex;
@@ -17,17 +18,17 @@
   position: relative;
   overflow: hidden;
   pointer-events: auto; /* Enable clicks on the toast itself */
-  animation: slideInRightToast 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  animation: slideDownToast 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   border: 1px solid var(--color-black, #000);
 }
 
-@keyframes slideInRightToast {
+@keyframes slideDownToast {
   from {
-    transform: translateX(120%);
+    transform: translateY(-30px);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateY(0);
     opacity: 1;
   }
 }
@@ -107,6 +108,7 @@
 @media (max-width: 480px) {
   .premium-toast-container {
     width: calc(100% - 40px);
-    right: 20px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }

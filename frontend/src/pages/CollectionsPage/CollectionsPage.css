@@ -207,7 +207,7 @@
 }
 
 .radio-container input:checked ~ .radio-custom {
-  border-color: var(--color-border-light, #c9c9c9);
+  border: 2px solid var(--color-black);
 }
 
 .radio-container input:checked ~ .radio-custom::after {

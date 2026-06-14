@@ -1,8 +1,5 @@
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logoIcon from '@/assets/icons/logo.svg';
-import hamburgerIcon from '@/assets/icons/hamburger.svg';
-import searchIcon from '@/assets/icons/search.svg';
 import cartIcon from '@/assets/icons/cart.svg';
 import profileIcon from '@/assets/icons/profile.svg';
 import './Header.css';

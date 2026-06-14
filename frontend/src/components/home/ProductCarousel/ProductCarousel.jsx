@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickView';
-import { ALL_PRODUCTS } from '@/data/products';
+import { ALL_PRODUCTS } from '@/data/mockData';
 
 import item1 from '@/assets/extracted/image7_2_63.jpg';
 import item2 from '@/assets/extracted/image6_2_63.jpg';
