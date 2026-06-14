@@ -4,6 +4,9 @@ import Header from '@/components/common/Header/Header';
 import Footer from '@/components/common/Footer/Footer';
 import HomePage from '@/pages/HomePage';
 import CollectionsPage from '@/pages/CollectionsPage/CollectionsPage';
+import CartPage from '@/pages/CartPage/CartPage';
+import CheckoutPage from '@/pages/CheckoutPage/CheckoutPage';
+
 function ScrollToHashElement() {
   const { hash, pathname } = useLocation();
 
@@ -21,20 +24,31 @@ function ScrollToHashElement() {
   return null;
 }
 
+function AppLayout({ children }) {
+  const location = useLocation();
+  const isCheckout = location.pathname === '/checkout';
+
+  return (
+    <div className="app-wrapper">
+      {!isCheckout && <Header />}
+      <main>{children}</main>
+      {!isCheckout && <Footer />}
+    </div>
+  );
+}
+
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <ScrollToHashElement />
-      <div className="app-wrapper">
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/collections" element={<CollectionsPage />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <AppLayout>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/collections" element={<CollectionsPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+        </Routes>
+      </AppLayout>
     </BrowserRouter>
   );
 }

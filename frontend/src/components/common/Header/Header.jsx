@@ -30,12 +30,12 @@ export default function Header() {
         </div>
 
         <div className="header-right">
-          <div className="cart-badge-group">
-            <button className="circular-btn cart-btn" aria-label="Cart">
+          <Link to="/cart" className="cart-badge-group" style={{ textDecoration: 'none' }}>
+            <div className="circular-btn cart-btn" aria-label="Cart">
               <img src={cartIcon} alt="" className="dark-icon" />
-            </button>
-            <div className="cart-badge-pill">0</div>
-          </div>
+            </div>
+            <div className="cart-badge-pill">3</div>
+          </Link>
           
           <button className="circular-btn profile-btn" aria-label="Profile">
             <img src={profileIcon} alt="" className="inverted-icon" />
@@ -45,4 +45,3 @@ export default function Header() {
     </header>
   );
 }
-

@@ -6,7 +6,10 @@ import './ProductQuickView.css';
 export default function ProductQuickView({ product, onClose }) {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const [selectedColor, setSelectedColor] = useState(product.color || (product.colors && product.colors.length > 0 ? product.colors[0].name : ''));
+  
+  const [selectedColor, setSelectedColor] = useState(
+    product ? (product.color || (product.colors && product.colors.length > 0 ? product.colors[0].name : '')) : ''
+  );
   const [selectedSize, setSelectedSize] = useState('');
 
   // Reset states when product changes
@@ -24,7 +27,6 @@ export default function ProductQuickView({ product, onClose }) {
       showToast('warning', 'PLEASE SELECT A SIZE BEFORE ADDING TO BAG.');
       return;
     }
-    // Logic to add to cart goes here
     showToast('success', 'PRODUCT ADDED TO CART');
     onClose();
   };
@@ -34,7 +36,6 @@ export default function ProductQuickView({ product, onClose }) {
       showToast('warning', 'PLEASE SELECT A SIZE BEFORE BUYING.');
       return;
     }
-    // Logic to add to cart goes here
     navigate('/checkout');
   };
 

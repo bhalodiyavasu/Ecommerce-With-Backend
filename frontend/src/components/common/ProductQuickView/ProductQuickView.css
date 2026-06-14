@@ -126,7 +126,7 @@
   font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .premium-color-list {
@@ -190,7 +190,7 @@
   font-size: 13px;
   font-weight: 700;
   margin: 0 0 15px 0;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .summary-row {
@@ -232,7 +232,7 @@
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   transition: all 0.2s;
   border-radius: 0;
 }
