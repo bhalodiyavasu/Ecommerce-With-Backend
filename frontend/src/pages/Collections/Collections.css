@@ -587,19 +587,43 @@
   }
 }
 
+/* Sidebar mobile header / toggle button */
+.mobile-filter-toggle-btn {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .collections-container {
     flex-direction: column;
     padding: 20px 20px 60px 20px;
     gap: 30px;
   }
+  
   .filter-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--color-border-light, #c9c9c9);
-    padding-right: 0;
-    padding-bottom: 20px;
+    display: none; /* Hide desktop sidebar on mobile */
   }
+  
+  .mobile-filter-toggle-btn {
+    display: block;
+    width: 100%;
+    height: 50px;
+    background-color: var(--color-black);
+    color: var(--color-white);
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.3px;
+    margin-bottom: 20px;
+  }
+  
+  .top-control-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .collections-grid {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 20px;
@@ -609,9 +633,11 @@
 
 @media (max-width: 480px) {
   .collections-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr); /* Keep 2-column layout on tiny screens as well for premium card display */
+    column-gap: 12px;
+    row-gap: 30px;
   }
   .no-products-message {
-    grid-column: span 1;
+    grid-column: span 2;
   }
 }

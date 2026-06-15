@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logoIcon from '@/assets/icons/logo.svg';
 import cartIcon from '@/assets/icons/cart.svg';
 import profileIcon from '@/assets/icons/profile.svg';
+import Drawer from '@/components/common/Drawer/Drawer';
 import './Header.css';
 
 export default function Header() {
@@ -9,6 +11,7 @@ export default function Header() {
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
   const isCollections = location.pathname === '/collections';
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleProfileClick = () => {
     const session = localStorage.getItem('xiv_user_session');
@@ -23,6 +26,20 @@ export default function Header() {
     <header className="header">
       <div className="header-top">
         <div className="header-left">
+          {/* Mobile hamburger menu button */}
+          <button 
+            className="hamburger-btn" 
+            onClick={() => setIsMenuOpen(true)} 
+            aria-label="Open Menu"
+          >
+            <svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M26 1L0 1" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+              <path d="M18 8H0" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+              <path d="M13 15H0" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </button>
+
+          {/* Desktop nav links */}
           <nav className="nav-links">
             <Link to="/" className={`nav-link ${isHome ? 'active' : ''}`}>HOME</Link>
             <Link to="/collections" className={`nav-link ${isCollections ? 'active' : ''}`}>COLLECTIONS</Link>
@@ -53,7 +70,20 @@ export default function Header() {
           </button>
         </div>
       </div>
+
+      {/* Mobile Navigation Drawer Panel */}
+      <Drawer
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        title="MENU"
+        position="left"
+      >
+        <nav className="drawer-links">
+          <Link to="/" className={`drawer-link ${isHome ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>HOME</Link>
+          <Link to="/collections" className={`drawer-link ${isCollections ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>COLLECTIONS</Link>
+          <Link to="/#new" className="drawer-link" onClick={() => setIsMenuOpen(false)}>NEW</Link>
+        </nav>
+      </Drawer>
     </header>
   );
 }
-

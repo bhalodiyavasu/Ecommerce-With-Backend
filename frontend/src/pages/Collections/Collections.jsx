@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickView';
+import Drawer from '@/components/common/Drawer/Drawer';
 import { ALL_PRODUCTS, FILTER_SIZES, FILTER_COLORS } from '@/data/mockData';
 import searchIcon from '@/assets/icons/search.svg';
 import { Link } from 'react-router-dom';
@@ -78,6 +79,9 @@ export default function Collections() {
   // ─── Quick View State ────────────────────────────────────────
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
+  // ─── Mobile Filters Drawer State ─────────────────────────────
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
   // ─── Consolidated Toggle Handler ─────────────────────────────
   const toggleFilterItem = (field, item) => {
     setFilterData(prev => ({
@@ -88,8 +92,9 @@ export default function Collections() {
     }));
   };
 
-  // ─── Filter & Sort Logic ─────────────────────────────────────
+  // ─── Filter & Search Logic ────────────────────────────────────
   const filteredProducts = useMemo(() => {
+    let result = ALL_PRODUCTS;
     const {
       searchQuery,
       selectedGenders,
@@ -102,25 +107,10 @@ export default function Collections() {
       selectedStatuses
     } = filterData;
 
-    const localProducts = JSON.parse(localStorage.getItem('xiv_custom_products') || '[]');
-    const deletedIds = JSON.parse(localStorage.getItem('xiv_deleted_products') || '[]');
-
-    const combined = [...localProducts];
-    ALL_PRODUCTS.forEach(p => {
-      const isOverridden = localProducts.some(lp => lp.id === p.id);
-      const isDeleted = deletedIds.includes(p.id);
-      if (!isOverridden && !isDeleted) {
-        combined.push(p);
-      }
-    });
-
-    let result = combined;
-
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
-      result = result.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
+      result = result.filter(p => 
+        p.name.toLowerCase().includes(q) || 
         p.tag.toLowerCase().includes(q)
       );
     }
@@ -168,11 +158,192 @@ export default function Collections() {
     return result;
   }, [filterData]);
 
+  // Extract filter option blocks to reuse between inline sidebar and mobile Drawer
+  const filterOptionsContent = (
+    <>
+      {/* Gender Accordion */}
+      <div className="filter-section">
+        <div className="filter-header" onClick={() => toggleSection('gender')}>
+          <span className="filter-label">GENDER</span>
+          <span className="accordion-caret">{expandedSections.gender ? '▲' : '▼'}</span>
+        </div>
+        {expandedSections.gender && (
+          <div className="filter-content">
+            {GENDER_OPTIONS.map(opt => (
+              <label key={opt.id} className="checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={filterData.selectedGenders.includes(opt.id)}
+                  onChange={() => toggleFilterItem('selectedGenders', opt.id)}
+                />
+                <span className="checkbox-custom"></span>
+                <span className="checkbox-label">{opt.label}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Color Accordion */}
+      <div className="filter-section">
+        <div className="filter-header" onClick={() => toggleSection('color')}>
+          <span className="filter-label">COLOR</span>
+          <span className="accordion-caret">{expandedSections.color ? '▲' : '▼'}</span>
+        </div>
+        {expandedSections.color && (
+          <div className="filter-content color-swatches">
+            {FILTER_COLORS.map(c => (
+              <button
+                key={c.name}
+                className={`color-swatch-btn ${filterData.selectedColors.includes(c.name) ? 'active' : ''}`}
+                style={{ backgroundColor: c.hex }}
+                onClick={() => toggleFilterItem('selectedColors', c.name)}
+                aria-label={`Filter ${c.name}`}
+              ></button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Size Accordion */}
+      <div className="filter-section">
+        <div className="filter-header" onClick={() => toggleSection('size')}>
+          <span className="filter-label">SIZE</span>
+          <span className="accordion-caret">{expandedSections.size ? '▲' : '▼'}</span>
+        </div>
+        {expandedSections.size && (
+          <div className="filter-content size-grid">
+            {FILTER_SIZES.map(size => (
+              <button
+                key={size}
+                className={`size-grid-btn ${filterData.selectedSizes.includes(size) ? 'active' : ''}`}
+                onClick={() => toggleFilterItem('selectedSizes', size)}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Sort By Accordion */}
+      <div className="filter-section">
+        <div className="filter-header" onClick={() => toggleSection('sort')}>
+          <span className="filter-label">SORT BY</span>
+          <span className="accordion-caret">{expandedSections.sort ? '▲' : '▼'}</span>
+        </div>
+        {expandedSections.sort && (
+          <div className="filter-content sort-options">
+            {SORT_OPTIONS.map(opt => (
+              <label key={opt.id} className="radio-container">
+                <input 
+                  type="radio" 
+                  name="sortBy" 
+                  checked={filterData.sortBy === opt.id} 
+                  onChange={() => setFilterData(prev => ({ ...prev, sortBy: opt.id }))} 
+                />
+                <span className="radio-custom"></span>
+                <span className="radio-label">{opt.label}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Price Accordion */}
+      <div className="filter-section">
+        <div className="filter-header" onClick={() => toggleSection('price')}>
+          <span className="filter-label">PRICE</span>
+          <span className="accordion-caret">{expandedSections.price ? '▲' : '▼'}</span>
+        </div>
+        {expandedSections.price && (
+          <div className="filter-content price-range-content">
+            <input
+              type="range"
+              min="50"
+              max="300"
+              value={filterData.priceRange}
+              onChange={(e) => setFilterData(prev => ({ ...prev, priceRange: Number(e.target.value) }))}
+              className="price-slider"
+            />
+            <div className="price-display">
+              <span>MAX PRICE:</span>
+              <span className="price-val">${filterData.priceRange}</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Product Status Accordion */}
+      <div className="filter-section">
+        <div className="filter-header" onClick={() => toggleSection('status')}>
+          <span className="filter-label">PRODUCT STATUS</span>
+          <span className="accordion-caret">{expandedSections.status ? '▲' : '▼'}</span>
+        </div>
+        {expandedSections.status && (
+          <div className="filter-content">
+            {STATUS_OPTIONS.map(opt => (
+              <label key={opt.id} className="checkbox-container">
+                <input 
+                  type="checkbox" 
+                  checked={filterData.selectedStatuses.includes(opt.id)} 
+                  onChange={() => toggleFilterItem('selectedStatuses', opt.id)} 
+                />
+                <span className="checkbox-custom"></span>
+                <span className="checkbox-label">{opt.label}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Rating Accordion */}
+      <div className="filter-section">
+        <div className="filter-header" onClick={() => toggleSection('rating')}>
+          <span className="filter-label">RATING</span>
+          <span className="accordion-caret">{expandedSections.rating ? '▲' : '▼'}</span>
+        </div>
+        {expandedSections.rating && (
+          <div className="filter-content">
+            {RATING_OPTIONS.map(stars => (
+              <label key={stars} className="checkbox-container">
+                <input 
+                  type="checkbox" 
+                  checked={filterData.selectedRatings.includes(stars)} 
+                  onChange={() => toggleFilterItem('selectedRatings', stars)} 
+                />
+                <span className="checkbox-custom"></span>
+                <span className="checkbox-label">
+                  {'★'.repeat(stars)}{'☆'.repeat(5 - stars)} &amp; UP
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  );
+
   return (
     <div className="collections-container">
-      {/* Sidebar Filter Panel */}
+      {/* Reusable Drawer Component for Mobile Filter Panel */}
+      <Drawer
+        isOpen={isMobileFilterOpen}
+        onClose={() => setIsMobileFilterOpen(false)}
+        title="COLLECTIONS"
+        position="left"
+        className="collections-mobile-drawer"
+      >
+        <div className="breadcrumb" style={{ marginBottom: '25px', display: 'flex' }}>
+          <Link to="/" className="breadcrumb-link" onClick={() => setIsMobileFilterOpen(false)}>HOME</Link>
+          <span className="breadcrumb-separator">/</span>
+          <span className="breadcrumb-current">COLLECTIONS</span>
+        </div>
+        {filterOptionsContent}
+      </Drawer>
+
+      {/* Sidebar Filter Panel (Desktop only, hidden on mobile via CSS) */}
       <aside className="filter-sidebar">
-        {/* Breadcrumbs */}
         <div className="breadcrumb">
           <Link to="/" className="breadcrumb-link">HOME</Link>
           <span className="breadcrumb-separator">/</span>
@@ -181,172 +352,20 @@ export default function Collections() {
 
         <h1 className="sidebar-title">COLLECTIONS</h1>
 
-        {/* Gender Accordion */}
-        <div className="filter-section">
-          <div className="filter-header" onClick={() => toggleSection('gender')}>
-            <span className="filter-label">GENDER</span>
-            <span className="accordion-caret">{expandedSections.gender ? '▲' : '▼'}</span>
-          </div>
-          {expandedSections.gender && (
-            <div className="filter-content">
-              {GENDER_OPTIONS.map(opt => (
-                <label key={opt.id} className="checkbox-container">
-                  <input
-                    type="checkbox"
-                    checked={filterData.selectedGenders.includes(opt.id)}
-                    onChange={() => toggleFilterItem('selectedGenders', opt.id)}
-                  />
-                  <span className="checkbox-custom"></span>
-                  <span className="checkbox-label">{opt.label}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Color Accordion */}
-        <div className="filter-section">
-          <div className="filter-header" onClick={() => toggleSection('color')}>
-            <span className="filter-label">COLOR</span>
-            <span className="accordion-caret">{expandedSections.color ? '▲' : '▼'}</span>
-          </div>
-          {expandedSections.color && (
-            <div className="filter-content color-swatches">
-              {FILTER_COLORS.map(c => (
-                <button
-                  key={c.name}
-                  className={`color-swatch-btn ${filterData.selectedColors.includes(c.name) ? 'active' : ''}`}
-                  style={{ backgroundColor: c.hex }}
-                  onClick={() => toggleFilterItem('selectedColors', c.name)}
-                  aria-label={`Filter ${c.name}`}
-                ></button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Size Accordion */}
-        <div className="filter-section">
-          <div className="filter-header" onClick={() => toggleSection('size')}>
-            <span className="filter-label">SIZE</span>
-            <span className="accordion-caret">{expandedSections.size ? '▲' : '▼'}</span>
-          </div>
-          {expandedSections.size && (
-            <div className="filter-content size-grid">
-              {FILTER_SIZES.map(size => (
-                <button
-                  key={size}
-                  className={`size-grid-btn ${filterData.selectedSizes.includes(size) ? 'active' : ''}`}
-                  onClick={() => toggleFilterItem('selectedSizes', size)}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Sort By Accordion */}
-        <div className="filter-section">
-          <div className="filter-header" onClick={() => toggleSection('sort')}>
-            <span className="filter-label">SORT BY</span>
-            <span className="accordion-caret">{expandedSections.sort ? '▲' : '▼'}</span>
-          </div>
-          {expandedSections.sort && (
-            <div className="filter-content sort-options">
-              {SORT_OPTIONS.map(opt => (
-                <label key={opt.id} className="radio-container">
-                  <input 
-                    type="radio" 
-                    name="sortBy" 
-                    checked={filterData.sortBy === opt.id} 
-                    onChange={() => setFilterData(prev => ({ ...prev, sortBy: opt.id }))} 
-                  />
-                  <span className="radio-custom"></span>
-                  <span className="radio-label">{opt.label}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Price Accordion */}
-        <div className="filter-section">
-          <div className="filter-header" onClick={() => toggleSection('price')}>
-            <span className="filter-label">PRICE</span>
-            <span className="accordion-caret">{expandedSections.price ? '▲' : '▼'}</span>
-          </div>
-          {expandedSections.price && (
-            <div className="filter-content price-range-content">
-              <input
-                type="range"
-                min="50"
-                max="300"
-                value={filterData.priceRange}
-                onChange={(e) => setFilterData(prev => ({ ...prev, priceRange: Number(e.target.value) }))}
-                className="price-slider"
-              />
-              <div className="price-display">
-                <span>MAX PRICE:</span>
-                <span className="price-val">${filterData.priceRange}</span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Product Status Accordion */}
-        <div className="filter-section">
-          <div className="filter-header" onClick={() => toggleSection('status')}>
-            <span className="filter-label">PRODUCT STATUS</span>
-            <span className="accordion-caret">{expandedSections.status ? '▲' : '▼'}</span>
-          </div>
-          {expandedSections.status && (
-            <div className="filter-content">
-              {STATUS_OPTIONS.map(opt => (
-                <label key={opt.id} className="checkbox-container">
-                  <input 
-                    type="checkbox" 
-                    checked={filterData.selectedStatuses.includes(opt.id)} 
-                    onChange={() => toggleFilterItem('selectedStatuses', opt.id)} 
-                  />
-                  <span className="checkbox-custom"></span>
-                  <span className="checkbox-label">{opt.label}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Rating Accordion */}
-        <div className="filter-section">
-          <div className="filter-header" onClick={() => toggleSection('rating')}>
-            <span className="filter-label">RATING</span>
-            <span className="accordion-caret">{expandedSections.rating ? '▲' : '▼'}</span>
-          </div>
-          {expandedSections.rating && (
-            <div className="filter-content">
-              {RATING_OPTIONS.map(stars => (
-                <label key={stars} className="checkbox-container">
-                  <input 
-                    type="checkbox" 
-                    checked={filterData.selectedRatings.includes(stars)} 
-                    onChange={() => toggleFilterItem('selectedRatings', stars)} 
-                  />
-                  <span className="checkbox-custom"></span>
-                  <span className="checkbox-label">
-                    {'★'.repeat(stars)}{'☆'.repeat(5 - stars)} &amp; UP
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
+        {filterOptionsContent}
       </aside>
 
       {/* Main Grid Area */}
       <main className="collections-main">
         {/* Top Control Bar */}
         <div className="top-control-bar">
+          <button 
+            className="mobile-filter-toggle-btn" 
+            onClick={() => setIsMobileFilterOpen(true)}
+            aria-label="Open Filters"
+          >
+            FILTERS
+          </button>
           <div className="collections-search-bar">
             <img src={searchIcon} className="collections-search-icon" alt="" />
             <input
@@ -401,13 +420,11 @@ export default function Collections() {
             ))}
             {filterData.priceRange < 300 && (
               <span className="active-filter-tag">
-                Under ${filterData.priceRange}
+                Max Price: ${filterData.priceRange}
                 <button className="clear-tag-btn" onClick={() => setFilterData(prev => ({ ...prev, priceRange: 300 }))} aria-label="Clear Price Limit">✕</button>
               </span>
             )}
-            <button className="clear-all-filters-btn" onClick={handleClearAll}>
-              CLEAR ALL
-            </button>
+            <button className="clear-all-filters-btn" onClick={handleClearAll}>CLEAR ALL</button>
           </div>
         )}
 
