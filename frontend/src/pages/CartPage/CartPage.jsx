@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCartItemsWithProducts } from '@/data/mockData';
+import Button from '@/components/common/Button/Button';
 import minusIcon from '@/assets/icons/minus.svg';
 import plusIcon from '@/assets/icons/plus.svg';
 import './CartPage.css';
@@ -51,9 +52,9 @@ export default function CartPage() {
           <div className="empty-cart-view">
             <h2 className="empty-cart-message">YOUR BAG IS CURRENTLY EMPTY.</h2>
             <p className="empty-cart-desc">Add items from our collections to get started.</p>
-            <Link to="/collections" className="continue-shopping-action">
+            <Button variant="outline" to="/collections">
               CONTINUE SHOPPING
-            </Link>
+            </Button>
           </div>
         ) : (
           <>
@@ -137,9 +138,9 @@ export default function CartPage() {
               })}
 
               <div className="cart-actions-footer">
-                <Link to="/collections" className="back-to-shop-btn">
+                <Button variant="outline" to="/collections">
                   CONTINUE SHOPPING
-                </Link>
+                </Button>
               </div>
             </div>
 
@@ -170,12 +171,13 @@ export default function CartPage() {
                   <span className="summary-row-value">${cartTotal}.00</span>
                 </div>
 
-                <button
-                  className="cart-checkout-continue-btn"
+                <Button
+                  variant="solid"
+                  layout="center"
                   onClick={() => navigate('/checkout')}
                 >
                   CONTINUE
-                </button>
+                </Button>
               </div>
             </aside>
           </>

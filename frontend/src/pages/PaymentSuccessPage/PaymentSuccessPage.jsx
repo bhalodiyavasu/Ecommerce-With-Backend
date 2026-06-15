@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { DEFAULT_ORDER_DATA } from '@/data/mockData';
+import Button from '@/components/common/Button/Button';
 import './PaymentSuccessPage.css';
 
 export default function PaymentSuccessPage() {
@@ -101,21 +102,21 @@ export default function PaymentSuccessPage() {
 
         {/* Action Buttons */}
         <div className="success-action-buttons">
-          <button 
+          <Button
             type="button" 
-            className="action-btn-secondary"
+            variant="outline"
             onClick={() => setShowReceiptModal(true)}
           >
             VIEW ORDER RECEIPT
-          </button>
+          </Button>
           
-          <button 
+          <Button
             type="button" 
-            className="action-btn-accent"
+            variant="solid"
             onClick={handlePrint}
           >
             DOWNLOAD RECEIPT
-          </button>
+          </Button>
 
           <Link to="/collections" className="action-btn-primary">
             CONTINUE SHOPPING
@@ -191,7 +192,7 @@ export default function PaymentSuccessPage() {
             </div>
             
             <div className="receipt-modal-actions-bar">
-              <button className="receipt-action-btn" onClick={handlePrint}>PRINT RECEIPT</button>
+              <Button variant="solid" onClick={handlePrint}>PRINT RECEIPT</Button>
             </div>
           </div>
         </div>

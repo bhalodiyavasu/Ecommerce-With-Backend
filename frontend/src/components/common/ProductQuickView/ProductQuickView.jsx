@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
+import Button from '@/components/common/Button/Button';
 import './ProductQuickView.css';
 
 export default function ProductQuickView({ product, onClose }) {
@@ -100,12 +101,12 @@ export default function ProductQuickView({ product, onClose }) {
         </div>
 
         <div className="quick-view-actions">
-          <button className="btn-add-to-cart" onClick={handleAddToCart}>
+          <Button variant="outline" onClick={handleAddToCart}>
             ADD TO CART
-          </button>
-          <button className="btn-buy-now" onClick={handleBuyNow}>
+          </Button>
+          <Button variant="solid" onClick={handleBuyNow}>
             BUY NOW
-          </button>
+          </Button>
         </div>
       </div>
     </div>

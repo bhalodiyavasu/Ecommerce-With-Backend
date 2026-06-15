@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
+import Button from '@/components/common/Button/Button';
 import modelImg from '@/assets/extracted/image1_2_63.jpg';
 import logoIcon from '@/assets/icons/logo.svg';
 import './LoginPage.css';
@@ -75,7 +76,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Right Side: Tabbed forms */}
+        {/* Right Side: Auth forms */}
         <div className="login-form-side">
           <div className="login-form-wrapper">
             
@@ -84,25 +85,6 @@ export default function LoginPage() {
               <img src={logoIcon} alt="XIV Logo" className="login-logo-img" />
             </div>
 
-            {/* Tabs Header */}
-            <div className="login-tabs-header">
-              <button
-                type="button"
-                className={`login-tab-btn ${activeTab === 'login' ? 'active' : ''}`}
-                onClick={() => setActiveTab('login')}
-              >
-                SIGN IN
-              </button>
-              <button
-                type="button"
-                className={`login-tab-btn ${activeTab === 'signup' ? 'active' : ''}`}
-                onClick={() => setActiveTab('signup')}
-              >
-                JOIN NOW
-              </button>
-            </div>
-
-            {/* Active Tab View */}
             {activeTab === 'login' ? (
               <form onSubmit={handleLoginSubmit} className="login-form-block animate-fade-in">
                 <h2 className="form-action-title">SIGN IN</h2>
@@ -136,12 +118,23 @@ export default function LoginPage() {
                   </span>
                 </div>
 
-                <button type="submit" className="login-submit-action-btn">
+                <Button type="submit" variant="solid" fullWidth layout="split">
                   <span>Sign In</span>
                   <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                </button>
+                </Button>
+
+                <div className="auth-switch-row">
+                  <span className="auth-switch-text">DON&apos;T HAVE AN ACCOUNT?</span>
+                  <button
+                    type="button"
+                    className="auth-switch-btn"
+                    onClick={() => setActiveTab('signup')}
+                  >
+                    SIGN UP
+                  </button>
+                </div>
               </form>
             ) : (
               <form onSubmit={handleSignupSubmit} className="login-form-block animate-fade-in">
@@ -192,20 +185,25 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <button type="submit" className="login-submit-action-btn">
+                <Button type="submit" variant="solid" fullWidth layout="split">
                   <span>Create Account</span>
                   <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                </button>
+                </Button>
+
+                <div className="auth-switch-row">
+                  <span className="auth-switch-text">ALREADY HAVE AN ACCOUNT?</span>
+                  <button
+                    type="button"
+                    className="auth-switch-btn"
+                    onClick={() => setActiveTab('login')}
+                  >
+                    LOG IN
+                  </button>
+                </div>
               </form>
             )}
-
-            {/* Footer notice */}
-            <div className="login-form-footer">
-              <p>BY PROCEEDING, YOU AGREE TO OUR TERMS OF SERVICE AND PRIVACY POLICY.</p>
-            </div>
-
           </div>
         </div>
 

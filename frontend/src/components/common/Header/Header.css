@@ -78,9 +78,8 @@
 }
 
 .logo-img {
-  width: 30px;
-  height: 30px;
-  transform: rotate(45deg); /* SVG logo is a rotated square */
+  width: 25px;
+  height: 25px;
 }
 
 .header-right {

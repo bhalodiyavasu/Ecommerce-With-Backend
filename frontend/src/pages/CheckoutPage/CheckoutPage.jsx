@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import { getCartItemsWithProducts } from '@/data/mockData';
+import Button from '@/components/common/Button/Button';
 import './CheckoutPage.css';
 
 export default function CheckoutPage() {
@@ -162,12 +163,12 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="checkout-btn-row-custom">
-                  <button type="submit" className="checkout-next-btn-custom">
+                  <Button type="submit" variant="solid" layout="split">
                     <span>Payment</span>
                     <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
@@ -194,16 +195,17 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="checkout-btn-row-custom payment-btn-row-custom">
-                    <button 
+                    <Button
                       type="button" 
-                      className="checkout-next-btn-custom payment-submit-btn-custom"
+                      variant="solid"
+                      layout="split"
                       onClick={handleCompletePayment}
                     >
                       <span>Pay Now</span>
                       <svg width="48" height="16" viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0 8H47M47 8L39 1M47 8L39 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

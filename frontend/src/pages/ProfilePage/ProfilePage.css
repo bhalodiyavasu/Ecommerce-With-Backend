@@ -89,7 +89,11 @@
   border-bottom: none;
 }
 
-.profile-menu-item:hover,
+.profile-menu-item:hover {
+  color: var(--color-black);
+  background-color: var(--color-gray-light);
+}
+
 .profile-menu-item.active {
   color: var(--color-black);
   background-color: var(--color-gray-light);
@@ -98,6 +102,11 @@
 .profile-menu-item.active {
   padding-left: 30px; /* Slight push effect when active */
   font-weight: 800;
+}
+
+.profile-menu-item.active:hover {
+  color: var(--color-black);
+  background-color: var(--color-gray-light);
 }
 
 .logout-menu-btn {
@@ -146,14 +155,21 @@
   font-size: 32px;
   font-weight: 800;
   color: var(--color-black);
-  margin: 0 0 30px 0;
+  margin: 0;
   text-transform: uppercase;
 }
 
+.profile-section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
 .profile-panel-card {
-  background-color: var(--color-white, #ffffff);
-  border: 1px solid var(--color-border-light, #d9d9d9);
-  padding: 40px;
+  background-color: transparent;
+  border: none;
   width: 100%;
 }
 
@@ -166,7 +182,6 @@
 
 .details-header-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   border-bottom: 1.5px solid var(--color-black);
   padding-bottom: 15px;
@@ -181,32 +196,15 @@
   margin: 0;
 }
 
-.edit-details-toggle-btn {
-  background-color: var(--color-black);
-  color: var(--color-white);
-  border: 1px solid var(--color-black);
-  padding: 10px 20px;
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.edit-details-toggle-btn:hover {
-  background-color: transparent;
-  color: var(--color-black);
-}
-
-.edit-details-toggle-btn.save-btn {
+.save-btn {
   background-color: #008a00; /* Green theme accent for save buttons */
   border-color: #008a00;
 }
 
-.edit-details-toggle-btn.save-btn:hover {
-  background-color: transparent;
-  color: #008a00;
+.save-btn:hover {
+  background-color: #008a00;
+  border-color: #008a00;
+  opacity: 0.8;
 }
 
 .details-fields-grid {
@@ -275,7 +273,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 30px;
+  padding: 25px;
   cursor: pointer;
 }
 
@@ -349,6 +347,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-bottom: 24px;
 }
 
 .order-item-detail-row {
@@ -447,24 +446,6 @@
   margin: 0;
 }
 
-.order-receipt-action-btn {
-  background-color: var(--color-black);
-  color: var(--color-white);
-  border: 1px solid var(--color-black);
-  padding: 12px 24px;
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.order-receipt-action-btn:hover {
-  background-color: transparent;
-  color: var(--color-black);
-}
-
 .empty-orders-view {
   padding: 40px;
   text-align: center;
@@ -478,12 +459,6 @@
   color: var(--color-gray-dark);
   letter-spacing: 0.5px;
   margin: 0;
-}
-
-/* Modal dialog custom styling */
-.logout-confirm-dialog {
-  text-align: center;
-  padding: 10px 0;
 }
 
 .dialog-title {
@@ -506,40 +481,19 @@
 .dialog-actions-row {
   display: flex;
   gap: 16px;
-  justify-content: center;
+  justify-content: end;
 }
 
-.dialog-btn {
-  height: 46px;
-  padding: 0 30px;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.dialog-actions-row .app-button {
+  min-width: 128px;
 }
 
-.cancel-btn {
+.dialog-actions-row .app-button--outline {
   background-color: transparent;
-  color: var(--color-black);
-  border: 1px solid var(--color-border-light);
 }
 
-.cancel-btn:hover {
-  border-color: var(--color-black);
-  background-color: var(--color-gray-light);
-}
-
-.confirm-logout-btn {
-  background-color: #c92a2a; /* Urgent action color: red */
-  color: var(--color-white);
-  border: 1px solid #c92a2a;
-}
-
-.confirm-logout-btn:hover {
-  background-color: transparent;
-  color: #c92a2a;
+.dialog-actions-row .app-button--outline:hover {
+  background-color: var(--color-gray-light, #f5f5f5);
 }
 
 @keyframes slideDownContent {
@@ -572,8 +526,9 @@
   .profile-page-container {
     padding: 40px 20px;
   }
-  .profile-panel-card {
-    padding: 24px;
+  .profile-section-header-row {
+    gap: 16px;
+    margin-bottom: 24px;
   }
   .details-fields-grid {
     grid-template-columns: 1fr;
@@ -603,7 +558,7 @@
     flex-direction: column;
     gap: 20px;
   }
-  .order-receipt-action-btn {
+  .receipt-modal-actions-bar .app-button {
     width: 100%;
   }
 }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import { ALL_PRODUCTS } from '@/data/mockData';
 import Modal from '@/components/common/Modal/Modal';
+import Button from '@/components/common/Button/Button';
 import './ProfilePage.css';
 
 // Mock order history populated from ALL_PRODUCTS
@@ -129,32 +130,33 @@ export default function ProfilePage() {
             </span>
           </div>
 
-          <h1 className="profile-section-title">
-            {activeTab === 'details' ? 'ACCOUNT INFO' : 'ORDER HISTORY'}
-          </h1>
+          <div className="profile-section-header-row">
+            <h1 className="profile-section-title">
+              {activeTab === 'details' ? 'ACCOUNT INFO' : 'ORDER HISTORY'}
+            </h1>
+
+            {activeTab === 'details' && (
+              !isEditing ? (
+                <Button
+                  type="button" 
+                  variant="solid"
+                  onClick={() => setIsEditing(true)}
+                >
+                  EDIT DETAILS
+                </Button>
+              ) : (
+                <Button type="submit" form="profile-details-form" variant="solid" className="save-btn">
+                  SAVE DETAILS
+                </Button>
+              )
+            )}
+          </div>
 
           <div className="profile-panel-card">
-            
+
             {/* DETAILS TAB PANEL */}
             {activeTab === 'details' && (
-              <form onSubmit={handleSaveDetails} className="profile-details-form">
-                <div className="details-header-row">
-                  <h3 className="details-sub-title">PERSONAL INFORMATION</h3>
-                  {!isEditing ? (
-                    <button 
-                      type="button" 
-                      className="edit-details-toggle-btn"
-                      onClick={() => setIsEditing(true)}
-                    >
-                      EDIT DETAILS
-                    </button>
-                  ) : (
-                    <button type="submit" className="edit-details-toggle-btn save-btn">
-                      SAVE DETAILS
-                    </button>
-                  )}
-                </div>
-
+              <form onSubmit={handleSaveDetails} id="profile-details-form" className="profile-details-form">
                 <div className="details-fields-grid">
                   <div className="form-input-group-custom">
                     <label className="input-label-custom">First Name</label>
@@ -316,12 +318,12 @@ export default function ProfilePage() {
                               <p className="shipping-address-txt">{order.shippingAddress}</p>
                             </div>
                             <div className="order-actions-summary">
-                              <button 
-                                className="order-receipt-action-btn"
+                              <Button
+                                variant="solid"
                                 onClick={() => showToast('success', 'INVOICE DOWNLOAD STARTED.')}
                               >
                                 DOWNLOAD INVOICE
-                              </button>
+                              </Button>
                             </div>
                           </div>
                         </div>
@@ -339,26 +341,25 @@ export default function ProfilePage() {
 
       {/* LOGOUT CONFIRMATION DIALOG MODAL */}
       {showLogoutModal && (
-        <Modal onClose={() => setShowLogoutModal(false)}>
+        <Modal title="CONFIRM LOGOUT" onClose={() => setShowLogoutModal(false)}>
           <div className="logout-confirm-dialog">
-            <h3 className="dialog-title">CONFIRM LOGOUT</h3>
             <p className="dialog-message">ARE YOU SURE YOU WANT TO LOG OUT OF YOUR ACCOUNT?</p>
             
             <div className="dialog-actions-row">
-              <button 
+              <Button
                 type="button" 
-                className="dialog-btn cancel-btn"
+                variant="outline"
                 onClick={() => setShowLogoutModal(false)}
               >
                 CANCEL
-              </button>
-              <button 
+              </Button>
+              <Button
                 type="button" 
-                className="dialog-btn confirm-logout-btn"
+                variant="destructive"
                 onClick={handleLogout}
               >
                 LOGOUT
-              </button>
+              </Button>
             </div>
           </div>
         </Modal>

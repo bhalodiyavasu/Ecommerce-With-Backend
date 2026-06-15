@@ -277,71 +277,8 @@
   margin-top: 10px;
 }
 
-.action-btn-primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-black);
-  color: var(--color-white);
-  border: none;
-  padding: 16px 10px;
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: opacity 0.2s ease;
+.success-action-buttons .app-button {
   flex: 1;
-  text-align: center;
-}
-
-.action-btn-primary:hover {
-  opacity: 0.8;
-}
-
-.action-btn-secondary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  color: var(--color-black);
-  border: 1px solid var(--color-black);
-  padding: 16px 10px;
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  flex: 1;
-  text-align: center;
-}
-
-.action-btn-secondary:hover {
-  background-color: #f5f5f5;
-}
-
-.action-btn-accent {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-blue-accent, #000e8a);
-  color: var(--color-white, #ffffff);
-  border: none;
-  padding: 16px 10px;
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  flex: 1;
-  text-align: center;
-}
-
-.action-btn-accent:hover {
-  opacity: 0.8;
 }
 
 /* Receipt Modal Styles */
@@ -514,15 +451,8 @@
   margin-top: 25px;
 }
 
-.receipt-action-btn {
-  background-color: var(--color-black);
-  color: var(--color-white);
-  border: none;
-  padding: 12px 24px;
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  cursor: pointer;
+.receipt-modal-actions-bar .app-button {
+  min-width: 180px;
 }
 
 /* Print Specific Overrides to print invoice nicely */
