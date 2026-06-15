@@ -111,6 +111,12 @@ export default function Profile() {
               MY ORDERS
             </button>
             <button 
+              className="profile-menu-item"
+              onClick={() => navigate('/admin')}
+            >
+              ADMIN
+            </button>
+            <button 
               className="profile-menu-item logout-menu-btn"
               onClick={() => setShowLogoutModal(true)}
             >

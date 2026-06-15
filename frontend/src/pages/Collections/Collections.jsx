@@ -102,7 +102,19 @@ export default function Collections() {
       selectedStatuses
     } = filterData;
 
-    let result = [...ALL_PRODUCTS];
+    const localProducts = JSON.parse(localStorage.getItem('xiv_custom_products') || '[]');
+    const deletedIds = JSON.parse(localStorage.getItem('xiv_deleted_products') || '[]');
+
+    const combined = [...localProducts];
+    ALL_PRODUCTS.forEach(p => {
+      const isOverridden = localProducts.some(lp => lp.id === p.id);
+      const isDeleted = deletedIds.includes(p.id);
+      if (!isOverridden && !isDeleted) {
+        combined.push(p);
+      }
+    });
+
+    let result = combined;
 
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
