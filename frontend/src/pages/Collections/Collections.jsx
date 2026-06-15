@@ -159,7 +159,7 @@ export default function Collections() {
   }, [filterData]);
 
   // Extract filter option blocks to reuse between inline sidebar and mobile Drawer
-  const filterOptionsContent = (
+  const renderFilterOptions = (isMobile) => (
     <>
       {/* Gender Accordion */}
       <div className="filter-section">
@@ -238,7 +238,7 @@ export default function Collections() {
               <label key={opt.id} className="radio-container">
                 <input 
                   type="radio" 
-                  name="sortBy" 
+                  name={isMobile ? "sortBy-mobile" : "sortBy-desktop"} 
                   checked={filterData.sortBy === opt.id} 
                   onChange={() => setFilterData(prev => ({ ...prev, sortBy: opt.id }))} 
                 />
@@ -339,7 +339,7 @@ export default function Collections() {
           <span className="breadcrumb-separator">/</span>
           <span className="breadcrumb-current">COLLECTIONS</span>
         </div>
-        {filterOptionsContent}
+        {renderFilterOptions(true)}
       </Drawer>
 
       {/* Sidebar Filter Panel (Desktop only, hidden on mobile via CSS) */}
@@ -352,7 +352,7 @@ export default function Collections() {
 
         <h1 className="sidebar-title">COLLECTIONS</h1>
 
-        {filterOptionsContent}
+        {renderFilterOptions(false)}
       </aside>
 
       {/* Main Grid Area */}

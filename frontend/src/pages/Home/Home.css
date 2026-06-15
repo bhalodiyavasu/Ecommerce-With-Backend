@@ -1,0 +1,631 @@
+/* ==========================================================================
+   1. HERO SECTION STYLES
+   ========================================================================== */
+.hero-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 80px 50px;
+  gap: 40px;
+  width: 100%;
+}
+
+.hero-content {
+  flex: 0 0 367px;
+  height: 375px; /* Aligns height exactly with the images */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hero-new-title {
+  font-family: var(--font-primary);
+  font-size: 64px; /* Matches 75px height scale */
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-black);
+  margin: 0;
+  line-height: 0.95;
+  letter-spacing: -1.5px;
+}
+
+.hero-suits-title {
+  font-family: var(--font-primary);
+  font-size: 36px; /* Matches 36px height scale */
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-black);
+  margin: 18px 0 0 0;
+  line-height: 1;
+  letter-spacing: 0.3px;
+}
+
+.hero-bottom-controls {
+  margin-top: auto; /* Pushes the button to y=722 bottom alignment */
+  display: flex;
+  align-items: center;
+  gap: 40px; /* Space between SHOP NOW button and Left Arrow */
+}
+
+.hero-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 265px;
+  height: 50px;
+  background-color: var(--color-gray-light); /* Matching D9D9D9 rect in SVG */
+  color: var(--color-black);
+  text-decoration: none;
+  padding: 0 16px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: none;
+  border-radius: 0; /* NO BORDER RADIUS */
+  transition: opacity 0.2s ease;
+}
+
+.hero-btn svg {
+  margin-left: 8px;
+}
+
+.hero-btn:hover {
+  opacity: 0.8;
+}
+
+.hero-images {
+  display: flex;
+  gap: 42px; /* Spacing between left/right images */
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.hero-img-wrapper {
+  width: 365px;
+  height: 375px;
+  background-color: var(--color-gray-light);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--color-border-light);
+  border-radius: 0; /* NO BORDER RADIUS */
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.hero-img-wrapper:hover {
+  transform: scale(1.02);
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive adjustment */
+@media (max-width: 1100px) {
+  .hero-section {
+    flex-direction: column;
+    padding: 40px 20px;
+    gap: 40px;
+  }
+  .hero-content {
+    flex: 1;
+    width: 100%;
+    height: auto;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-bottom-controls {
+    margin-top: 30px;
+    align-self: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .hero-images {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .hero-img-wrapper {
+    width: calc(50% - 10px);
+    height: auto;
+    aspect-ratio: 365 / 375;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-img-wrapper {
+    width: 100%;
+  }
+  .hero-new-title {
+    font-size: 48px;
+  }
+}
+
+
+/* ==========================================================================
+   2. PRODUCT CAROUSEL SECTION STYLES
+   ========================================================================== */
+.carousel-section {
+  padding: 80px 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.carousel-nav {
+  display: flex;
+  gap: 5px; /* Gap between Left and Right Arrow */
+}
+
+.carousel-nav-btn {
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--color-border-light);
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 0; /* NO BORDER RADIUS */
+  transition: all 0.2s ease;
+}
+
+.carousel-nav-btn img {
+  width: 8px;
+  height: 14px;
+}
+
+.carousel-nav-btn:hover {
+  background-color: var(--color-black);
+  border-color: var(--color-gray-dark);
+}
+
+.carousel-nav-btn:hover img {
+  filter: invert(1);
+}
+
+/* Carousel container & cards */
+.carousel-container {
+  display: flex;
+  gap: 27px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 15px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.carousel-container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.product-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.product-card {
+  flex: 0 0 303px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: left;
+}
+
+.product-img-container {
+  width: 303px;
+  height: 312px;
+  background-color: var(--color-gray-light);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border-light); /* Sharp border matching other cards */
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.04);
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gray-dark);
+  letter-spacing: 0.3px;
+}
+
+.product-price {
+  font-size: 14px;
+  color: var(--color-black);
+  font-weight: 700;
+}
+
+.product-name {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--color-black);
+  line-height: 1.3;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+  .carousel-section {
+    padding: 40px 20px;
+  }
+  .product-card {
+    flex: 0 0 260px;
+  }
+  .product-img-container {
+    width: 260px;
+    height: 270px;
+  }
+}
+
+@media (max-width: 550px) {
+  .carousel-container {
+    gap: 14px;
+  }
+  .product-card {
+    flex: 0 0 calc(50% - 7px);
+  }
+  .product-img-container {
+    width: 100%;
+    height: 172px;
+  }
+}
+
+
+/* ==========================================================================
+   3. COLLECTIONS SECTION STYLES
+   ========================================================================== */
+.collections-section {
+  padding: 80px 50px;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+
+.collections-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.collections-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-light);
+  margin-bottom: 40px;
+}
+
+.filter-group {
+  display: flex;
+  gap: 32px;
+}
+
+.filter-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-gray-dark);
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.filter-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-black);
+  transition: width 0.2s ease;
+}
+
+.filter-btn:hover {
+  color: var(--color-black);
+}
+
+.filter-btn.active {
+  color: var(--color-black);
+  padding-bottom: 10px;
+}
+
+.filter-btn.active::after {
+  width: 100%;
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-black);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.control-btn:hover {
+  opacity: 0.7;
+}
+
+.control-icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* 3-column grid */
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 42px;
+  row-gap: 50px;
+}
+
+.grid-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: left;
+}
+
+.grid-img-container {
+  height: 375px;
+  background-color: var(--color-gray-light);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border-light); /* Sharp border matching other cards */
+}
+
+.grid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.grid-card:hover .grid-img {
+  transform: scale(1.03);
+}
+
+.grid-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grid-category {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gray-dark);
+  letter-spacing: 0.3px;
+}
+
+.grid-name {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--color-black);
+  text-transform: uppercase;
+}
+
+.grid-price {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-black);
+}
+
+/* Responsive adjustment */
+@media (max-width: 900px) {
+  .collections-section {
+    padding: 40px 20px;
+  }
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .grid-img-container {
+    height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .collections-grid {
+    grid-template-columns: 1fr;
+  }
+  .collections-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .grid-add-btn {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* ==========================================================================
+   4. APPROACH SECTION STYLES
+   ========================================================================== */
+.approach-section {
+  padding: 80px 50px;
+  background: transparent;
+}
+
+.approach-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.approach-section .section-title {
+  margin-bottom: 40px;
+  line-height: 1.2;
+}
+
+.approach-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+.approach-paragraph {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--color-dark);
+  font-weight: 400;
+}
+
+@media (max-width: 900px) {
+  .approach-section {
+    padding: 40px 20px;
+  }
+  .approach-section .section-title {
+    margin-bottom: 30px;
+  }
+  .approach-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .approach-paragraph {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+}
+
+
+/* ==========================================================================
+   5. AESTHETIC GRID SECTION STYLES
+   ========================================================================== */
+.aesthetic-section {
+  padding: 80px 50px;
+  background: transparent;
+}
+
+.aesthetic-grid {
+  display: flex;
+  gap: 37px;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.aesthetic-col {
+  width: 316px;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.col-1 {
+  height: 388px;
+  margin-top: 0px;
+}
+
+.col-2 {
+  height: 418px;
+  margin-top: 73px;
+}
+
+.col-3 {
+  height: 418px;
+  margin-top: 0px;
+}
+
+.col-4 {
+  height: 388px;
+  margin-top: 103px;
+}
+
+.aesthetic-col:hover {
+  transform: translateY(-8px);
+}
+
+.aesthetic-img-wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-gray-light);
+  overflow: hidden;
+}
+
+.aesthetic-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(20%) contrast(102%);
+  transition: transform 0.5s ease;
+}
+
+.aesthetic-col:hover .aesthetic-img {
+  transform: scale(1.03);
+}
+
+@media (max-width: 1100px) {
+  .aesthetic-section {
+    padding: 40px 20px;
+  }
+  .aesthetic-grid {
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .aesthetic-col {
+    width: calc(50% - 10px);
+    margin-top: 0 !important; /* Remove offset on small screens */
+    height: auto !important;
+    aspect-ratio: 316 / 388;
+  }
+  .col-2, .col-3 {
+    aspect-ratio: 316 / 418;
+  }
+}
+
+@media (max-width: 600px) {
+  .aesthetic-col {
+    width: 100%;
+  }
+}
