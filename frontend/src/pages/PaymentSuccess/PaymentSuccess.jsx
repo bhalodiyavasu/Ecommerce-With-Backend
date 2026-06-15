@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { DEFAULT_ORDER_DATA } from '@/data/mockData';
 import Button from '@/components/common/Button/Button';
-import './PaymentSuccessPage.css';
+import './PaymentSuccess.css';
 
-export default function PaymentSuccessPage() {
+export default function PaymentSuccess() {
   const location = useLocation();
   const [showReceiptModal, setShowReceiptModal] = useState(false);
 

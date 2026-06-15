@@ -11,7 +11,7 @@ export default function Hero() {
         <h2 className="hero-new-title">NEW COLLECTION</h2>
         
         <div className="hero-bottom-controls">
-          <Link to="/#collections" className="hero-btn">
+          <Link to="/collections" className="hero-btn">
             <span>SHOP NOW</span>
             <svg width="48" height="12" viewBox="0 0 48 12" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 6H47.5M41.5 12L47.5 6L41.5 0" stroke="black" strokeWidth="1.5" />

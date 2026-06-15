@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import { getCartItemsWithProducts } from '@/data/mockData';
 import Button from '@/components/common/Button/Button';
-import './CheckoutPage.css';
+import './Checkout.css';
 
-export default function CheckoutPage() {
+export default function Checkout() {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
@@ -75,7 +75,7 @@ export default function CheckoutPage() {
     <div className="checkout-page-container">
       {/* Back Navigation Arrow */}
       <div className="checkout-back-nav">
-        <Link to="/cart" className="back-arrow-link-custom" aria-label="Back to bag">
+        <Link to="/cart" className="back-arrow-link-custom" aria-label="Back to cart">
           <svg width="48" height="16" viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M48 8H1M1 8L9 1M1 8L9 15" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
@@ -86,7 +86,7 @@ export default function CheckoutPage() {
 
       {cartItems.length === 0 ? (
         <div className="checkout-empty-view">
-          <h2 className="checkout-empty-message">NO ITEMS IN BAG TO CHECKOUT.</h2>
+          <h2 className="checkout-empty-message">NO ITEMS IN CART TO CHECKOUT.</h2>
           <Link to="/collections" className="checkout-empty-action">
             GO TO COLLECTIONS
           </Link>

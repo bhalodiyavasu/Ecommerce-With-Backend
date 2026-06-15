@@ -4,9 +4,9 @@ import { useToast } from '@/contexts/ToastContext';
 import Button from '@/components/common/Button/Button';
 import modelImg from '@/assets/extracted/image1_2_63.jpg';
 import logoIcon from '@/assets/icons/logo.svg';
-import './LoginPage.css';
+import './Login.css';
 
-export default function LoginPage() {
+export default function Login() {
   const navigate = useNavigate();
   const { showToast } = useToast();
 

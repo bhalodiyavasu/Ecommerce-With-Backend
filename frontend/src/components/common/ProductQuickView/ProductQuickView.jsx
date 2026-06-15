@@ -17,7 +17,7 @@ export default function ProductQuickView({ product, onClose }) {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      showToast('warning', 'PLEASE SELECT A SIZE BEFORE ADDING TO BAG.');
+      showToast('warning', 'PLEASE SELECT A SIZE BEFORE ADDING TO CART.');
       return;
     }
     showToast('success', 'PRODUCT ADDED TO CART');

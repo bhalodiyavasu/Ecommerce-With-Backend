@@ -4,7 +4,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { ALL_PRODUCTS } from '@/data/mockData';
 import Modal from '@/components/common/Modal/Modal';
 import Button from '@/components/common/Button/Button';
-import './ProfilePage.css';
+import './Profile.css';
 
 // Mock order history populated from ALL_PRODUCTS
 const MOCK_ORDERS = [
@@ -31,7 +31,7 @@ const MOCK_ORDERS = [
   }
 ];
 
-export default function ProfilePage() {
+export default function Profile() {
   const navigate = useNavigate();
   const { showToast } = useToast();
 

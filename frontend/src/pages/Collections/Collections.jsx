@@ -3,7 +3,7 @@ import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickV
 import { ALL_PRODUCTS, FILTER_SIZES, FILTER_COLORS } from '@/data/mockData';
 import searchIcon from '@/assets/icons/search.svg';
 import { Link } from 'react-router-dom';
-import './CollectionsPage.css';
+import './Collections.css';
 
 const GENDER_OPTIONS = [
   { id: 'men', label: 'MAN' },
@@ -23,7 +23,7 @@ const STATUS_OPTIONS = [
 
 const RATING_OPTIONS = [5, 4, 3];
 
-export default function CollectionsPage() {
+export default function Collections() {
   // ─── Filter States (Consolidated into single state object) ────
   const [filterData, setFilterData] = useState({
     searchQuery: '',

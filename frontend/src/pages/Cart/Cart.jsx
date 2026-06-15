@@ -4,9 +4,9 @@ import { getCartItemsWithProducts } from '@/data/mockData';
 import Button from '@/components/common/Button/Button';
 import minusIcon from '@/assets/icons/minus.svg';
 import plusIcon from '@/assets/icons/plus.svg';
-import './CartPage.css';
+import './Cart.css';
 
-export default function CartPage() {
+export default function Cart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState(getCartItemsWithProducts);
 
@@ -40,17 +40,17 @@ export default function CartPage() {
       <div className="breadcrumb">
         <Link to="/" className="breadcrumb-link">HOME</Link>
         <span className="breadcrumb-separator">/</span>
-        <span className="breadcrumb-current">BAG</span>
+        <span className="breadcrumb-current">CART</span>
       </div>
 
       <h1 className="cart-page-title">
-        BAG <span className="cart-page-count">({cartCount})</span>
+        CART <span className="cart-page-count">({cartCount})</span>
       </h1>
 
       <div className="cart-layout">
         {cartItems.length === 0 ? (
           <div className="empty-cart-view">
-            <h2 className="empty-cart-message">YOUR BAG IS CURRENTLY EMPTY.</h2>
+            <h2 className="empty-cart-message">YOUR CART IS CURRENTLY EMPTY.</h2>
             <p className="empty-cart-desc">Add items from our collections to get started.</p>
             <Button variant="outline" to="/collections">
               CONTINUE SHOPPING

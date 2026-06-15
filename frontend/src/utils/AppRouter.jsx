@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Header from '@/components/common/Header/Header';
 import Footer from '@/components/common/Footer/Footer';
-import HomePage from '@/pages/HomePage/HomePage';
-import CollectionsPage from '@/pages/CollectionsPage/CollectionsPage';
-import CartPage from '@/pages/CartPage/CartPage';
-import CheckoutPage from '@/pages/CheckoutPage/CheckoutPage';
-import PaymentSuccessPage from '@/pages/PaymentSuccessPage/PaymentSuccessPage';
-import LoginPage from '@/pages/LoginPage/LoginPage';
-import ProfilePage from '@/pages/ProfilePage/ProfilePage';
+import Home from '@/pages/Home/Home';
+import Collections from '@/pages/Collections/Collections';
+import Cart from '@/pages/Cart/Cart';
+import Checkout from '@/pages/Checkout/Checkout';
+import PaymentSuccess from '@/pages/PaymentSuccess/PaymentSuccess';
+import Login from '@/pages/Login/Login';
+import Profile from '@/pages/Profile/Profile';
 
 function ScrollToHashElement() {
   const { hash, pathname } = useLocation();
@@ -46,13 +46,13 @@ export default function AppRouter() {
       <ScrollToHashElement />
       <AppLayout>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/collections" element={<CollectionsPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/payment-success" element={<PaymentSuccessPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/collections" element={<Collections />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
