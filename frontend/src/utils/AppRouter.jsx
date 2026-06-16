@@ -7,7 +7,7 @@ import Collections from '@/pages/Collections/Collections';
 import Cart from '@/pages/Cart/Cart';
 import Checkout from '@/pages/Checkout/Checkout';
 import PaymentSuccess from '@/pages/PaymentSuccess/PaymentSuccess';
-import Login from '@/pages/Login/Login';
+import Auth from '@/pages/Auth/Auth';
 import Profile from '@/pages/Profile/Profile';
 import Admin from '@/pages/Admin/Admin';
 import NotFound from '@/pages/NotFound/NotFound';
@@ -31,7 +31,7 @@ function ScrollToHashElement() {
 
 function AppLayout({ children }) {
   const location = useLocation();
-  const isMinimal = location.pathname === '/checkout' || location.pathname === '/payment-success' || location.pathname === '/login' || location.pathname === '/admin';
+  const isMinimal = location.pathname === '/checkout' || location.pathname === '/payment-success' || location.pathname === '/auth' || location.pathname === '/admin';
 
   return (
     <div className="app-wrapper">
@@ -53,7 +53,7 @@ export default function AppRouter() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />

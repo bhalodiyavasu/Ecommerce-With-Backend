@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
+import { useRegisterMutation } from '@/store/actions/authActions';
 import Button from '@/components/common/Button/Button';
-import modelImg from '@/assets/extracted/image1_2_63.jpg';
+import modelImg from '@/assets/extracted/authImage.png';
 import logoIcon from '@/assets/icons/logo.svg';
-import './Login.css';
+import './Auth.css';
 
-export default function Login() {
+export default function Auth() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [registerUser, { isLoading: registerLoading }] = useRegisterMutation();
 
   const [activeTab, setActiveTab] = useState('login');
   
@@ -22,8 +25,7 @@ export default function Login() {
   const [signupData, setSignupData] = useState({
     username: '',
     email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
 
   const handleLoginChange = (e) => {
@@ -48,19 +50,23 @@ export default function Login() {
     }
   };
 
-  const handleSignupSubmit = (e) => {
+  const handleSignupSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await registerUser({
+        username: signupData.username,
+        email: signupData.email,
+        password: signupData.password
+      }).unwrap();
 
-    if (signupData.password !== signupData.confirmPassword) {
-      showToast('warning', 'PASSWORDS DO NOT MATCH.');
-      return;
+      showToast('success', 'ACCOUNT CREATED SUCCESSFULLY! PLEASE LOG IN.');
+      // Switch to login tab and prefill email
+      setLoginData({ email: signupData.email, password: '' });
+      setActiveTab('login');
+      setSignupData({ username: '', email: '', password: '' });
+    } catch (error) {
+      showToast('error', error.data?.message || error.message || 'Registration failed.');
     }
-
-    showToast('success', 'ACCOUNT CREATED SUCCESSFULLY! PLEASE LOG IN.');
-    // Switch to login tab and prefill email
-    setLoginData({ email: signupData.email, password: '' });
-    setActiveTab('login');
-    setSignupData({ username: '', email: '', password: '', confirmPassword: '' });
   };
 
   return (
@@ -118,8 +124,8 @@ export default function Login() {
                   </span>
                 </div>
 
-                <Button type="submit" variant="solid" fullWidth layout="split">
-                  <span>Sign In</span>
+                <Button type="submit" variant="solid" fullWidth layout="split" disabled={loading}>
+                  <span>{loading ? 'Signing In...' : 'Sign In'}</span>
                   <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
@@ -138,7 +144,7 @@ export default function Login() {
               </form>
             ) : (
               <form onSubmit={handleSignupSubmit} className="login-form-block animate-fade-in">
-                <h2 className="form-action-title">JOIN ETERNIX</h2>
+                <h2 className="form-action-title">SIGN UP</h2>
                 <p className="form-action-subtitle">Create an account to track orders and save details.</p>
 
                 <div className="login-input-group">
@@ -174,19 +180,8 @@ export default function Login() {
                   />
                 </div>
 
-                <div className="login-input-group">
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={signupData.confirmPassword}
-                    onChange={handleSignupChange}
-                    placeholder="Confirm Password"
-                    required
-                  />
-                </div>
-
-                <Button type="submit" variant="solid" fullWidth layout="split">
-                  <span>Create Account</span>
+                <Button type="submit" variant="solid" fullWidth layout="split" disabled={registerLoading}>
+                  <span>{registerLoading ? 'Creating Account...' : 'Create Account'}</span>
                   <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>

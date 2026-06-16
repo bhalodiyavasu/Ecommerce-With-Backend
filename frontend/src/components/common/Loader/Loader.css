@@ -1,0 +1,107 @@
+/* 30x30px Square Rotating Loader */
+.square-spinner {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+/* Static background border track */
+.spinner-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 5px solid var(--color-border-light, #d9d9d9);
+  box-sizing: border-box;
+}
+
+/* Rotating highlight wrapper */
+.spinner-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Rotating gradient element (Black color theme) */
+.spinner-highlight::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent 0%,
+    #000000 6%,
+    #000000 35%,
+    transparent 41%,
+    transparent 100%
+  );
+  animation: square-spin-rotate 1.5s linear infinite;
+  box-sizing: border-box;
+}
+
+/* Inner mask to hide the center, exposing only the 5px border */
+.spinner-highlight::after {
+  content: '';
+  position: absolute;
+  top: 5px; /* Matches the 5px border thickness */
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  background-color: var(--color-white, #ffffff); /* Mask matches the page background */
+  box-sizing: border-box;
+}
+
+@keyframes square-spin-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loadable Content Overlay */
+.loadable-content-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-white, #ffffff); /* Blank screen background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Overlay on top of everything */
+}
+
+/* Noise texture overlay */
+.loadable-content-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../../assets/noise.svg');
+  background-repeat: repeat;
+  background-size: 1299px 832px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1; /* Display above the white background */
+}
+
+/* Ensure the spinner is on top of the noise */
+.loadable-content-overlay > .square-spinner {
+  position: relative;
+  z-index: 2;
+}

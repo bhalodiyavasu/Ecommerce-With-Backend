@@ -18,7 +18,7 @@ export default function Header() {
     if (session) {
       navigate('/profile');
     } else {
-      navigate('/login');
+      navigate('/auth');
     }
   };
 

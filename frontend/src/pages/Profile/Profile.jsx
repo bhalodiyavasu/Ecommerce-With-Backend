@@ -70,7 +70,7 @@ export default function Profile() {
     // Clear mock session
     localStorage.removeItem('nix_user_session');
     showToast('success', 'LOGGED OUT SUCCESSFULLY.');
-    navigate('/login');
+    navigate('/auth');
   };
 
   const toggleOrderExpand = (orderId) => {
