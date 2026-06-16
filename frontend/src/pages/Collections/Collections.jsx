@@ -334,7 +334,7 @@ export default function Collections() {
         position="left"
         className="collections-mobile-drawer"
       >
-        <div className="breadcrumb" style={{ marginBottom: '25px', display: 'flex' }}>
+        <div className="breadcrumb">
           <Link to="/" className="breadcrumb-link" onClick={() => setIsMobileFilterOpen(false)}>HOME</Link>
           <span className="breadcrumb-separator">/</span>
           <span className="breadcrumb-current">COLLECTIONS</span>
@@ -436,7 +436,6 @@ export default function Collections() {
                 className="collections-card-link" 
                 key={product.id} 
                 onClick={() => setQuickViewProduct(product)}
-                style={{ cursor: 'pointer' }}
               >
                 <div className="collections-card">
                   <div className="card-image-wrapper">

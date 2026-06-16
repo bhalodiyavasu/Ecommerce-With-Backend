@@ -467,6 +467,7 @@
 .receipt-table td small {
   display: block;
   margin-top: 4px;
+  color: #666;
 }
 
 .receipt-table th:nth-child(2),

@@ -53,12 +53,6 @@ export default function Textarea({
         disabled={disabled}
         rows={rows}
         className="form-textarea-custom"
-        style={{
-          resize: 'none',
-          overflowY: 'hidden',
-          lineHeight: '1.5',
-          boxSizing: 'border-box'
-        }}
       />
     </div>
   );

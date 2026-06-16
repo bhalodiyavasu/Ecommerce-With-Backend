@@ -14,7 +14,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleProfileClick = () => {
-    const session = localStorage.getItem('nix_user_session');
+    const session = localStorage.getItem('userToken');
     if (session) {
       navigate('/profile');
     } else {
@@ -54,7 +54,7 @@ export default function Header() {
         </div>
 
         <div className="header-right">
-          <Link to="/cart" className="cart-badge-group" style={{ textDecoration: 'none' }}>
+          <Link to="/cart" className="cart-badge-group">
             <div className="circular-btn cart-btn" aria-label="Cart">
               <img src={cartIcon} alt="" className="dark-icon" />
             </div>

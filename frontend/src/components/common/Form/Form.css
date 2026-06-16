@@ -219,7 +219,9 @@
   box-sizing: border-box;
   transition: all 0.2s ease;
   border-radius: 0;
-  resize: vertical;
+  resize: none;
+  overflow-y: hidden;
+  line-height: 1.5;
 }
 
 .form-textarea-custom::placeholder {
@@ -367,4 +369,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.hidden-file-input {
+  display: none;
 }

@@ -119,6 +119,7 @@
 .cart-badge-group {
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .cart-badge-pill {

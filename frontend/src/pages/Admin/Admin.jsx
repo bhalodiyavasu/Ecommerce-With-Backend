@@ -134,7 +134,7 @@ export default function Admin() {
 
       <div className="admin-content-area">
         {/* Form & Sidebar Preview Side-by-Side Layout */}
-        <div className="admin-form-with-preview-layout" style={{ marginBottom: '60px' }}>
+        <div className="admin-form-with-preview-layout">
           <form onSubmit={handleSubmit} className="admin-form-transparent">
             <div className="form-row-custom">
               <Input
@@ -326,7 +326,7 @@ export default function Admin() {
         </div>
 
         {/* Dummy Inventory Table */}
-        <div className="admin-tabs-wrapper" style={{ marginTop: '50px', marginBottom: '25px' }}>
+        <div className="admin-tabs-wrapper admin-inventory-tabs">
           <div className="admin-tabs-left">
             <button className="admin-tab-btn active">
               PRODUCT INVENTORY
@@ -338,11 +338,11 @@ export default function Admin() {
           <table className="admin-inventory-table">
             <thead>
               <tr>
-                <th style={{ width: '80px' }}>IMAGE</th>
+                <th className="col-image-header">IMAGE</th>
                 <th>PRODUCT</th>
                 <th>SPECS &amp; CATEGORY</th>
                 <th>GENDER</th>
-                <th style={{ width: '120px', textAlign: 'right' }}>ACTIONS</th>
+                <th className="col-actions-header">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -390,12 +390,12 @@ export default function Admin() {
                       {p.gender === 'men' ? 'MAN' : p.gender === 'women' ? 'WOMAN' : 'KIDS'}
                     </span>
                   </td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td className="cell-align-right">
                     <div className="inventory-actions-row">
-                      <button className="inventory-edit-btn" style={{ opacity: 0.5, cursor: 'default' }}>
+                      <button className="inventory-edit-btn btn-disabled-style">
                         EDIT
                       </button>
-                      <button className="inventory-delete-btn" style={{ opacity: 0.5, cursor: 'default' }}>
+                      <button className="inventory-delete-btn btn-disabled-style">
                         DELETE
                       </button>
                     </div>

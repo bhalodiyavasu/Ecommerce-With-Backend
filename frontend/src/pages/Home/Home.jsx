@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickView';
 import { ALL_PRODUCTS } from '@/data/mockData';
 
@@ -125,13 +125,16 @@ export default function Home() {
     }
   };
 
+  const location = useLocation();
+  const justLoggedIn = location.state?.justLoggedIn;
+
   // Filter collections calculation
   const filteredCollectionsProducts = activeFilter === 'all' 
     ? COLLECTIONS_PRODUCTS 
     : COLLECTIONS_PRODUCTS.filter(p => p.gender === activeFilter);
 
   return (
-    <>
+    <div className={justLoggedIn ? 'home-slide-in-up' : ''}>
       {/* 1. Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
@@ -179,7 +182,6 @@ export default function Home() {
               className="product-card-link" 
               key={prod.id}
               onClick={() => setQuickViewProductId(prod.id)}
-              style={{ cursor: 'pointer' }}
             >
               <div className="product-card">
                 <div className="product-img-container">
@@ -300,6 +302,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

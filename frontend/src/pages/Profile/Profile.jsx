@@ -68,7 +68,7 @@ export default function Profile() {
   const handleLogout = () => {
     setShowLogoutModal(false);
     // Clear mock session
-    localStorage.removeItem('nix_user_session');
+    localStorage.removeItem('userToken');
     showToast('success', 'LOGGED OUT SUCCESSFULLY.');
     navigate('/auth');
   };

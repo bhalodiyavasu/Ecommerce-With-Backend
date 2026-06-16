@@ -36,7 +36,7 @@ export default function FileUpload({
           ref={fileInputRef}
           onChange={handleFileChange}
           accept="image/*"
-          style={{ display: 'none' }}
+          className="hidden-file-input"
         />
         {previewUrl && (
           <div className="custom-file-preview-mini">

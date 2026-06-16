@@ -180,7 +180,7 @@ export default function PaymentSuccess() {
                 <tr key={idx}>
                   <td>
                     <div>{item.product.name}</div>
-                    <small style={{ color: '#666' }}>SIZE: {item.size} / COLOR: {item.color}</small>
+                    <small>SIZE: {item.size} / COLOR: {item.color}</small>
                   </td>
                   <td>{item.quantity}</td>
                   <td>${item.product.price}</td>

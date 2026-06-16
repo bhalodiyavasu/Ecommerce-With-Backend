@@ -1,3 +1,19 @@
+.home-slide-in-up {
+  animation: slideInUp 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* ==========================================================================
    1. HERO SECTION STYLES
    ========================================================================== */
@@ -214,6 +230,7 @@
   text-decoration: none;
   color: inherit;
   display: block;
+  cursor: pointer;
 }
 
 .product-card {

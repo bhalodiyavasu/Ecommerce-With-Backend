@@ -475,6 +475,12 @@
   text-decoration: none;
   color: inherit;
   display: block;
+  cursor: pointer;
+}
+
+.collections-mobile-drawer .breadcrumb {
+  margin-bottom: 25px;
+  display: flex;
 }
 
 /* Card Design styling matching Collections & ProductCarousel style */

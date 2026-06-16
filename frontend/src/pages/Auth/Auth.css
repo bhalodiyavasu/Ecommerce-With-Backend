@@ -32,7 +32,7 @@
   height: 100%;
   object-fit: cover;
   opacity: 0.85;
-  filter: contrast(1.1) grayscale(85%);
+  filter: contrast(1.1) grayscale(100%);
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -144,7 +144,7 @@
 
 .login-input-group input {
   width: 100%;
-  height: 52px;
+  height: 40px;
   border: none;
   border-bottom: 1px solid var(--color-border-light, #d9d9d9);
   padding: 10px;
@@ -191,19 +191,6 @@
 
 .forgot-lnk:hover {
   color: var(--color-black, #000000);
-}
-
-/* Submit Action Button */
-.login-form-block .app-button {
-  margin-top: 10px;
-}
-
-.login-form-block .app-button svg {
-  transition: transform 0.3s ease;
-}
-
-.login-form-block .app-button:hover svg {
-  transform: translateX(6px);
 }
 
 /* Auth switch row */
@@ -343,4 +330,58 @@
   .auth-switch-row {
     gap: 8px;
   }
+}
+
+.auth-form-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+  max-width: 440px;
+  width: 100%;
+  gap: 16px;
+}
+
+.auth-loader-text {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-gray-dark, #555555);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.hidden-autofill-bypass {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+}
+
+.password-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.password-input-field {
+  text-transform: none !important;
+}
+
+.password-toggle-btn {
+  width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0;
+}
+
+.password-toggle-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
 }

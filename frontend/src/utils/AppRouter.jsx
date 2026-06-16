@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from '@/components/common/Header/Header';
 import Footer from '@/components/common/Footer/Footer';
 import Home from '@/pages/Home/Home';
@@ -11,6 +11,25 @@ import Auth from '@/pages/Auth/Auth';
 import Profile from '@/pages/Profile/Profile';
 import Admin from '@/pages/Admin/Admin';
 import NotFound from '@/pages/NotFound/NotFound';
+import Loader from '@/components/common/Loader/Loader';
+
+// Wrapper for routes that require authentication
+function ProtectedRoute({ children }) {
+  const session = localStorage.getItem('userToken');
+  if (!session) {
+    return <Navigate to="/auth" replace />;
+  }
+  return children;
+}
+
+// Wrapper for routes that should ONLY be accessible when logged out (e.g. Auth page)
+function PublicOnlyRoute({ children }) {
+  const session = localStorage.getItem('userToken');
+  if (session) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
 
 function ScrollToHashElement() {
   const { hash, pathname } = useLocation();
@@ -48,15 +67,81 @@ export default function AppRouter() {
       <ScrollToHashElement />
       <AppLayout>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/collections" element={<Collections />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="*" element={<NotFound />} />
+          {/* Public-only route (Auth) */}
+          <Route 
+            path="/auth" 
+            element={
+              <PublicOnlyRoute>
+                <Auth />
+              </PublicOnlyRoute>
+            } 
+          />
+
+          {/* Protected routes */}
+          <Route 
+            path="/" 
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/collections" 
+            element={
+              <ProtectedRoute>
+                <Collections />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/cart" 
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/checkout" 
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/payment-success" 
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="*" 
+            element={
+              <ProtectedRoute>
+                <NotFound />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </AppLayout>
     </BrowserRouter>
