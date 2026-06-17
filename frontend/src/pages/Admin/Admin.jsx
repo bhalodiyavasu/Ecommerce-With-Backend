@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Image } from 'lucide-react';
 import Input from '@/components/common/Form/Input';
 import Select from '@/components/common/Form/Select';
-import Radio from '@/components/common/Form/Radio';
+import Checkbox from '@/components/common/Form/Checkbox';
 import Textarea from '@/components/common/Form/Textarea';
 import FileUpload from '@/components/common/Form/FileUpload';
 import Button from '@/components/common/Button/Button';
@@ -67,7 +67,7 @@ export default function Admin() {
     description: 'TAILORED DOUBLE-BREASTED OVERCOAT CRAFTED FROM A PREMIUM WOOL BLEND. FEATURES STRUCTURED SHOULDERS, NOTCHED LAPELS, AND A BACK VENT FOR EASE OF MOVEMENT.',
     status: 'NEW',
     image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=600&auto=format&fit=crop',
-    selectedSize: 'L',
+    sizes: ['S', 'M', 'L', 'XL'],
     colorsList: [
       { name: 'CHARCOAL', hex: '#363636' },
       { name: 'CAMEL', hex: '#c19a6b' }
@@ -95,6 +95,16 @@ export default function Admin() {
       ...prev,
       colorsList: prev.colorsList.filter(c => c.name !== colorName)
     }));
+  };
+
+  const handleSizeToggle = (size) => {
+    setProductData(prev => {
+      const currentSizes = prev.sizes || [];
+      const updatedSizes = currentSizes.includes(size)
+        ? currentSizes.filter(s => s !== size)
+        : [...currentSizes, size];
+      return { ...prev, sizes: updatedSizes };
+    });
   };
 
   const CATEGORY_OPTIONS = [
@@ -248,18 +258,17 @@ export default function Admin() {
               placeholder="Describe the product material, fit details..."
             />
 
-            {/* Radio buttons for size selection */}
+            {/* Checkboxes for size selection */}
             <div className="admin-form-group">
-              <span className="input-label-custom">SELECT SIZE</span>
-              <div className="radio-buttons-grid">
+              <span className="input-label-custom">SELECT SIZES</span>
+              <div className="sizes-checkboxes-grid">
                 {FILTER_SIZES.map(size => (
-                  <Radio
+                  <Checkbox
                     key={size}
                     label={size}
-                    name="size-radio"
-                    value={size}
-                    checked={productData.selectedSize === size}
-                    onChange={() => setProductData(prev => ({ ...prev, selectedSize: size }))}
+                    name="sizes"
+                    checked={productData.sizes?.includes(size)}
+                    onChange={() => handleSizeToggle(size)}
                   />
                 ))}
               </div>
@@ -350,7 +359,9 @@ export default function Admin() {
                   {/* Size preview */}
                   <div className="preview-spec-section">
                     <span className="preview-spec-label">SIZE:</span>
-                    <span className="preview-spec-val">{productData.selectedSize}</span>
+                    <span className="preview-spec-val">
+                      {productData.sizes && productData.sizes.length > 0 ? productData.sizes.join(', ') : '—'}
+                    </span>
                   </div>
 
                   {/* Colors preview */}

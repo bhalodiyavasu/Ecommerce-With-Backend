@@ -153,7 +153,8 @@
   margin-top: 10px;
 }
 
-.radio-buttons-grid {
+.radio-buttons-grid,
+.sizes-checkboxes-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
