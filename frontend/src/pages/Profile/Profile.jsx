@@ -4,6 +4,8 @@ import { useToast } from '@/contexts/ToastContext';
 import { ALL_PRODUCTS } from '@/data/mockData';
 import Modal from '@/components/common/Modal/Modal';
 import Button from '@/components/common/Button/Button';
+import Input from '@/components/common/Form/Input';
+import Textarea from '@/components/common/Form/Textarea';
 import { useLogoutMutation } from '@/store/actions/authActions';
 import './Profile.css';
 
@@ -41,10 +43,8 @@ export default function Profile() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState(null);
 
-  // Profile data state
-  const [profileData, setProfileData] = useState({
-    firstName: 'Vasu',
-    lastName: 'Bhalodiya',
+  const [originalData, setOriginalData] = useState({
+    username: 'vasubhalodiya',
     email: 'bhalodiyavasu@gmail.com',
     phone: '+91 9876543210',
     country: 'India',
@@ -54,7 +54,18 @@ export default function Profile() {
     zip: '380015'
   });
 
-  const [isEditing, setIsEditing] = useState(false);
+  // Profile data state
+  const [profileData, setProfileData] = useState({ ...originalData });
+
+  const isSaveDisabled = 
+    profileData.username === originalData.username &&
+    profileData.email === originalData.email &&
+    profileData.phone === originalData.phone &&
+    profileData.address === originalData.address &&
+    profileData.country === originalData.country &&
+    profileData.state === originalData.state &&
+    profileData.city === originalData.city &&
+    profileData.zip === originalData.zip;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -63,7 +74,7 @@ export default function Profile() {
 
   const handleSaveDetails = (e) => {
     e.preventDefault();
-    setIsEditing(false);
+    setOriginalData({ ...profileData });
     showToast('success', 'DETAILS UPDATED SUCCESSFULLY.');
   };
 
@@ -94,11 +105,10 @@ export default function Profile() {
           {/* Top block: Square profile details card */}
           <div className="profile-card-square">
             <div className="profile-avatar-square">
-              {profileData.firstName[0]}
-              {profileData.lastName[0]}
+              {profileData.username ? profileData.username.substring(0, 2).toUpperCase() : 'US'}
             </div>
             <h2 className="profile-name-text">
-              {profileData.firstName} {profileData.lastName}
+              {profileData.username}
             </h2>
             <p className="profile-email-text">{profileData.email}</p>
           </div>
@@ -149,19 +159,14 @@ export default function Profile() {
             </h1>
 
             {activeTab === 'details' && (
-              !isEditing ? (
-                <Button
-                  type="button" 
-                  variant="solid"
-                  onClick={() => setIsEditing(true)}
-                >
-                  EDIT DETAILS
-                </Button>
-              ) : (
-                <Button type="submit" form="profile-details-form" variant="solid" className="save-btn">
-                  SAVE DETAILS
-                </Button>
-              )
+              <Button 
+                type="submit" 
+                form="profile-details-form" 
+                variant="solid" 
+                disabled={isSaveDisabled}
+              >
+                SAVE DETAILS
+              </Button>
             )}
           </div>
 
@@ -171,88 +176,74 @@ export default function Profile() {
             {activeTab === 'details' && (
               <form onSubmit={handleSaveDetails} id="profile-details-form" className="profile-details-form">
                 <div className="details-fields-grid">
-                  <div className="form-input-group-custom">
-                    <label className="input-label-custom">First Name</label>
-                    <input 
-                      type="text" 
-                      name="firstName" 
-                      value={profileData.firstName} 
-                      onChange={handleInputChange} 
-                      disabled={!isEditing} 
-                      required 
-                    />
-                  </div>
+                  <Input
+                    label="Username"
+                    name="username"
+                    value={profileData.username}
+                    disabled={true}
+                    required
+                  />
 
-                  <div className="form-input-group-custom">
-                    <label className="input-label-custom">Last Name</label>
-                    <input 
-                      type="text" 
-                      name="lastName" 
-                      value={profileData.lastName} 
-                      onChange={handleInputChange} 
-                      disabled={!isEditing} 
-                      required 
-                    />
-                  </div>
+                  <Input
+                    label="Email Address"
+                    type="email"
+                    name="email"
+                    value={profileData.email}
+                    disabled={true}
+                    required
+                  />
 
-                  <div className="form-input-group-custom flex-full-width">
-                    <label className="input-label-custom">Email Address</label>
-                    <input 
-                      type="email" 
-                      name="email" 
-                      value={profileData.email} 
-                      disabled={true} 
-                      required 
-                    />
-                  </div>
+                  <Input
+                    label="Phone Number"
+                    type="tel"
+                    name="phone"
+                    value={profileData.phone}
+                    onChange={handleInputChange}
+                    required
+                    className="flex-full-width"
+                  />
 
-                  <div className="form-input-group-custom flex-full-width">
-                    <label className="input-label-custom">Phone Number</label>
-                    <input 
-                      type="tel" 
-                      name="phone" 
-                      value={profileData.phone} 
-                      onChange={handleInputChange} 
-                      disabled={!isEditing} 
-                      required 
-                    />
-                  </div>
+                  <Textarea
+                    label="Shipping Address"
+                    name="address"
+                    value={profileData.address}
+                    onChange={handleInputChange}
+                    required
+                    rows={3}
+                    className="flex-full-width"
+                  />
 
-                  <div className="form-input-group-custom flex-full-width">
-                    <label className="input-label-custom">Shipping Address</label>
-                    <input 
-                      type="text" 
-                      name="address" 
-                      value={profileData.address} 
-                      onChange={handleInputChange} 
-                      disabled={!isEditing} 
-                      required 
-                    />
-                  </div>
+                  <Input
+                    label="Country"
+                    name="country"
+                    value={profileData.country}
+                    onChange={handleInputChange}
+                    required
+                  />
 
-                  <div className="form-input-group-custom">
-                    <label className="input-label-custom">City</label>
-                    <input 
-                      type="text" 
-                      name="city" 
-                      value={profileData.city} 
-                      onChange={handleInputChange} 
-                      disabled={!isEditing} 
-                      required 
-                    />
-                  </div>
+                  <Input
+                    label="State"
+                    name="state"
+                    value={profileData.state}
+                    onChange={handleInputChange}
+                    required
+                  />
 
-                  <div className="form-input-group-custom">
-                    <label className="input-label-custom">Postal Code</label>
-                    <input 
-                      type="text" 
-                      name="zip" 
-                      value={profileData.zip} 
-                      onChange={handleInputChange} 
-                      disabled={!isEditing} 
-                      required 
-                    />
-                  </div>
+                  <Input
+                    label="City"
+                    name="city"
+                    value={profileData.city}
+                    onChange={handleInputChange}
+                    required
+                  />
+
+                  <Input
+                    label="Postal Code"
+                    name="zip"
+                    value={profileData.zip}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
               </form>
             )}

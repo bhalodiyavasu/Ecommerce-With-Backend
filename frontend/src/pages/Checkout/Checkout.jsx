@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import { getCartItemsWithProducts } from '@/data/mockData';
 import Button from '@/components/common/Button/Button';
+import Input from '@/components/common/Form/Input';
+import Select from '@/components/common/Form/Select';
 import './Checkout.css';
 
 export default function Checkout() {
@@ -115,49 +117,89 @@ export default function Checkout() {
             {activeTab === 'info' && (
               <form onSubmit={handleContinueToPayment} className="checkout-form-block-custom">
                 <h3 className="form-section-title-custom">CONTACT INFO</h3>
-                <div className="form-input-group-custom">
-                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" required />
-                </div>
-                <div className="form-input-group-custom">
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" required />
-                </div>
+                <Input 
+                  type="email" 
+                  name="email" 
+                  value={formData.email} 
+                  onChange={handleInputChange} 
+                  placeholder="Email" 
+                  required 
+                />
+                <Input 
+                  type="tel" 
+                  name="phone" 
+                  value={formData.phone} 
+                  onChange={handleInputChange} 
+                  placeholder="Phone" 
+                  required 
+                />
 
                 <h3 className="form-section-title-custom shipping-title-custom">SHIPPING ADDRESS</h3>
 
                 <div className="form-row-custom">
-                  <div className="form-input-group-custom flex-1">
-                    <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" required />
-                  </div>
-                  <div className="form-input-group-custom flex-1">
-                    <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" required />
-                  </div>
+                  <Input 
+                    name="firstName" 
+                    value={formData.firstName} 
+                    onChange={handleInputChange} 
+                    placeholder="First Name" 
+                    required 
+                    className="flex-1"
+                  />
+                  <Input 
+                    name="lastName" 
+                    value={formData.lastName} 
+                    onChange={handleInputChange} 
+                    placeholder="Last Name" 
+                    required 
+                    className="flex-1"
+                  />
                 </div>
 
-                <div className="form-input-group-custom select-wrapper-custom">
-                  <select name="country" value={formData.country} onChange={handleInputChange} required>
-                    <option value="United States">United States</option>
-                    <option value="Canada">Canada</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="India">India</option>
-                  </select>
-                  <span className="select-caret-custom"></span>
-                </div>
+                <Select 
+                  name="country" 
+                  value={formData.country} 
+                  onChange={handleInputChange} 
+                  options={[
+                    { value: 'United States', label: 'United States' },
+                    { value: 'Canada', label: 'Canada' },
+                    { value: 'United Kingdom', label: 'United Kingdom' },
+                    { value: 'India', label: 'India' }
+                  ]}
+                />
 
-                <div className="form-input-group-custom">
-                  <input type="text" name="state" value={formData.state} onChange={handleInputChange} placeholder="State / Region" required />
-                </div>
+                <Input 
+                  name="state" 
+                  value={formData.state} 
+                  onChange={handleInputChange} 
+                  placeholder="State / Region" 
+                  required 
+                />
 
-                <div className="form-input-group-custom">
-                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} placeholder="Address" required />
-                </div>
+                <Input 
+                  name="address" 
+                  value={formData.address} 
+                  onChange={handleInputChange} 
+                  placeholder="Address" 
+                  required 
+                />
 
                 <div className="form-row-custom">
-                  <div className="form-input-group-custom flex-1">
-                    <input type="text" name="city" value={formData.city} onChange={handleInputChange} placeholder="City" required />
-                  </div>
-                  <div className="form-input-group-custom flex-1">
-                    <input type="text" name="zip" value={formData.zip} onChange={handleInputChange} placeholder="Postal Code" required />
-                  </div>
+                  <Input 
+                    name="city" 
+                    value={formData.city} 
+                    onChange={handleInputChange} 
+                    placeholder="City" 
+                    required 
+                    className="flex-1"
+                  />
+                  <Input 
+                    name="zip" 
+                    value={formData.zip} 
+                    onChange={handleInputChange} 
+                    placeholder="Postal Code" 
+                    required 
+                    className="flex-1"
+                  />
                 </div>
 
                 <div className="checkout-btn-row-custom">

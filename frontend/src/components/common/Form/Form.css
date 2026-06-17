@@ -19,7 +19,8 @@
 }
 
 .form-input-group-custom input,
-.form-input-group-custom select {
+.form-input-group-custom select,
+.form-input-group-custom textarea {
   background-color: transparent;
   border: 1px solid #d9d9d9;
   padding: 0 15px;
@@ -35,18 +36,28 @@
   height: 40px;
 }
 
-.form-input-group-custom input::placeholder {
+.form-input-group-custom textarea {
+  height: auto;
+  min-height: 80px;
+  padding: 10px 15px;
+  resize: vertical;
+}
+
+.form-input-group-custom input::placeholder,
+.form-input-group-custom textarea::placeholder {
   color: #a0a0a0;
 }
 
 .form-input-group-custom input:focus,
-.form-input-group-custom select:focus {
+.form-input-group-custom select:focus,
+.form-input-group-custom textarea:focus {
   border-color: var(--color-black);
   background-color: var(--color-white);
 }
 
 .form-input-group-custom input:disabled,
-.form-input-group-custom select:disabled {
+.form-input-group-custom select:disabled,
+.form-input-group-custom textarea:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
