@@ -4,6 +4,10 @@
   margin: 0 auto;
   padding: 40px 50px 80px 50px;
   box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Back navigation arrow */
@@ -67,7 +71,7 @@
 
 .tab-nav-btn-custom {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: #a0a0a0; /* muted grey */
   border: none;

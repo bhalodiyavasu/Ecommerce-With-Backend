@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import './Drawer.css';
 
 export default function Drawer({
@@ -9,7 +10,18 @@ export default function Drawer({
   children,
   className = ''
 }) {
-  return (
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  return createPortal(
     <>
       <div className={`common-drawer ${position} ${isOpen ? 'open' : ''} ${className}`}>
         <div className="drawer-header-row">
@@ -27,6 +39,7 @@ export default function Drawer({
         </div>
       </div>
       {isOpen && <div className="drawer-overlay-common" onClick={onClose}></div>}
-    </>
+    </>,
+    document.body
   );
 }

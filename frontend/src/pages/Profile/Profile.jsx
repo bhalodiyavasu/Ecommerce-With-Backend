@@ -4,6 +4,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { ALL_PRODUCTS } from '@/data/mockData';
 import Modal from '@/components/common/Modal/Modal';
 import Button from '@/components/common/Button/Button';
+import { useLogoutMutation } from '@/store/actions/authActions';
 import './Profile.css';
 
 // Mock order history populated from ALL_PRODUCTS
@@ -34,6 +35,7 @@ const MOCK_ORDERS = [
 export default function Profile() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const [logoutUser] = useLogoutMutation();
 
   const [activeTab, setActiveTab] = useState('details');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -43,8 +45,8 @@ export default function Profile() {
   const [profileData, setProfileData] = useState({
     firstName: 'Vasu',
     lastName: 'Bhalodiya',
-    email: 'vasubhalodiya@gmail.com',
-    phone: '+91 98765 43210',
+    email: 'bhalodiyavasu@gmail.com',
+    phone: '+91 9876543210',
     country: 'India',
     state: 'Gujarat',
     city: 'Ahmedabad',
@@ -65,8 +67,13 @@ export default function Profile() {
     showToast('success', 'DETAILS UPDATED SUCCESSFULLY.');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setShowLogoutModal(false);
+    try {
+      await logoutUser().unwrap();
+    } catch (error) {
+      console.error('Logout API call failed:', error);
+    }
     // Clear mock session
     localStorage.removeItem('userToken');
     showToast('success', 'LOGGED OUT SUCCESSFULLY.');

@@ -358,8 +358,8 @@
 }
 
 .custom-file-preview-mini {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--color-border-light, #d9d9d9);
   overflow: hidden;
   box-sizing: border-box;
@@ -373,4 +373,29 @@
 
 .hidden-file-input {
   display: none;
+}
+
+.custom-file-preview-container {
+  display: flex;
+  align-items: center;
+}
+
+.file-remove-btn {
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  color: #e53e3e;
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.file-remove-btn:hover {
+  color: #c53030;
+  background-color: rgb(197, 48, 48, 0.3);
+  opacity: 0.8;
 }

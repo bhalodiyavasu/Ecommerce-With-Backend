@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Image } from 'lucide-react';
 import Input from '@/components/common/Form/Input';
 import Select from '@/components/common/Form/Select';
 import Radio from '@/components/common/Form/Radio';
@@ -43,6 +44,19 @@ const DUMMY_PRODUCTS = [
 
 export default function Admin() {
   const navigate = useNavigate();
+
+  const [activeTab, setActiveTab] = useState('inventory');
+  const [isCreateTabOpen, setIsCreateTabOpen] = useState(false);
+
+  const handleOpenCreateTab = () => {
+    setIsCreateTabOpen(true);
+    setActiveTab('create');
+  };
+
+  const handleCloseCreateTab = () => {
+    setIsCreateTabOpen(false);
+    setActiveTab('inventory');
+  };
 
   // Form states pre-filled with the exact premium dummy data from the screenshot
   const [productData, setProductData] = useState({
@@ -123,19 +137,57 @@ export default function Admin() {
         <span className="admin-header-title">ADMIN PANEL</span>
       </div>
 
-      {/* Tabs Header - Single Tab styled consistently like Checkout */}
+      {/* Tabs Header - Styled consistently like Checkout tabs */}
       <div className="admin-tabs-wrapper">
         <div className="admin-tabs-left">
-          <button className="admin-tab-btn active">
+          <button 
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'inventory' ? 'active' : ''}`}
+            onClick={() => setActiveTab('inventory')}
+          >
+            PRODUCT INVENTORY
+          </button>
+          
+          {isCreateTabOpen && (
+            <span className="admin-tab-btn-wrapper">
+              <button 
+                type="button"
+                className={`admin-tab-btn ${activeTab === 'create' ? 'active' : ''}`}
+                onClick={() => setActiveTab('create')}
+              >
+                CREATE PRODUCT
+              </button>
+              <button 
+                type="button"
+                className="admin-tab-close-icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCloseCreateTab();
+                }}
+                aria-label="Close Create Tab"
+              >
+                ✕
+              </button>
+            </span>
+          )}
+        </div>
+
+        {!isCreateTabOpen && (
+          <button 
+            type="button"
+            className="admin-tab-action-btn"
+            onClick={handleOpenCreateTab}
+          >
             ADD PRODUCT
           </button>
-        </div>
+        )}
       </div>
 
       <div className="admin-content-area">
         {/* Form & Sidebar Preview Side-by-Side Layout */}
-        <div className="admin-form-with-preview-layout">
-          <form onSubmit={handleSubmit} className="admin-form-transparent">
+        {activeTab === 'create' && (
+          <div className="admin-form-with-preview-layout">
+            <form onSubmit={handleSubmit} className="admin-form-transparent">
             <div className="form-row-custom">
               <Input
                 label="Product Name"
@@ -276,11 +328,17 @@ export default function Admin() {
             <div className="collections-card-link">
               <div className="collections-card">
                 <div className="card-image-wrapper">
-                  <img 
-                    src={productData.image || 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=600&auto=format&fit=crop'} 
-                    alt={productData.name || 'Product Image'} 
-                    className="card-product-image" 
-                  />
+                  {productData.image ? (
+                    <img 
+                      src={productData.image} 
+                      alt={productData.name || 'Product Image'} 
+                      className="card-product-image" 
+                    />
+                  ) : (
+                    <div className="card-image-placeholder">
+                      <Image size={48} strokeWidth={1} />
+                    </div>
+                  )}
                 </div>
                 <div className="card-details">
                   <div className="card-category">
@@ -324,17 +382,10 @@ export default function Admin() {
             </div>
           </div>
         </div>
+        )}
 
-        {/* Dummy Inventory Table */}
-        <div className="admin-tabs-wrapper admin-inventory-tabs">
-          <div className="admin-tabs-left">
-            <button className="admin-tab-btn active">
-              PRODUCT INVENTORY
-            </button>
-          </div>
-        </div>
-
-        <div className="admin-table-container">
+        {activeTab === 'inventory' && (
+          <div className="admin-table-container">
           <table className="admin-inventory-table">
             <thead>
               <tr>
@@ -392,12 +443,18 @@ export default function Admin() {
                   </td>
                   <td className="cell-align-right">
                     <div className="inventory-actions-row">
-                      <button className="inventory-edit-btn btn-disabled-style">
+                      <Button 
+                        variant="unstyled"
+                        disabled
+                      >
                         EDIT
-                      </button>
-                      <button className="inventory-delete-btn btn-disabled-style">
+                      </Button>
+                      <Button 
+                        variant="unstyled-destructive"
+                        disabled
+                      >
                         DELETE
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -405,6 +462,7 @@ export default function Admin() {
             </tbody>
           </table>
         </div>
+        )}
       </div>
     </div>
   );

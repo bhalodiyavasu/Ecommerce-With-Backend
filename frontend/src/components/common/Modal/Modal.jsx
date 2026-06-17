@@ -1,7 +1,16 @@
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import './Modal.css';
 
 export default function Modal({ title, onClose, children }) {
-  return (
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  return createPortal(
     <div className="size-guide-modal-overlay" onClick={onClose}>
       <div className="size-guide-modal-box" onClick={(e) => e.stopPropagation()}>
         {title && (
@@ -21,7 +30,8 @@ export default function Modal({ title, onClose, children }) {
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

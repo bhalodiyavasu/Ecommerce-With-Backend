@@ -75,7 +75,7 @@ export default function Checkout() {
       <div className="checkout-back-nav">
         <Link to="/cart" className="back-arrow-link-custom" aria-label="Back to cart">
           <svg width="48" height="16" viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M48 8H1M1 8L9 1M1 8L9 15" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M48 8H1M1 8L9 1M1 8L9 15" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </Link>
       </div>
@@ -94,14 +94,14 @@ export default function Checkout() {
           {/* Left Form: Tabbed panel */}
           <div className="checkout-form-section">
             <div className="checkout-tabs-header-custom">
-              <button 
+              <button
                 type="button"
                 className={`tab-nav-btn-custom ${activeTab === 'info' ? 'active' : ''}`}
                 onClick={() => setActiveTab('info')}
               >
                 INFORMATION
               </button>
-              <button 
+              <button
                 type="button"
                 className={`tab-nav-btn-custom ${activeTab === 'payment' ? 'active' : ''}`}
                 onClick={() => setActiveTab('payment')}
@@ -123,7 +123,7 @@ export default function Checkout() {
                 </div>
 
                 <h3 className="form-section-title-custom shipping-title-custom">SHIPPING ADDRESS</h3>
-                
+
                 <div className="form-row-custom">
                   <div className="form-input-group-custom flex-1">
                     <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" required />
@@ -163,8 +163,8 @@ export default function Checkout() {
                 <div className="checkout-btn-row-custom">
                   <Button type="submit" variant="solid" layout="split">
                     <span>Payment</span>
-                    <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg width="48" height="16" viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 8H47M47 8L39 1M47 8L39 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </Button>
                 </div>
@@ -175,7 +175,7 @@ export default function Checkout() {
             {activeTab === 'payment' && (
               <div className="checkout-form-block-custom payment-tab-block-custom">
                 <h3 className="form-section-title-custom">PAYMENT METHOD</h3>
-                
+
                 <div className="razorpay-payment-container-custom">
                   <div className="razorpay-logo-area-custom">
                     <span className="rp-badge-custom">SECURE</span>
@@ -184,7 +184,7 @@ export default function Checkout() {
                   <p className="razorpay-desc-custom">
                     Pay securely using credit cards, debit cards, UPI, netbanking, or wallets via Razorpay.
                   </p>
-                  
+
                   <div className="razorpay-graphic-card-custom">
                     <div className="card-chip-custom"></div>
                     <div className="card-logo-custom">RAZORPAY</div>
@@ -194,14 +194,14 @@ export default function Checkout() {
 
                   <div className="checkout-btn-row-custom payment-btn-row-custom">
                     <Button
-                      type="button" 
+                      type="button"
                       variant="solid"
                       layout="split"
                       onClick={handleCompletePayment}
                     >
                       <span>Pay Now</span>
                       <svg width="48" height="16" viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0 8H47M47 8L39 1M47 8L39 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M0 8H47M47 8L39 1M47 8L39 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </Button>
                   </div>
@@ -217,7 +217,7 @@ export default function Checkout() {
                 <h2 className="summary-card-title-custom">YOUR ORDER</h2>
                 <div className="summary-card-count-custom">({cartCount})</div>
               </div>
-              
+
               <div className="checkout-products-list-custom">
                 {cartItems.map((item, idx) => (
                   <div key={`${item.product.id}-${item.size}-${item.color}-${idx}`} className="checkout-summary-item-custom">
@@ -228,10 +228,10 @@ export default function Checkout() {
                       <span className="checkout-item-name-custom">{item.product.name}</span>
                       <div className="checkout-item-specs-row-custom">
                         <div className="checkout-spec-box-custom">{item.size}</div>
-                        <div 
-                          className="checkout-color-swatch-custom" 
-                          style={{ 
-                            backgroundColor: item.product.colors?.find(c => c.name.toLowerCase() === item.color.toLowerCase())?.hex || item.color 
+                        <div
+                          className="checkout-color-swatch-custom"
+                          style={{
+                            backgroundColor: item.product.colors?.find(c => c.name.toLowerCase() === item.color.toLowerCase())?.hex || item.color
                           }}
                         ></div>
                         <span className="checkout-qty-highlight-custom">

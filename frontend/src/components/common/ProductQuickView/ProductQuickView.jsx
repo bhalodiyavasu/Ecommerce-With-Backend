@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import Button from '@/components/common/Button/Button';
@@ -12,6 +13,13 @@ export default function ProductQuickView({ product, onClose }) {
     product ? (product.color || (product.colors && product.colors.length > 0 ? product.colors[0].name : '')) : ''
   );
   const [selectedSize, setSelectedSize] = useState('');
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   if (!product) return null;
 
@@ -32,7 +40,7 @@ export default function ProductQuickView({ product, onClose }) {
     navigate('/checkout');
   };
 
-  return (
+  return createPortal(
     <div className="quick-view-overlay" onClick={onClose}>
       <div className="quick-view-box" onClick={(e) => e.stopPropagation()}>
         <button className="quick-view-close-btn" onClick={onClose}>✕</button>
@@ -109,6 +117,8 @@ export default function ProductQuickView({ product, onClose }) {
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
+

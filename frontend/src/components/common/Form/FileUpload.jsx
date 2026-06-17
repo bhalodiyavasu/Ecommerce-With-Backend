@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { Trash2 } from 'lucide-react';
 import './Form.css';
 
 export default function FileUpload({
@@ -17,6 +18,13 @@ export default function FileUpload({
         onChange(reader.result); // Puts base64 data URL back to parent
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    onChange('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -39,8 +47,18 @@ export default function FileUpload({
           className="hidden-file-input"
         />
         {previewUrl && (
-          <div className="custom-file-preview-mini">
-            <img src={previewUrl} alt="Preview" />
+          <div className="custom-file-preview-container">
+            <div className="custom-file-preview-mini">
+              <img src={previewUrl} alt="Preview" />
+            </div>
+            <button
+              type="button"
+              className="file-remove-btn"
+              onClick={handleRemoveImage}
+              aria-label="Remove image"
+            >
+              <Trash2 size={16} />
+            </button>
           </div>
         )}
       </div>

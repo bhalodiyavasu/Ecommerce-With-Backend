@@ -94,13 +94,13 @@ export default function Cart() {
                             ></span>
                           </div>
                         </div>
-                        <button
-                          className="cart-item-remove-btn"
+                        <Button
+                          variant="unstyled-destructive"
                           onClick={() => removeFromCart(item.product.id, item.size, item.color)}
                           aria-label="Remove item"
                         >
                           REMOVE
-                        </button>
+                        </Button>
                       </div>
                     </div>
 
