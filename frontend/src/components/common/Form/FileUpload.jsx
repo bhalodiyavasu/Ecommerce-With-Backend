@@ -6,18 +6,16 @@ export default function FileUpload({
   label,
   onChange,
   className = '',
-  previewUrl = ''
+  previewUrl = '',
+  required = false,
+  disabled = false
 }) {
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onChange(reader.result); // Puts base64 data URL back to parent
-      };
-      reader.readAsDataURL(file);
+      onChange(file);
     }
   };
 
@@ -30,12 +28,17 @@ export default function FileUpload({
 
   return (
     <div className={`form-input-group-custom ${className}`}>
-      {label && <label className="input-label-custom">{label}</label>}
+      {label && (
+        <label className="input-label-custom">
+          {label} {required && <span className="label-required-star">*</span>}
+        </label>
+      )}
       <div className="custom-file-upload-wrapper">
         <button
           type="button"
-          onClick={() => fileInputRef.current && fileInputRef.current.click()}
+          onClick={() => !disabled && fileInputRef.current && fileInputRef.current.click()}
           className="custom-file-upload-btn"
+          disabled={disabled}
         >
           {previewUrl ? 'CHANGE IMAGE' : 'CHOOSE IMAGE FILE'}
         </button>
@@ -45,6 +48,8 @@ export default function FileUpload({
           onChange={handleFileChange}
           accept="image/*"
           className="hidden-file-input"
+          required={required && !previewUrl}
+          disabled={disabled}
         />
         {previewUrl && (
           <div className="custom-file-preview-container">
@@ -54,8 +59,9 @@ export default function FileUpload({
             <button
               type="button"
               className="file-remove-btn"
-              onClick={handleRemoveImage}
+              onClick={() => !disabled && handleRemoveImage()}
               aria-label="Remove image"
+              disabled={disabled}
             >
               <Trash2 size={16} />
             </button>

@@ -7,6 +7,9 @@ import Checkbox from '@/components/common/Form/Checkbox';
 import Textarea from '@/components/common/Form/Textarea';
 import FileUpload from '@/components/common/Form/FileUpload';
 import Button from '@/components/common/Button/Button';
+import Loader from '@/components/common/Loader/Loader';
+import { useCreateProductMutation } from '@/store/actions/productActions';
+import { useToast } from '@/contexts/ToastContext';
 import './Admin.css';
 
 const DUMMY_PRODUCTS = [
@@ -44,6 +47,8 @@ const DUMMY_PRODUCTS = [
 
 export default function Admin() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
+  const [createProduct, { isLoading }] = useCreateProductMutation();
 
   const [activeTab, setActiveTab] = useState('inventory');
   const [isCreateTabOpen, setIsCreateTabOpen] = useState(false);
@@ -58,32 +63,30 @@ export default function Admin() {
     setActiveTab('inventory');
   };
 
-  // Form states pre-filled with the exact premium dummy data from the screenshot
-  const [productData, setProductData] = useState({
-    name: 'CLASSIC WOOL OVERCOAT',
-    price: '299',
-    category: 'COATS',
-    gender: 'men',
-    description: 'TAILORED DOUBLE-BREASTED OVERCOAT CRAFTED FROM A PREMIUM WOOL BLEND. FEATURES STRUCTURED SHOULDERS, NOTCHED LAPELS, AND A BACK VENT FOR EASE OF MOVEMENT.',
-    status: 'NEW',
-    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=600&auto=format&fit=crop',
-    sizes: ['S', 'M', 'L', 'XL'],
-    colorsList: [
-      { name: 'CHARCOAL', hex: '#363636' },
-      { name: 'CAMEL', hex: '#c19a6b' }
-    ]
+  const [imagePreview, setImagePreview] = useState('');
+
+  const [userInput, setUserInput] = useState({
+    name: '',
+    price: '',
+    category: '',
+    gender: '',
+    description: '',
+    status: '',
+    image: null,
+    sizes: [],
+    colorsList: []
   });
 
   const [colorInput, setColorInput] = useState({ name: '', hex: '#363636' });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProductData(prev => ({ ...prev, [name]: value }));
+    setUserInput(prev => ({ ...prev, [name]: value }));
   };
 
   const handleColorAdd = () => {
     if (!colorInput.name.trim()) return;
-    setProductData(prev => ({
+    setUserInput(prev => ({
       ...prev,
       colorsList: [...prev.colorsList, { name: colorInput.name.toUpperCase(), hex: colorInput.hex }]
     }));
@@ -91,14 +94,14 @@ export default function Admin() {
   };
 
   const handleColorRemove = (colorName) => {
-    setProductData(prev => ({
+    setUserInput(prev => ({
       ...prev,
       colorsList: prev.colorsList.filter(c => c.name !== colorName)
     }));
   };
 
   const handleSizeToggle = (size) => {
-    setProductData(prev => {
+    setUserInput(prev => {
       const currentSizes = prev.sizes || [];
       const updatedSizes = currentSizes.includes(size)
         ? currentSizes.filter(s => s !== size)
@@ -108,31 +111,66 @@ export default function Admin() {
   };
 
   const CATEGORY_OPTIONS = [
-    { label: 'COATS', value: 'COATS' },
-    { label: 'SUITS', value: 'SUITS' },
-    { label: 'JACKETS', value: 'JACKETS' },
-    { label: 'SHIRTS', value: 'SHIRTS' },
-    { label: 'JEANS', value: 'JEANS' },
-    { label: 'SHORTS', value: 'SHORTS' },
-    { label: 'POLOS', value: 'POLOS' }
+    { label: 'T-SHIRT', value: 'tshirt' },
+    { label: 'SHIRT', value: 'shirt' },
+    { label: 'JACKET', value: 'jacket' },
+    { label: 'SHOES', value: 'shoes' }
   ];
 
   const GENDER_OPTIONS = [
-    { label: 'MAN', value: 'men' },
-    { label: 'WOMAN', value: 'women' },
+    { label: 'MAN', value: 'man' },
+    { label: 'WOMAN', value: 'woman' },
     { label: 'KIDS', value: 'kids' }
   ];
 
   const STATUS_OPTIONS = [
-    { label: 'NEW IN', value: 'NEW' },
-    { label: 'BEST SELLER', value: 'BEST SELLER' },
-    { label: 'REGULAR', value: '' }
+    { label: 'NEW IN', value: 'New In' },
+    { label: 'BEST SELLER', value: 'Best Seller' },
+    { label: 'SALE', value: 'Sale' }
   ];
 
   const FILTER_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const formData = new FormData();
+      formData.append('name', userInput.name);
+      formData.append('price', userInput.price);
+      formData.append('category', userInput.category);
+      formData.append('gender', userInput.gender);
+      formData.append('status', userInput.status);
+      formData.append('description', userInput.description);
+      formData.append('sizes', JSON.stringify(userInput.sizes));
+      formData.append('colors', JSON.stringify(userInput.colorsList));
+      formData.append('image', userInput.image);
+
+      const res = await createProduct(formData).unwrap();
+
+      if (res && res.status === 'SUCCESS') {
+        showToast('success', res.message || 'PRODUCT CREATED SUCCESSFULLY');
+        
+        // Reset the form
+        setUserInput({
+          name: '',
+          price: '',
+          category: '',
+          gender: '',
+          description: '',
+          status: '',
+          image: null,
+          sizes: [],
+          colorsList: []
+        });
+        setImagePreview('');
+        handleCloseCreateTab();
+      } else {
+        showToast('error', res?.message || 'FAILED TO CREATE PRODUCT.');
+      }
+    } catch (err) {
+      showToast('error', err.data?.message || err.message || 'FAILED TO CREATE PRODUCT.');
+    }
   };
 
   return (
@@ -202,19 +240,21 @@ export default function Admin() {
               <Input
                 label="Product Name"
                 name="name"
-                value={productData.name}
+                value={userInput.name}
                 onChange={handleInputChange}
                 placeholder="e.g. LINEN CASUAL BLAZER"
                 required
+                disabled={isLoading}
               />
               <Input
                 label="Price ($)"
                 type="number"
                 name="price"
-                value={productData.price}
+                value={userInput.price}
                 onChange={handleInputChange}
                 placeholder="e.g. 149"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -222,16 +262,22 @@ export default function Admin() {
               <Select
                 label="Category"
                 name="category"
-                value={productData.category}
+                value={userInput.category}
                 onChange={handleInputChange}
                 options={CATEGORY_OPTIONS}
+                placeholder="SELECT CATEGORY"
+                required
+                disabled={isLoading}
               />
               <Select
                 label="Gender"
                 name="gender"
-                value={productData.gender}
+                value={userInput.gender}
                 onChange={handleInputChange}
                 options={GENDER_OPTIONS}
+                placeholder="SELECT GENDER"
+                required
+                disabled={isLoading}
               />
             </div>
 
@@ -239,36 +285,51 @@ export default function Admin() {
               <Select
                 label="Product Status"
                 name="status"
-                value={productData.status}
+                value={userInput.status}
                 onChange={handleInputChange}
                 options={STATUS_OPTIONS}
+                placeholder="SELECT STATUS"
+                disabled={isLoading}
               />
               <FileUpload
                 label="Product Image"
-                onChange={(base64) => setProductData(prev => ({ ...prev, image: base64 }))}
-                previewUrl={productData.image}
+                onChange={(file) => {
+                  setUserInput(prev => ({ ...prev, image: file }));
+                  if (file) {
+                    const objectUrl = URL.createObjectURL(file);
+                    setImagePreview(objectUrl);
+                  } else {
+                    setImagePreview('');
+                  }
+                }}
+                previewUrl={imagePreview}
+                required
+                disabled={isLoading}
               />
             </div>
 
             <Textarea
               label="Description"
               name="description"
-              value={productData.description}
+              value={userInput.description}
               onChange={handleInputChange}
               placeholder="Describe the product material, fit details..."
+              required
+              disabled={isLoading}
             />
 
             {/* Checkboxes for size selection */}
             <div className="admin-form-group">
-              <span className="input-label-custom">SELECT SIZES</span>
+              <span className="input-label-custom">SELECT SIZES <span className="label-required-star">*</span></span>
               <div className="sizes-checkboxes-grid">
                 {FILTER_SIZES.map(size => (
                   <Checkbox
                     key={size}
                     label={size}
                     name="sizes"
-                    checked={productData.sizes?.includes(size)}
+                    checked={userInput.sizes?.includes(size)}
                     onChange={() => handleSizeToggle(size)}
+                    disabled={isLoading}
                   />
                 ))}
               </div>
@@ -284,6 +345,7 @@ export default function Admin() {
                     value={colorInput.name}
                     onChange={(e) => setColorInput(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="e.g. CHARCOAL"
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="color-field-hex">
@@ -293,25 +355,33 @@ export default function Admin() {
                     name="colorHex"
                     value={colorInput.hex}
                     onChange={(e) => setColorInput(prev => ({ ...prev, hex: e.target.value }))}
+                    disabled={isLoading}
                   />
                 </div>
-                <button type="button" onClick={handleColorAdd} className="add-color-action-btn">
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  onClick={handleColorAdd} 
+                  className="add-color-action-btn"
+                  disabled={isLoading}
+                >
                   ADD COLOR
-                </button>
+                </Button>
               </div>
 
               {/* Added Colors Tags */}
-              {productData.colorsList.length > 0 && (
+              {userInput.colorsList.length > 0 && (
                 <div className="colors-preview-tags">
-                  {productData.colorsList.map(c => (
+                  {userInput.colorsList.map(c => (
                     <span className="color-preview-tag" key={c.name}>
                       <span className="tag-color-swatch" style={{ backgroundColor: c.hex }} />
                       <span className="tag-color-name">{c.name}</span>
                       <button 
                         type="button" 
-                        onClick={() => handleColorRemove(c.name)}
+                        onClick={() => !isLoading && handleColorRemove(c.name)}
                         className="color-tag-close-btn"
                         aria-label={`Remove color ${c.name}`}
+                        disabled={isLoading}
                       >
                         ✕
                       </button>
@@ -322,8 +392,8 @@ export default function Admin() {
             </div>
 
             <div className="admin-submit-btn-row">
-              <Button type="submit" variant="solid" layout="split">
-                <span>CREATE PRODUCT</span>
+              <Button type="submit" variant="solid" layout="split" disabled={isLoading}>
+                <span>{isLoading ? 'CREATING...' : 'CREATE PRODUCT'}</span>
                 <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -334,63 +404,76 @@ export default function Admin() {
           {/* Product Live Preview sidebar */}
           <div className="admin-product-preview-sidebar">
             <span className="input-label-custom">PRODUCT PREVIEW</span>
-            <div className="collections-card-link">
-              <div className="collections-card">
-                <div className="card-image-wrapper">
-                  {productData.image ? (
-                    <img 
-                      src={productData.image} 
-                      alt={productData.name || 'Product Image'} 
-                      className="card-product-image" 
-                    />
-                  ) : (
-                    <div className="card-image-placeholder">
-                      <Image size={48} strokeWidth={1} />
-                    </div>
-                  )}
-                </div>
-                <div className="card-details">
-                  <div className="card-category">
-                    {`${productData.gender === 'men' ? 'MAN' : 'WOMAN'} / ${productData.category}`.toUpperCase()}
-                  </div>
-                  <h3 className="card-title">{productData.name || 'PRODUCT NAME'}</h3>
-                  <div className="card-price">${productData.price || '0'}</div>
-
-                  {/* Size preview */}
-                  <div className="preview-spec-section">
-                    <span className="preview-spec-label">SIZE:</span>
-                    <span className="preview-spec-val">
-                      {productData.sizes && productData.sizes.length > 0 ? productData.sizes.join(', ') : '—'}
-                    </span>
-                  </div>
-
-                  {/* Colors preview */}
-                  {productData.colorsList.length > 0 && (
-                    <div className="preview-spec-section">
-                      <span className="preview-spec-label">COLORS:</span>
-                      <div className="preview-colors-row">
-                        {productData.colorsList.map(c => (
-                          <span 
-                            key={c.name} 
-                            className="preview-color-dot" 
-                            style={{ backgroundColor: c.hex }} 
-                            title={c.name}
-                          />
-                        ))}
+            {isLoading ? (
+              <div className="preview-loader-container">
+                <Loader />
+                <span className="preview-loader-text">Adding product...</span>
+              </div>
+            ) : (userInput.name.trim() || userInput.price || userInput.category || userInput.gender || userInput.description.trim() || imagePreview || userInput.sizes.length > 0 || userInput.colorsList.length > 0) ? (
+              <div className="collections-card-link">
+                <div className="collections-card">
+                  <div className="card-image-wrapper">
+                    {imagePreview ? (
+                      <img 
+                        src={imagePreview} 
+                        alt={userInput.name || 'Product Image'} 
+                        className="card-product-image" 
+                      />
+                    ) : (
+                      <div className="card-image-placeholder">
+                        <Image size={48} strokeWidth={1} />
                       </div>
+                    )}
+                  </div>
+                  <div className="card-details">
+                    <div className="card-category">
+                      {`${userInput.gender ? userInput.gender.toUpperCase() : 'SELECT GENDER'} / ${userInput.category ? userInput.category.toUpperCase() : 'SELECT CATEGORY'}`}
                     </div>
-                  )}
+                    <h3 className="card-title">{userInput.name || 'PRODUCT NAME'}</h3>
+                    <div className="card-price">${userInput.price || '0'}</div>
 
-                  {/* Description preview */}
-                  {productData.description && (
-                    <div className="preview-spec-section preview-desc-block">
-                      <span className="preview-spec-label">DESCRIPTION:</span>
-                      <p className="preview-desc-text">{productData.description}</p>
+                    {/* Size preview */}
+                    <div className="preview-spec-section">
+                      <span className="preview-spec-label">SIZE:</span>
+                      <span className="preview-spec-val">
+                        {userInput.sizes && userInput.sizes.length > 0 ? userInput.sizes.join(', ') : '—'}
+                      </span>
                     </div>
-                  )}
+
+                    {/* Colors preview */}
+                    {userInput.colorsList.length > 0 && (
+                      <div className="preview-spec-section">
+                        <span className="preview-spec-label">COLORS:</span>
+                        <div className="preview-colors-row">
+                          {userInput.colorsList.map(c => (
+                            <span 
+                              key={c.name} 
+                              className="preview-color-dot" 
+                              style={{ backgroundColor: c.hex }} 
+                              title={c.name}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Description preview */}
+                    {userInput.description && (
+                      <div className="preview-spec-section preview-desc-block">
+                        <span className="preview-spec-label">DESCRIPTION:</span>
+                        <p className="preview-desc-text">{userInput.description}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="preview-placeholder-container">
+                <Image size={32} strokeWidth={1.5} className="preview-placeholder-icon" />
+                <span className="preview-placeholder-text">Product Preview Not Available</span>
+                <span className="preview-placeholder-subtext">Enter details to generate preview</span>
+              </div>
+            )}
           </div>
         </div>
         )}

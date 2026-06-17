@@ -40,7 +40,7 @@
   height: auto;
   min-height: 80px;
   padding: 10px 15px;
-  resize: vertical;
+  resize: none;
 }
 
 .form-input-group-custom input::placeholder,
@@ -363,9 +363,14 @@
   text-transform: uppercase;
 }
 
-.custom-file-upload-btn:hover {
+.custom-file-upload-btn:hover:not(:disabled) {
   background-color: var(--color-black);
   color: var(--color-white);
+}
+
+.custom-file-upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .custom-file-preview-mini {
@@ -383,7 +388,22 @@
 }
 
 .hidden-file-input {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.label-required-star {
+  color: #e53e3e;
+  margin-left: 2px;
 }
 
 .custom-file-preview-container {
@@ -405,8 +425,38 @@
   transition: opacity 0.2s ease, color 0.2s ease;
 }
 
-.file-remove-btn:hover {
+.file-remove-btn:hover:not(:disabled) {
   color: #c53030;
   background-color: rgb(197, 48, 48, 0.3);
   opacity: 0.8;
+}
+
+.file-remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.custom-select-trigger.placeholder-active {
+  color: #a0a0a0;
+}
+
+.select-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 42px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #a0a0a0;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  transition: color 0.2s ease;
+  z-index: 2;
+}
+
+.select-clear-btn:hover {
+  color: var(--color-black, #000000);
 }

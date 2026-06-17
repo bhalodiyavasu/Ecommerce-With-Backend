@@ -14,7 +14,11 @@ export default function Input({
 }) {
   return (
     <div className={`form-input-group-custom ${className}`}>
-      {label && <label className="input-label-custom">{label}</label>}
+      {label && (
+        <label className="input-label-custom">
+          {label} {required && <span className="label-required-star">*</span>}
+        </label>
+      )}
       <input
         type={type}
         name={name}
