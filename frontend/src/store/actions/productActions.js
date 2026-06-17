@@ -9,6 +9,9 @@ export const productApi = createApi({
     credentials: 'include',
   }),
   endpoints: (builder) => ({
+    getProducts: builder.query({
+      query: () => '/products',
+    }),
     createProduct: builder.mutation({
       query: (formData) => ({
         url: '/products',
@@ -19,4 +22,4 @@ export const productApi = createApi({
   }),
 });
 
-export const { useCreateProductMutation } = productApi;
+export const { useGetProductsQuery, useCreateProductMutation } = productApi;

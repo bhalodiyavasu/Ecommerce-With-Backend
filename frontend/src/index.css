@@ -121,3 +121,22 @@ html {
     color: var(--color-blue-accent);
     vertical-align: super;
   }
+
+  /* Add noise overlay to all drawers, overlays, and modals to maintain aesthetic consistency */
+  .quick-view-box::after,
+  .common-drawer::after,
+  .size-guide-modal-box::after,
+  .receipt-modal-box::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('./assets/noise.svg');
+    background-repeat: repeat;
+    background-size: 1299px 832px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 9999;
+  }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Image } from 'lucide-react';
 import Input from '@/components/common/Form/Input';
@@ -8,7 +8,7 @@ import Textarea from '@/components/common/Form/Textarea';
 import FileUpload from '@/components/common/Form/FileUpload';
 import Button from '@/components/common/Button/Button';
 import Loader from '@/components/common/Loader/Loader';
-import { useCreateProductMutation } from '@/store/actions/productActions';
+import { useCreateProductMutation, useGetProductsQuery } from '@/store/actions/productActions';
 import { useToast } from '@/contexts/ToastContext';
 import './Admin.css';
 
@@ -49,6 +49,13 @@ export default function Admin() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [createProduct, { isLoading }] = useCreateProductMutation();
+  const { data: apiProductsData } = useGetProductsQuery();
+
+  const inventoryProducts = useMemo(() => {
+    return apiProductsData?.products && apiProductsData.products.length > 0
+      ? apiProductsData.products
+      : DUMMY_PRODUCTS;
+  }, [apiProductsData]);
 
   const [activeTab, setActiveTab] = useState('inventory');
   const [isCreateTabOpen, setIsCreateTabOpen] = useState(false);
@@ -491,8 +498,8 @@ export default function Admin() {
               </tr>
             </thead>
             <tbody>
-              {DUMMY_PRODUCTS.map(p => (
-                <tr key={p.id}>
+              {inventoryProducts.map(p => (
+                <tr key={p._id || p.id}>
                   <td>
                     <div className="inventory-image-thumb">
                       <img src={p.image} alt="" />
@@ -527,12 +534,12 @@ export default function Admin() {
                           {(!p.colors || p.colors.length === 0) && <span className="specs-val">—</span>}
                         </div>
                       </div>
-                      <div className="specs-category-badge">{p.category}</div>
+                      <div className="specs-category-badge">{p.category?.toUpperCase()}</div>
                     </div>
                   </td>
                   <td>
                     <span className="inventory-gender-val">
-                      {p.gender === 'men' ? 'MAN' : p.gender === 'women' ? 'WOMAN' : 'KIDS'}
+                      {p.gender ? p.gender.toUpperCase() : '—'}
                     </span>
                   </td>
                   <td className="cell-align-right">

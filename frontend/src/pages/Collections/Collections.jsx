@@ -1,9 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickView';
 import Drawer from '@/components/common/Drawer/Drawer';
 import { ALL_PRODUCTS, FILTER_SIZES, FILTER_COLORS } from '@/data/mockData';
 import searchIcon from '@/assets/icons/search.svg';
 import { Link } from 'react-router-dom';
+import { useGetProductsQuery } from '@/store/actions/productActions';
+import Loader from '@/components/common/Loader/Loader';
 import './Collections.css';
 
 const GENDER_OPTIONS = [
@@ -12,6 +14,7 @@ const GENDER_OPTIONS = [
 ];
 
 const SORT_OPTIONS = [
+  { id: 'all', label: 'ALL' },
   { id: 'newest', label: 'NEWEST' },
   { id: 'price-asc', label: 'PRICE: LOW TO HIGH' },
   { id: 'price-desc', label: 'PRICE: HIGH TO LOW' }
@@ -25,18 +28,62 @@ const STATUS_OPTIONS = [
 const RATING_OPTIONS = [5, 4, 3];
 
 export default function Collections() {
-  // ─── Filter States (Consolidated into single state object) ────
+  const { data: apiData, isLoading } = useGetProductsQuery();
+
+  const productsList = useMemo(() => {
+    return apiData?.products && apiData.products.length > 0
+      ? apiData.products
+      : ALL_PRODUCTS;
+  }, [apiData]);
+
+  const [isColorExpanded, setIsColorExpanded] = useState(false);
+
+  const colorsToRender = useMemo(() => {
+    const colorMap = new Map();
+    productsList.forEach(p => {
+      (p.colors || []).forEach(c => c.name && c.hex && colorMap.set(c.name.toLowerCase(), c.hex));
+      if (p.color) {
+        const fallback = FILTER_COLORS.find(fc => fc.name.toLowerCase() === p.color.toLowerCase())?.hex || '#A9A9A9';
+        colorMap.set(p.color.toLowerCase(), fallback);
+      }
+    });
+    return colorMap.size > 0 ? Array.from(colorMap, ([name, hex]) => ({ name, hex })) : FILTER_COLORS;
+  }, [productsList]);
+
+  const visibleColors = colorsToRender.length > 12 && !isColorExpanded
+    ? colorsToRender.slice(0, 11)
+    : colorsToRender;
+
+  const maxProductPrice = useMemo(() => {
+    if (!productsList || productsList.length === 0) return 300;
+    const prices = productsList.map(p => Number(p.price) || 0);
+    const maxVal = Math.max(...prices);
+    return Math.ceil(maxVal) + 50;
+  }, [productsList]);
+
   const [filterData, setFilterData] = useState({
     searchQuery: '',
     selectedGenders: [],
     selectedColors: [],
     selectedSizes: [],
     selectedTags: [],
-    sortBy: 'newest',
-    priceRange: 300,
+    sortBy: 'all',
+    priceRange: 1000,
     selectedRatings: [],
     selectedStatuses: []
   });
+
+  // Sync initial priceRange with maxProductPrice when products load
+  useEffect(() => {
+    if (productsList && productsList.length > 0) {
+      setFilterData(prev => {
+        if (prev.priceRange === 1000 || prev.priceRange === -1) {
+          return { ...prev, priceRange: maxProductPrice };
+        }
+        return prev;
+      });
+    }
+  }, [productsList, maxProductPrice]);
 
   const hasActiveFilters = 
     filterData.searchQuery.trim() !== '' ||
@@ -45,7 +92,7 @@ export default function Collections() {
     filterData.selectedSizes.length > 0 ||
     filterData.selectedStatuses.length > 0 ||
     filterData.selectedRatings.length > 0 ||
-    filterData.priceRange < 300;
+    filterData.priceRange < maxProductPrice;
 
   const handleClearAll = () => {
     setFilterData({
@@ -54,8 +101,8 @@ export default function Collections() {
       selectedColors: [],
       selectedSizes: [],
       selectedTags: [],
-      sortBy: 'newest',
-      priceRange: 300,
+      sortBy: 'all',
+      priceRange: maxProductPrice,
       selectedRatings: [],
       selectedStatuses: []
     });
@@ -94,7 +141,7 @@ export default function Collections() {
 
   // ─── Filter & Search Logic ────────────────────────────────────
   const filteredProducts = useMemo(() => {
-    let result = ALL_PRODUCTS;
+    let result = productsList;
     const {
       searchQuery,
       selectedGenders,
@@ -111,20 +158,36 @@ export default function Collections() {
       const q = searchQuery.toLowerCase();
       result = result.filter(p => 
         p.name.toLowerCase().includes(q) || 
-        p.tag.toLowerCase().includes(q)
+        (p.tag && p.tag.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q))
       );
     }
 
     if (selectedGenders.length > 0) {
-      result = result.filter(p => selectedGenders.includes(p.gender));
+      result = result.filter(p => {
+        const g = p.gender?.toLowerCase();
+        return selectedGenders.some(sel => {
+          if (sel === 'men' && (g === 'men' || g === 'man')) return true;
+          if (sel === 'women' && (g === 'women' || g === 'woman')) return true;
+          return g === sel;
+        });
+      });
     }
 
     if (selectedColors.length > 0) {
-      result = result.filter(p => selectedColors.includes(p.color));
+      result = result.filter(p => {
+        if (p.color && selectedColors.includes(p.color.toLowerCase())) return true;
+        if (p.colors && p.colors.some(c => selectedColors.includes(c.name?.toLowerCase()))) return true;
+        return false;
+      });
     }
 
     if (selectedSizes.length > 0) {
-      result = result.filter(p => selectedSizes.includes(p.size));
+      result = result.filter(p => {
+        if (p.size && selectedSizes.includes(p.size)) return true;
+        if (p.sizes && p.sizes.some(s => selectedSizes.includes(s))) return true;
+        return false;
+      });
     }
 
     if (selectedRatings.length > 0) {
@@ -132,14 +195,21 @@ export default function Collections() {
     }
 
     if (selectedStatuses.length > 0) {
-      result = result.filter(p => selectedStatuses.includes(p.status));
+      result = result.filter(p => {
+        const stat = p.status?.toUpperCase();
+        return selectedStatuses.some(sel => {
+          if (sel === 'NEW' && (stat === 'NEW' || stat === 'NEW IN')) return true;
+          if (sel === 'BEST SELLER' && (stat === 'BEST SELLER' || stat === 'BEST SELLERS')) return true;
+          return stat === sel;
+        });
+      });
     }
 
     if (selectedTags.length > 0) {
       result = result.filter(p => {
         return selectedTags.some(t => {
-          if (t === 'NEW') return p.status === 'NEW';
-          if (t === 'BEST SELLER') return p.status === 'BEST SELLER';
+          if (t === 'NEW') return p.status === 'NEW' || p.status === 'New In';
+          if (t === 'BEST SELLER') return p.status === 'BEST SELLER' || p.status === 'Best Seller';
           return p.category === t;
         });
       });
@@ -148,15 +218,28 @@ export default function Collections() {
     result = result.filter(p => p.price <= priceRange);
 
     if (sortBy === 'price-asc') {
-      result.sort((a, b) => a.price - b.price);
+      result = [...result].sort((a, b) => a.price - b.price);
     } else if (sortBy === 'price-desc') {
-      result.sort((a, b) => b.price - a.price);
+      result = [...result].sort((a, b) => b.price - a.price);
     } else if (sortBy === 'newest') {
-      result.sort((a, b) => (b.status === 'NEW' ? 1 : 0) - (a.status === 'NEW' ? 1 : 0));
+      result = [...result].sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        if (dateA && dateB) return dateB - dateA;
+        return (b.status === 'NEW' || b.status === 'New In' ? 1 : 0) - (a.status === 'NEW' || a.status === 'New In' ? 1 : 0);
+      });
     }
 
     return result;
-  }, [filterData]);
+  }, [productsList, filterData]);
+
+  if (isLoading) {
+    return (
+      <div className="collections-loader-wrapper">
+        <Loader />
+      </div>
+    );
+  }
 
   // Extract filter option blocks to reuse between inline sidebar and mobile Drawer
   const renderFilterOptions = (isMobile) => (
@@ -192,15 +275,28 @@ export default function Collections() {
         </div>
         {expandedSections.color && (
           <div className="filter-content color-swatches">
-            {FILTER_COLORS.map(c => (
+            {visibleColors.map(c => (
               <button
                 key={c.name}
-                className={`color-swatch-btn ${filterData.selectedColors.includes(c.name) ? 'active' : ''}`}
+                className={`color-swatch-btn ${filterData.selectedColors.includes(c.name.toLowerCase()) ? 'active' : ''}`}
                 style={{ backgroundColor: c.hex }}
-                onClick={() => toggleFilterItem('selectedColors', c.name)}
+                onClick={() => toggleFilterItem('selectedColors', c.name.toLowerCase())}
                 aria-label={`Filter ${c.name}`}
+                title={c.name.toUpperCase()}
               ></button>
             ))}
+            {colorsToRender.length > 12 && !isColorExpanded && (
+              <button
+                className="color-swatch-btn expand-colors-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsColorExpanded(true);
+                }}
+                aria-label="Show all colors"
+              >
+                ...
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -261,7 +357,7 @@ export default function Collections() {
             <input
               type="range"
               min="50"
-              max="300"
+              max={maxProductPrice}
               value={filterData.priceRange}
               onChange={(e) => setFilterData(prev => ({ ...prev, priceRange: Number(e.target.value) }))}
               className="price-slider"
@@ -418,10 +514,10 @@ export default function Collections() {
                 <button className="clear-tag-btn" onClick={() => toggleFilterItem('selectedRatings', rating)} aria-label={`Clear Rating ${rating}`}>✕</button>
               </span>
             ))}
-            {filterData.priceRange < 300 && (
+            {filterData.priceRange < maxProductPrice && (
               <span className="active-filter-tag">
                 Max Price: ${filterData.priceRange}
-                <button className="clear-tag-btn" onClick={() => setFilterData(prev => ({ ...prev, priceRange: 300 }))} aria-label="Clear Price Limit">✕</button>
+                <button className="clear-tag-btn" onClick={() => setFilterData(prev => ({ ...prev, priceRange: maxProductPrice }))} aria-label="Clear Price Limit">✕</button>
               </span>
             )}
             <button className="clear-all-filters-btn" onClick={handleClearAll}>CLEAR ALL</button>
@@ -434,7 +530,7 @@ export default function Collections() {
             filteredProducts.map(product => (
               <div 
                 className="collections-card-link" 
-                key={product.id} 
+                key={product._id || product.id} 
                 onClick={() => setQuickViewProduct(product)}
               >
                 <div className="collections-card">
@@ -442,7 +538,9 @@ export default function Collections() {
                     <img src={product.image} alt={product.name} className="card-product-image" />
                   </div>
                   <div className="card-details">
-                    <div className="card-category">{product.tag}</div>
+                    <div className="card-category">
+                      {product.tag || `${product.gender?.toUpperCase()} / ${product.category?.toUpperCase()}`}
+                    </div>
                     <h3 className="card-title">{product.name}</h3>
                     <div className="card-price">${product.price}</div>
                   </div>
@@ -461,7 +559,7 @@ export default function Collections() {
       {/* Quick View Modal */}
       {quickViewProduct && (
         <ProductQuickView 
-          key={quickViewProduct.id}
+          key={quickViewProduct._id}
           product={quickViewProduct} 
           onClose={() => setQuickViewProduct(null)} 
         />
