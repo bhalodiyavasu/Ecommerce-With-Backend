@@ -124,7 +124,7 @@ export default function Collections() {
   };
 
   // ─── Quick View State ────────────────────────────────────────
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [quickViewProductId, setQuickViewProductId] = useState(null);
 
   // ─── Mobile Filters Drawer State ─────────────────────────────
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -531,7 +531,7 @@ export default function Collections() {
               <div 
                 className="collections-card-link" 
                 key={product._id || product.id} 
-                onClick={() => setQuickViewProduct(product)}
+                onClick={() => setQuickViewProductId(product._id || product.id)}
               >
                 <div className="collections-card">
                   <div className="card-image-wrapper">
@@ -557,11 +557,11 @@ export default function Collections() {
       </main>
 
       {/* Quick View Modal */}
-      {quickViewProduct && (
+      {quickViewProductId && (
         <ProductQuickView 
-          key={quickViewProduct._id}
-          product={quickViewProduct} 
-          onClose={() => setQuickViewProduct(null)} 
+          key={quickViewProductId}
+          productId={quickViewProductId} 
+          onClose={() => setQuickViewProductId(null)} 
         />
       )}
     </div>

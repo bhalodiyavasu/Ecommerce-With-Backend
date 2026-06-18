@@ -237,3 +237,14 @@
     width: 100%;
   }
 }
+
+.quick-view-box.loading {
+  justify-content: center;
+}
+
+.quick-view-loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
