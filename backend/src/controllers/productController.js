@@ -15,7 +15,11 @@ const createProduct = async (req, res) => {
 
     const result = await cloudinary.uploader.upload(
       `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
-      { folder: "eternix/products" }
+      {
+        folder: "eternix/products",
+        format: "webp",
+        quality: "auto",
+      }
     );
 
     // Step 4 — DB ma save karo
