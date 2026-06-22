@@ -22,7 +22,14 @@ export const productApi = createApi({
         body: formData,
       }),
     }),
+    updateProduct: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `/products/${id}`,
+        method: 'PATCH',
+        body: formData,
+      }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useGetProductByIdQuery, useCreateProductMutation } = productApi;
+export const { useGetProductsQuery, useGetProductByIdQuery, useCreateProductMutation, useUpdateProductMutation } = productApi;

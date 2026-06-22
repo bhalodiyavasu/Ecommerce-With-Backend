@@ -8,59 +8,42 @@ import Textarea from '@/components/common/Form/Textarea';
 import FileUpload from '@/components/common/Form/FileUpload';
 import Button from '@/components/common/Button/Button';
 import Loader from '@/components/common/Loader/Loader';
-import { useCreateProductMutation, useGetProductsQuery } from '@/store/actions/productActions';
+import { useCreateProductMutation, useUpdateProductMutation, useGetProductsQuery } from '@/store/actions/productActions';
 import { useToast } from '@/contexts/ToastContext';
 import './Admin.css';
 
-const DUMMY_PRODUCTS = [
-  {
-    id: 1,
-    name: 'CLASSIC WOOL OVERCOAT',
-    price: '299',
-    category: 'COATS',
-    gender: 'men',
-    status: 'NEW',
-    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=600&auto=format&fit=crop',
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
-    colors: [
-      { name: 'Charcoal', hex: '#363636' },
-      { name: 'Camel', hex: '#c19a6b' }
-    ],
-    description: 'TAILORED DOUBLE-BREASTED OVERCOAT CRAFTED FROM A PREMIUM WOOL BLEND. FEATURES STRUCTURED SHOULDERS, NOTCHED LAPELS, AND A BACK VENT FOR EASE OF MOVEMENT.'
-  },
-  {
-    id: 2,
-    name: 'SUEDE BOMBER JACKET',
-    price: '189',
-    category: 'JACKETS',
-    gender: 'men',
-    status: 'BEST SELLER',
-    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=600&auto=format&fit=crop',
-    sizes: ['S', 'M', 'L', 'XL'],
-    colors: [
-      { name: 'Black', hex: '#000000' },
-      { name: 'Brown', hex: '#8b5a2b' }
-    ],
-    description: 'PREMIUM SUEDE JACKET WITH RIBBED TRIM AND METALLIC HARDWARE.'
-  }
-];
 
 export default function Admin() {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const [createProduct, { isLoading }] = useCreateProductMutation();
-  const { data: apiProductsData } = useGetProductsQuery();
+  const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+
+  const isLoading = isCreating || isUpdating;
+  const { data: apiProductsData, isLoading: isProductsLoading } = useGetProductsQuery();
 
   const inventoryProducts = useMemo(() => {
-    return apiProductsData?.products && apiProductsData.products.length > 0
-      ? apiProductsData.products
-      : DUMMY_PRODUCTS;
+    return apiProductsData?.products ?? [];
   }, [apiProductsData]);
 
   const [activeTab, setActiveTab] = useState('inventory');
   const [isCreateTabOpen, setIsCreateTabOpen] = useState(false);
+  const [editingProductId, setEditingProductId] = useState(null);
 
   const handleOpenCreateTab = () => {
+    setEditingProductId(null);
+    setUserInput({
+      name: '',
+      price: '',
+      category: '',
+      gender: '',
+      description: '',
+      status: '',
+      image: null,
+      sizes: [],
+      colorsList: []
+    });
+    setImagePreview('');
     setIsCreateTabOpen(true);
     setActiveTab('create');
   };
@@ -68,6 +51,33 @@ export default function Admin() {
   const handleCloseCreateTab = () => {
     setIsCreateTabOpen(false);
     setActiveTab('inventory');
+    setEditingProductId(null);
+  };
+
+  const handleEditProduct = async (productId) => {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL;
+      const res = await fetch(`${API_URL}/products/${productId}`, { credentials: 'include' });
+      const data = await res.json();
+      const product = data.product || data;
+      setUserInput({
+        name: product.name || '',
+        price: product.price || '',
+        category: product.category || '',
+        gender: product.gender || '',
+        description: product.description || '',
+        status: product.status || '',
+        image: null,
+        sizes: product.sizes || [],
+        colorsList: product.colors || []
+      });
+      setImagePreview(product.image || '');
+      setEditingProductId(productId);
+      setIsCreateTabOpen(true);
+      setActiveTab('create');
+    } catch (err) {
+      showToast('error', err.data?.message || err.message || 'FAILED TO FETCH PRODUCT.');
+    }
   };
 
   const [imagePreview, setImagePreview] = useState('');
@@ -151,12 +161,19 @@ export default function Admin() {
       formData.append('description', userInput.description);
       formData.append('sizes', JSON.stringify(userInput.sizes));
       formData.append('colors', JSON.stringify(userInput.colorsList));
-      formData.append('image', userInput.image);
+      if (userInput.image) {
+        formData.append('image', userInput.image);
+      }
 
-      const res = await createProduct(formData).unwrap();
+      let res;
+      if (editingProductId) {
+        res = await updateProduct({ id: editingProductId, formData }).unwrap();
+      } else {
+        res = await createProduct(formData).unwrap();
+      }
 
       if (res && res.status === 'SUCCESS') {
-        showToast('success', res.message || 'PRODUCT CREATED SUCCESSFULLY');
+        showToast('success', res.message || (editingProductId ? 'PRODUCT UPDATED SUCCESSFULLY' : 'PRODUCT CREATED SUCCESSFULLY'));
         
         // Reset the form
         setUserInput({
@@ -171,12 +188,13 @@ export default function Admin() {
           colorsList: []
         });
         setImagePreview('');
+        setEditingProductId(null);
         handleCloseCreateTab();
       } else {
-        showToast('error', res?.message || 'FAILED TO CREATE PRODUCT.');
+        showToast('error', res?.message || (editingProductId ? 'FAILED TO UPDATE PRODUCT.' : 'FAILED TO CREATE PRODUCT.'));
       }
     } catch (err) {
-      showToast('error', err.data?.message || err.message || 'FAILED TO CREATE PRODUCT.');
+      showToast('error', err.data?.message || err.message || (editingProductId ? 'FAILED TO UPDATE PRODUCT.' : 'FAILED TO CREATE PRODUCT.'));
     }
   };
 
@@ -210,7 +228,7 @@ export default function Admin() {
                 className={`admin-tab-btn ${activeTab === 'create' ? 'active' : ''}`}
                 onClick={() => setActiveTab('create')}
               >
-                CREATE PRODUCT
+                {editingProductId ? 'EDIT PRODUCT' : 'CREATE PRODUCT'}
               </button>
               <button 
                 type="button"
@@ -400,7 +418,7 @@ export default function Admin() {
 
             <div className="admin-submit-btn-row">
               <Button type="submit" variant="solid" layout="split" disabled={isLoading}>
-                <span>{isLoading ? 'CREATING...' : 'CREATE PRODUCT'}</span>
+                <span>{isLoading ? (editingProductId ? 'UPDATING...' : 'CREATING...') : (editingProductId ? 'UPDATE PRODUCT' : 'CREATE PRODUCT')}</span>
                 <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -414,7 +432,6 @@ export default function Admin() {
             {isLoading ? (
               <div className="preview-loader-container">
                 <Loader />
-                <span className="preview-loader-text">Adding product...</span>
               </div>
             ) : (userInput.name.trim() || userInput.price || userInput.category || userInput.gender || userInput.description.trim() || imagePreview || userInput.sizes.length > 0 || userInput.colorsList.length > 0) ? (
               <div className="collections-card-link">
@@ -487,6 +504,16 @@ export default function Admin() {
 
         {activeTab === 'inventory' && (
           <div className="admin-table-container">
+          {isProductsLoading ? (
+            <div className="admin-inventory-empty">
+              <Loader />
+            </div>
+          ) : inventoryProducts.length === 0 ? (
+            <div className="admin-inventory-empty">
+              <span className="admin-inventory-empty-text">NO PRODUCTS FOUND</span>
+              <span className="admin-inventory-empty-sub">ADD A PRODUCT TO GET STARTED</span>
+            </div>
+          ) : (
           <table className="admin-inventory-table">
             <thead>
               <tr>
@@ -546,13 +573,12 @@ export default function Admin() {
                     <div className="inventory-actions-row">
                       <Button 
                         variant="unstyled"
-                        disabled
+                        onClick={() => handleEditProduct(p._id || p.id)}
                       >
                         EDIT
                       </Button>
                       <Button 
                         variant="unstyled-destructive"
-                        disabled
                       >
                         DELETE
                       </Button>
@@ -562,6 +588,7 @@ export default function Admin() {
               ))}
             </tbody>
           </table>
+          )}
         </div>
         )}
       </div>

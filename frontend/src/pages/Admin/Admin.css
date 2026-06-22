@@ -333,6 +333,7 @@
 
 .specs-colors-row {
   display: inline-flex;
+  flex-wrap: wrap;
   gap: 6px;
   vertical-align: middle;
 }
@@ -499,7 +500,7 @@
 
 .preview-spec-section {
   display: flex;
-  align-items: center;
+  align-items: start;
   gap: 8px;
   margin-top: 8px;
   font-family: var(--font-sans);
@@ -519,6 +520,7 @@
 
 .preview-colors-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 5px;
 }
 
@@ -627,3 +629,32 @@
 }
 
 
+
+/* Inventory empty / loading state */
+.admin-inventory-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 100px 20px;
+  width: 100%;
+}
+
+.admin-inventory-empty-text {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-black, #000);
+  text-transform: uppercase;
+}
+
+.admin-inventory-empty-sub {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #888;
+  text-transform: uppercase;
+}

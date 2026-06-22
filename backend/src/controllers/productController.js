@@ -76,4 +76,50 @@ const getProductById = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getAllProducts, getProductById };
+const updateProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ status: "FAILURE", message: "Product not found" });
+    }
+
+    const { name, price, category, gender, status, description, sizes, colors } = req.body;
+
+    let imageUrl = product.image;
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(
+        `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+        {
+          folder: "eternix/products",
+          format: "webp",
+          quality: "auto",
+        }
+      );
+      imageUrl = result.secure_url;
+    }
+
+    product.name = name || product.name;
+    product.price = price || product.price;
+    product.category = category || product.category;
+    product.gender = gender || product.gender;
+    product.status = status || product.status;
+    product.description = description || product.description;
+    product.sizes = sizes ? JSON.parse(sizes) : product.sizes;
+    product.colors = colors ? JSON.parse(colors) : product.colors;
+    product.image = imageUrl;
+
+    const updatedProduct = await product.save();
+
+    res.status(200).json({
+      status: "SUCCESS",
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    res.status(500).json({ status: "FAILURE", message: error.message });
+  }
+}
+
+module.exports = { createProduct, getAllProducts, getProductById, updateProduct };
