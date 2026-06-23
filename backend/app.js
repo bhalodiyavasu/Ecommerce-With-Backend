@@ -3,6 +3,7 @@ const cores = require('cors');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./src/routes/authRoutes');
 const productRoutes = require("./src/routes/productRoutes");
+const cartRoutes = require("./src/routes/cartRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 
 //Test route
 app.get("/", (req, res) => {

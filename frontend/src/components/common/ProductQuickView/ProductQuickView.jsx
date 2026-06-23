@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import { useGetProductByIdQuery } from '@/store/actions/productActions';
+import { useAddToCartMutation } from '@/store/actions/cartActions';
 import Button from '@/components/common/Button/Button';
 import Loader from '@/components/common/Loader/Loader';
 import './ProductQuickView.css';
@@ -10,6 +11,7 @@ import './ProductQuickView.css';
 export default function ProductQuickView({ product: initialProduct, productId, onClose }) {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const [addToCartApi, { isLoading: isAddingToCart }] = useAddToCartMutation();
 
   const { data: apiData, isLoading } = useGetProductByIdQuery(productId, {
     skip: !productId,
@@ -37,21 +39,50 @@ export default function ProductQuickView({ product: initialProduct, productId, o
 
   if (!isLoading && !product) return null;
 
-  const handleAddToCart = () => {
+  const addItemToCart = async (sizeWarningMsg) => {
     if (!selectedSize) {
-      showToast('warning', 'PLEASE SELECT A SIZE BEFORE ADDING TO CART.');
-      return;
+      showToast('warning', sizeWarningMsg);
+      return false;
     }
-    showToast('success', 'PRODUCT ADDED TO CART');
-    onClose();
+
+    const colorObj = product.colors?.find(
+      (c) => c.name.toUpperCase() === selectedColor.toUpperCase()
+    ) || { name: selectedColor || 'DEFAULT', hex: '#000000' };
+
+    try {
+      const res = await addToCartApi({
+        productId: product._id || product.id,
+        quantity: 1,
+        size: selectedSize,
+        color: colorObj,
+      }).unwrap();
+
+      if (res && res.status === 'SUCCESS') {
+        showToast('success', res.message || 'PRODUCT ADDED TO CART');
+        return true;
+      } else {
+        showToast('error', res?.message || 'FAILED TO ADD PRODUCT TO CART.');
+        return false;
+      }
+    } catch (err) {
+      showToast('error', err.data?.message || err.message || 'FAILED TO ADD PRODUCT TO CART.');
+      return false;
+    }
   };
 
-  const handleBuyNow = () => {
-    if (!selectedSize) {
-      showToast('warning', 'PLEASE SELECT A SIZE BEFORE BUYING.');
-      return;
+  const handleAddToCart = async () => {
+    const success = await addItemToCart('PLEASE SELECT A SIZE BEFORE ADDING TO CART.');
+    if (success) {
+      onClose();
     }
-    navigate('/checkout');
+  };
+
+  const handleBuyNow = async () => {
+    const success = await addItemToCart('PLEASE SELECT A SIZE BEFORE BUYING.');
+    if (success) {
+      onClose();
+      navigate('/cart');
+    }i
   };
 
   return createPortal(
@@ -129,10 +160,10 @@ export default function ProductQuickView({ product: initialProduct, productId, o
             </div>
 
             <div className="quick-view-actions">
-              <Button variant="outline" onClick={handleAddToCart}>
+              <Button variant="outline" onClick={handleAddToCart} disabled={isAddingToCart}>
                 ADD TO CART
               </Button>
-              <Button variant="solid" onClick={handleBuyNow}>
+              <Button variant="solid" onClick={handleBuyNow} disabled={isAddingToCart}>
                 BUY NOW
               </Button>
             </div>

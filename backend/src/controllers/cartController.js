@@ -1,0 +1,55 @@
+const Cart = require("../models/Cart");
+
+const addToCart = async (req, res) => {
+  try {
+    const { productId, quantity, size, color } = req.body;
+
+    if (!productId || !size || !color) {
+      return res.status(400).json({ status: "FAILURE", message: "All fields are required" });
+    }
+
+    let cart = await Cart.findOne({ user: req.user._id });
+
+    if (!cart) {
+      cart = await Cart.create({
+        user: req.user._id,
+        items: [{ product: productId, quantity, size, color }],
+      });
+    } else {
+      const existingItem = cart.items.find(
+        (item) =>
+          item.product.toString() === productId &&
+          item.size === size &&
+          item.color.hex === color.hex
+      );
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cart.items.push({ product: productId, quantity, size, color });
+      }
+
+      await cart.save();
+    }
+
+    res.status(200).json({ status: "SUCCESS", message: "Item added to cart", cart });
+  } catch (error) {
+    res.status(500).json({ status: "FAILURE", message: error.message });
+  }
+};
+
+const getCart = async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ user: req.user._id }).populate("items.product");
+
+    if (!cart) {
+      return res.status(404).json({ status: "FAILURE", message: "Cart not found" });
+    }
+
+    res.status(200).json({ status: "SUCCESS", cart });
+  } catch (error) {
+    res.status(500).json({ status: "FAILURE", message: error.message });
+  }
+};
+
+module.exports = { addToCart, getCart };
