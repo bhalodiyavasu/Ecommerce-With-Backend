@@ -228,17 +228,6 @@ export default function Profile() {
                       className="flex-full-width"
                     />
 
-                    <Textarea
-                      label="Shipping Address"
-                      name="address"
-                      value={userInput.address}
-                      onChange={handleInputChange}
-                      placeholder="Shipping Address"
-                      required
-                      rows={3}
-                      className="flex-full-width"
-                    />
-
                     <Input
                       label="Country"
                       name="country"
@@ -273,6 +262,17 @@ export default function Profile() {
                       onChange={handleInputChange}
                       placeholder="Postal Code"
                       required
+                    />
+
+                    <Textarea
+                      label="Shipping Address"
+                      name="address"
+                      value={userInput.address}
+                      onChange={handleInputChange}
+                      placeholder="Shipping Address"
+                      required
+                      rows={3}
+                      className="flex-full-width"
                     />
                   </div>
                 </form>

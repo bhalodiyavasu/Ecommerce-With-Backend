@@ -4,7 +4,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { getCartItemsWithProducts } from '@/data/mockData';
 import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Form/Input';
-import Select from '@/components/common/Form/Select';
+import Textarea from '@/components/common/Form/Textarea';
 import Loader from '@/components/common/Loader/Loader';
 import { useGetCartQuery } from '@/store/actions/cartActions';
 import './Checkout.css';
@@ -21,10 +21,9 @@ export default function Checkout() {
   const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
 
   const [formData, setFormData] = useState({
+    fullName: '',
     email: '',
     phone: '',
-    firstName: '',
-    lastName: '',
     country: 'United States',
     state: '',
     address: '',
@@ -39,10 +38,9 @@ export default function Checkout() {
 
   const isFormValid = () => {
     return (
+      formData.fullName.trim() !== '' &&
       formData.email.trim() !== '' &&
       formData.phone.trim() !== '' &&
-      formData.firstName.trim() !== '' &&
-      formData.lastName.trim() !== '' &&
       formData.address.trim() !== '' &&
       formData.city.trim() !== '' &&
       formData.zip.trim() !== ''
@@ -65,7 +63,7 @@ export default function Checkout() {
       state: {
         orderId: mockId,
         email: formData.email,
-        customerName: `${formData.firstName} ${formData.lastName}`,
+        customerName: formData.fullName,
         phone: formData.phone,
         address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.zip}, ${formData.country}`,
         cartItems: cartItems,
@@ -128,6 +126,25 @@ export default function Checkout() {
             {activeTab === 'info' && (
               <form onSubmit={handleContinueToPayment} className="checkout-form-block-custom">
                 <h3 className="form-section-title-custom">CONTACT INFO</h3>
+                <div className="form-row-custom">
+                  <Input 
+                    name="fullName" 
+                    value={formData.fullName} 
+                    onChange={handleInputChange} 
+                    placeholder="Full Name" 
+                    required 
+                    className="flex-1"
+                  />
+                  <Input 
+                    type="tel" 
+                    name="phone" 
+                    value={formData.phone} 
+                    onChange={handleInputChange} 
+                    placeholder="Phone" 
+                    required 
+                    className="flex-1"
+                  />
+                </div>
                 <Input 
                   type="email" 
                   name="email" 
@@ -136,63 +153,27 @@ export default function Checkout() {
                   placeholder="Email" 
                   required 
                 />
-                <Input 
-                  type="tel" 
-                  name="phone" 
-                  value={formData.phone} 
-                  onChange={handleInputChange} 
-                  placeholder="Phone" 
-                  required 
-                />
 
-                <h3 className="form-section-title-custom shipping-title-custom">SHIPPING ADDRESS</h3>
+                <h3 className="form-section-title-custom shipping-title-custom">SHIPPING INFORMATION</h3>
 
                 <div className="form-row-custom">
                   <Input 
-                    name="firstName" 
-                    value={formData.firstName} 
+                    name="country" 
+                    value={formData.country} 
                     onChange={handleInputChange} 
-                    placeholder="First Name" 
+                    placeholder="Country" 
                     required 
                     className="flex-1"
                   />
                   <Input 
-                    name="lastName" 
-                    value={formData.lastName} 
+                    name="state" 
+                    value={formData.state} 
                     onChange={handleInputChange} 
-                    placeholder="Last Name" 
+                    placeholder="State" 
                     required 
                     className="flex-1"
                   />
                 </div>
-
-                <Select 
-                  name="country" 
-                  value={formData.country} 
-                  onChange={handleInputChange} 
-                  options={[
-                    { value: 'United States', label: 'United States' },
-                    { value: 'Canada', label: 'Canada' },
-                    { value: 'United Kingdom', label: 'United Kingdom' },
-                    { value: 'India', label: 'India' }
-                  ]}
-                />
-
-                <Input 
-                  name="state" 
-                  value={formData.state} 
-                  onChange={handleInputChange} 
-                  placeholder="State / Region" 
-                  required 
-                />
-
-                <Input 
-                  name="address" 
-                  value={formData.address} 
-                  onChange={handleInputChange} 
-                  placeholder="Address" 
-                  required 
-                />
 
                 <div className="form-row-custom">
                   <Input 
@@ -212,6 +193,14 @@ export default function Checkout() {
                     className="flex-1"
                   />
                 </div>
+
+                <Textarea 
+                  name="address" 
+                  value={formData.address} 
+                  onChange={handleInputChange} 
+                  placeholder="Shipping Address" 
+                  required 
+                />
 
                 <div className="checkout-btn-row-custom">
                   <Button type="submit" variant="solid" layout="split">
@@ -242,7 +231,7 @@ export default function Checkout() {
                     <div className="card-chip-custom"></div>
                     <div className="card-logo-custom">RAZORPAY</div>
                     <div className="card-number-custom">•••• •••• •••• XXXX</div>
-                    <div className="card-holder-custom">{formData.firstName.toUpperCase()} {formData.lastName.toUpperCase()}</div>
+                    <div className="card-holder-custom">{(formData.fullName || '').toUpperCase()}</div>
                   </div>
 
                   <div className="checkout-btn-row-custom payment-btn-row-custom">

@@ -159,6 +159,10 @@
   width: 100%;
 }
 
+.flex-1 {
+  flex: 1;
+}
+
 /* Select wrapper styling for Country selection */
 .select-wrapper-custom {
   position: relative;
