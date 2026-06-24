@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Form/Input';
 import Textarea from '@/components/common/Form/Textarea';
 import Loader from '@/components/common/Loader/Loader';
 import { useGetCartQuery } from '@/store/actions/cartActions';
-import { useGetProfileQuery, useCreateOrderMutation } from '@/store/actions/userActions';
+import { useGetProfileQuery } from '@/store/actions/userActions';
+import { useCreateCheckoutSessionMutation } from '@/store/actions/paymentActions';
 import './Checkout.css';
 
 export default function Checkout() {
   const { showToast } = useToast();
-  const navigate = useNavigate();
 
   const { data, isLoading, isFetching } = useGetCartQuery();
   const { data: profileData } = useGetProfileQuery();
-  const [createOrder] = useCreateOrderMutation();
+  const [createCheckoutSession, { isLoading: isPaymentLoading }] = useCreateCheckoutSessionMutation();
 
   const cartItems = data?.cart?.items || [];
   const subtotal = data?.subtotal ?? data?.cart?.subtotal ?? 0;
@@ -65,7 +65,7 @@ export default function Checkout() {
 
   const handleCompletePayment = async () => {
     try {
-      const result = await createOrder({
+      const { url } = await createCheckoutSession({
         contactInfo: {
           fullName: formData.fullName,
           phone: formData.phone,
@@ -80,19 +80,9 @@ export default function Checkout() {
         },
       }).unwrap();
 
-      navigate('/payment-success', {
-        state: {
-          orderId: result.order._id,
-          email: formData.email,
-          customerName: formData.fullName,
-          phone: formData.phone,
-          address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.postalCode}, ${formData.country}`,
-          cartItems,
-          cartTotal,
-        },
-      });
+      window.location.href = url;
     } catch (err) {
-      showToast('error', err?.data?.message || 'ORDER PLACEMENT FAILED. PLEASE TRY AGAIN.');
+      showToast('error', err?.data?.message || 'PAYMENT INITIATION FAILED. PLEASE TRY AGAIN.');
     }
   };
 
@@ -207,8 +197,8 @@ export default function Checkout() {
                 />
 
                 <div className="checkout-btn-row-custom">
-                  <Button type="submit" variant="solid" layout="split">
-                    <span>Pay Now</span>
+                  <Button type="submit" variant="solid" layout="split" disabled={isPaymentLoading}>
+                    <span>{isPaymentLoading ? 'REDIRECTING...' : 'Pay Now'}</span>
                     <svg width="48" height="16" viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0 8H47M47 8L39 1M47 8L39 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>

@@ -1,8 +1,25 @@
+.success-loading-view {
+  flex-direction: column;
+  gap: 16px;
+}
+
+.success-loading-text {
+  font-family: monospace;
+  font-size: 13px;
+  color: #666;
+}
+
+.success-error-view {
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
 .success-page-container {
   width: 100%;
   max-width: 1280px;
+  height: 100dvh;
   margin: 0 auto;
-  padding: 60px 50px 100px 50px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;

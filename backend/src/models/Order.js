@@ -56,6 +56,9 @@ const orderSchema = new mongoose.Schema(
       enum: ["Unpaid", "Paid"],
       default: "Unpaid",
     },
+    stripeSessionId: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

@@ -1,27 +1,50 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { DEFAULT_ORDER_DATA } from '@/data/mockData';
+import { useSearchParams, Link } from 'react-router-dom';
+import { useVerifySessionQuery } from '@/store/actions/paymentActions';
 import Button from '@/components/common/Button/Button';
+import Loader from '@/components/common/Loader/Loader';
 import './PaymentSuccess.css';
 
 export default function PaymentSuccess() {
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('session_id');
   const [showReceiptModal, setShowReceiptModal] = useState(false);
 
-  const orderData = location.state || DEFAULT_ORDER_DATA;
+  const { data, isLoading, isError } = useVerifySessionQuery(sessionId, { skip: !sessionId });
 
   const handlePrint = (e) => {
     e.preventDefault();
     window.print();
   };
 
+  if (!sessionId || isError) {
+    return (
+      <div className="success-page-container success-error-view">
+        <h2>Invalid or expired session.</h2>
+        <Link to="/collections">GO TO COLLECTIONS</Link>
+      </div>
+    );
+  }
+
+  if (isLoading || !data || !data.order) {
+    return (
+      <div className="success-page-container success-loading-view">
+        <Loader />
+        <p className="success-loading-text">PAYMENT RECEIPT GENERATING...</p>
+      </div>
+    );
+  }
+
+  const order = data.order;
+  const contactInfo = order.contactInfo;
+  const shippingInfo = order.shippingInfo;
+  const address = `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state} - ${shippingInfo.postalCode}, ${shippingInfo.country}`;
+
   return (
     <div className="success-page-container">
-      {/* Noise Overlay for premium look */}
       <div className="success-noise"></div>
 
       <div className="success-content-card">
-        {/* Success Icon */}
         <div className="success-icon-wrapper">
           <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="24" cy="24" r="24" fill="#10b981" />
@@ -31,40 +54,38 @@ export default function PaymentSuccess() {
 
         <span className="success-badge">ORDER CONFIRMED</span>
         <h1 className="success-main-title">THANK YOU FOR YOUR PURCHASE</h1>
-        
+
         <p className="success-main-desc">
-          Your order has been received and is currently processing. A confirmation receipt with details has been sent to <strong>{orderData.email}</strong>.
+          Your order has been received and is currently processing. A confirmation receipt with details has been sent to <strong>{contactInfo.email}</strong>.
         </p>
 
-        {/* Order Info Fields */}
         <div className="success-details-grid">
           <div className="success-detail-box">
             <span className="detail-lbl">ORDER NUMBER</span>
-            <span className="detail-val accent-order-id">{orderData.orderId}</span>
+            <span className="detail-val accent-order-id">{order._id}</span>
           </div>
           <div className="success-detail-box">
             <span className="detail-lbl">EMAIL ADDRESS</span>
-            <span className="detail-val">{orderData.email}</span>
+            <span className="detail-val">{contactInfo.email}</span>
           </div>
           <div className="success-detail-box">
             <span className="detail-lbl">CONTACT PHONE</span>
-            <span className="detail-val">{orderData.phone}</span>
+            <span className="detail-val">{contactInfo.phone}</span>
           </div>
           <div className="success-detail-box">
             <span className="detail-lbl">DELIVERY ADDRESS</span>
-            <span className="detail-val address-txt">{orderData.address}</span>
+            <span className="detail-val address-txt">{address}</span>
           </div>
         </div>
 
         <div className="success-divider-line"></div>
 
-        {/* Mini Order Summary */}
         <div className="success-mini-summary">
           <h3 className="summary-section-title">ORDER SUMMARY</h3>
-          
+
           <div className="summary-items-list">
-            {orderData.cartItems.map((item, idx) => (
-              <div key={`${item.product.name}-${idx}`} className="summary-item-row">
+            {order.items.map((item, idx) => (
+              <div key={`${item.product._id}-${idx}`} className="summary-item-row">
                 <div className="summary-item-left">
                   <div className="summary-item-img-box">
                     <img src={item.product.image} alt="" />
@@ -85,52 +106,34 @@ export default function PaymentSuccess() {
           <div className="summary-total-footer">
             <div className="summary-footer-row">
               <span>SUBTOTAL</span>
-              <span>₹{orderData.cartTotal.toFixed(2)}</span>
+              <span>₹{order.subtotal.toFixed(2)}</span>
             </div>
             <div className="summary-footer-row">
               <span>SHIPPING</span>
-              <span>FREE</span>
+              <span>{order.shippingCharge > 0 ? `₹${order.shippingCharge.toFixed(2)}` : 'FREE'}</span>
             </div>
             <div className="summary-footer-row total-row-highlight">
               <span>TOTAL</span>
-              <span>₹{orderData.cartTotal.toFixed(2)}</span>
+              <span>₹{order.totalAmount.toFixed(2)}</span>
             </div>
           </div>
         </div>
 
         <div className="success-divider-line"></div>
 
-        {/* Action Buttons */}
         <div className="success-action-buttons">
-          <Button
-            type="button" 
-            variant="outline"
-            className="success-view-receipt-btn"
-            onClick={() => setShowReceiptModal(true)}
-          >
+          <Button type="button" variant="outline" onClick={() => setShowReceiptModal(true)}>
             VIEW ORDER RECEIPT
           </Button>
-          
-          <Button
-            type="button" 
-            variant="solid"
-            className="success-download-receipt-btn"
-            onClick={handlePrint}
-          >
+          <Button type="button" variant="solid" className="success-download-receipt-btn" onClick={handlePrint}>
             DOWNLOAD RECEIPT
           </Button>
-
-          <Button
-            to="/collections"
-            variant="solid"
-            className="success-continue-btn"
-          >
+          <Button to="/collections" variant="solid">
             CONTINUE SHOPPING
           </Button>
         </div>
       </div>
 
-      {/* Printable / Visual Invoice Receipt Modal */}
       <div className={`receipt-modal-overlay ${showReceiptModal ? 'active' : ''}`} onClick={() => setShowReceiptModal(false)}>
         <div className="receipt-modal-box" onClick={(e) => e.stopPropagation()}>
           <div className="receipt-header-row">
@@ -142,26 +145,23 @@ export default function PaymentSuccess() {
             <div className="receipt-bill-to-left">
               <span className="bill-to-label">BILL TO</span>
               <div className="bill-to-info">
-                <p className="customer-name">{orderData.customerName}</p>
-                <p className="customer-phone">{orderData.phone}</p>
-                <p className="customer-address">{orderData.address}</p>
+                <p className="customer-name">{contactInfo.fullName}</p>
+                <p className="customer-phone">{contactInfo.phone}</p>
+                <p className="customer-address">{address}</p>
               </div>
             </div>
-
             <div className="receipt-meta-details-right">
               <div className="meta-row">
                 <span className="meta-label">ORDER ID</span>
-                <span className="meta-value">{orderData.orderId}</span>
+                <span className="meta-value">{order._id}</span>
               </div>
               <div className="meta-row">
                 <span className="meta-label">DATE</span>
-                <span className="meta-value">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                <span className="meta-value">{new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
               <div className="meta-row">
                 <span className="meta-label">STATUS</span>
-                <span className="meta-value">
-                  PAID — <span className="receipt-razorpay-txt">RAZORPAY</span>
-                </span>
+                <span className="meta-value">PAID — <span className="receipt-razorpay-txt">STRIPE</span></span>
               </div>
             </div>
           </div>
@@ -176,11 +176,11 @@ export default function PaymentSuccess() {
               </tr>
             </thead>
             <tbody>
-              {orderData.cartItems.map((item, idx) => (
+              {order.items.map((item, idx) => (
                 <tr key={idx}>
                   <td>
                     <div>{item.product.name}</div>
-                    <small>SIZE: {item.size} / COLOR: {item.color}</small>
+                    <small>SIZE: {item.size} / COLOR: {item.color?.name || item.color}</small>
                   </td>
                   <td>{item.quantity}</td>
                   <td>₹{item.product.price.toFixed(2)}</td>
@@ -193,15 +193,15 @@ export default function PaymentSuccess() {
           <div className="receipt-totals">
             <div className="receipt-total-row">
               <span>SUBTOTAL:</span>
-              <span>₹{orderData.cartTotal.toFixed(2)}</span>
+              <span>₹{order.subtotal.toFixed(2)}</span>
             </div>
             <div className="receipt-total-row">
               <span>SHIPPING:</span>
-              <span>FREE</span>
+              <span>{order.shippingCharge > 0 ? `₹${order.shippingCharge.toFixed(2)}` : 'FREE'}</span>
             </div>
             <div className="receipt-total-row final-amount">
               <span>TOTAL:</span>
-              <span>₹{orderData.cartTotal.toFixed(2)}</span>
+              <span>₹{order.totalAmount.toFixed(2)}</span>
             </div>
           </div>
 
@@ -209,7 +209,7 @@ export default function PaymentSuccess() {
             <p>THANK YOU FOR SHOPPING WITH ETERNIX</p>
             <p>If you have any questions, contact us at info@eternix.com</p>
           </div>
-          
+
           <div className="receipt-modal-actions-bar">
             <Button variant="solid" onClick={handlePrint}>PRINT RECEIPT</Button>
           </div>
