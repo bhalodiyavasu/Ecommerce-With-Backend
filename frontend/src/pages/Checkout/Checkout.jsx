@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
-import { getCartItemsWithProducts } from '@/data/mockData';
 import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Form/Input';
 import Textarea from '@/components/common/Form/Textarea';
 import Loader from '@/components/common/Loader/Loader';
 import { useGetCartQuery } from '@/store/actions/cartActions';
+import { useGetProfileQuery, useCreateOrderMutation } from '@/store/actions/userActions';
 import './Checkout.css';
 
 export default function Checkout() {
@@ -15,6 +15,9 @@ export default function Checkout() {
 
   const [activeTab, setActiveTab] = useState('info');
   const { data, isLoading, isFetching } = useGetCartQuery();
+  const { data: profileData } = useGetProfileQuery();
+  const [createOrder] = useCreateOrderMutation();
+
   const cartItems = data?.cart?.items || [];
   const subtotal = data?.subtotal ?? data?.cart?.subtotal ?? 0;
   const cartTotal = data?.cartTotal ?? data?.cart?.cartTotal ?? 0;
@@ -24,12 +27,26 @@ export default function Checkout() {
     fullName: '',
     email: '',
     phone: '',
-    country: 'United States',
+    country: '',
     state: '',
     address: '',
     city: '',
-    zip: ''
+    postalCode: ''
   });
+
+  useEffect(() => {
+    const sa = profileData?.user?.shippingAddress;
+    if (sa) {
+      setFormData(prev => ({
+        ...prev,
+        country: sa.country || '',
+        state: sa.state || '',
+        city: sa.city || '',
+        postalCode: sa.postalCode || '',
+        address: sa.address || '',
+      }));
+    }
+  }, [profileData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -43,7 +60,7 @@ export default function Checkout() {
       formData.phone.trim() !== '' &&
       formData.address.trim() !== '' &&
       formData.city.trim() !== '' &&
-      formData.zip.trim() !== ''
+      formData.postalCode.trim() !== ''
     );
   };
 
@@ -56,20 +73,37 @@ export default function Checkout() {
     setActiveTab('payment');
   };
 
-  const handleCompletePayment = () => {
-    const mockId = 'NIX-' + Math.floor(100000 + Math.random() * 900000);
+  const handleCompletePayment = async () => {
+    try {
+      const result = await createOrder({
+        contactInfo: {
+          fullName: formData.fullName,
+          phone: formData.phone,
+          email: formData.email,
+        },
+        shippingInfo: {
+          country: formData.country,
+          state: formData.state,
+          city: formData.city,
+          postalCode: formData.postalCode,
+          address: formData.address,
+        },
+      }).unwrap();
 
-    navigate('/payment-success', {
-      state: {
-        orderId: mockId,
-        email: formData.email,
-        customerName: formData.fullName,
-        phone: formData.phone,
-        address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.zip}, ${formData.country}`,
-        cartItems: cartItems,
-        cartTotal: cartTotal
-      }
-    });
+      navigate('/payment-success', {
+        state: {
+          orderId: result.order._id,
+          email: formData.email,
+          customerName: formData.fullName,
+          phone: formData.phone,
+          address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.postalCode}, ${formData.country}`,
+          cartItems,
+          cartTotal,
+        },
+      });
+    } catch (err) {
+      showToast('error', err?.data?.message || 'ORDER PLACEMENT FAILED. PLEASE TRY AGAIN.');
+    }
   };
 
   if (isLoading) {
@@ -185,8 +219,8 @@ export default function Checkout() {
                     className="flex-1"
                   />
                   <Input 
-                    name="zip" 
-                    value={formData.zip} 
+                    name="postalCode"
+                    value={formData.postalCode} 
                     onChange={handleInputChange} 
                     placeholder="Postal Code" 
                     required 
