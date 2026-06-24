@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import { ALL_PRODUCTS } from '@/data/mockData';
@@ -7,6 +7,8 @@ import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Form/Input';
 import Textarea from '@/components/common/Form/Textarea';
 import { useLogoutMutation } from '@/store/actions/authActions';
+import { useGetProfileQuery, useUpdateProfileMutation } from '@/store/actions/userActions';
+import Loader from '@/components/common/Loader/Loader';
 import './Profile.css';
 
 // Mock order history populated from ALL_PRODUCTS
@@ -43,39 +45,54 @@ export default function Profile() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState(null);
 
-  const [originalData, setOriginalData] = useState({
-    username: 'vasubhalodiya',
-    email: 'bhalodiyavasu@gmail.com',
-    phone: '+91 9876543210',
-    country: 'India',
-    state: 'Gujarat',
-    city: 'Ahmedabad',
-    address: '104, Royal Palace',
-    zip: '380015'
+  const [userInput, setUserInput] = useState({
+    phone: '',
+    address: '',
+    country: '',
+    state: '',
+    city: '',
+    postalCode: '',
   });
 
-  // Profile data state
-  const [profileData, setProfileData] = useState({ ...originalData });
+  const { data: profileResponse, isLoading: isProfileLoading } = useGetProfileQuery();
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
 
-  const isSaveDisabled = 
-    profileData.username === originalData.username &&
-    profileData.email === originalData.email &&
-    profileData.phone === originalData.phone &&
-    profileData.address === originalData.address &&
-    profileData.country === originalData.country &&
-    profileData.state === originalData.state &&
-    profileData.city === originalData.city &&
-    profileData.zip === originalData.zip;
+  useEffect(() => {
+    if (profileResponse?.status === 'SUCCESS' && profileResponse?.user) {
+      const u = profileResponse.user;
+      setUserInput({
+        phone: u.phone || '',
+        address: u.shippingAddress?.address || '',
+        country: u.shippingAddress?.country || '',
+        state: u.shippingAddress?.state || '',
+        city: u.shippingAddress?.city || '',
+        postalCode: u.shippingAddress?.postalCode || '',
+      });
+    }
+  }, [profileResponse]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProfileData(prev => ({ ...prev, [name]: value }));
+    setUserInput(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveDetails = (e) => {
+  const handleSaveDetails = async (e) => {
     e.preventDefault();
-    setOriginalData({ ...profileData });
-    showToast('success', 'DETAILS UPDATED SUCCESSFULLY.');
+    try {
+      await updateProfile({
+        phone: userInput.phone,
+        shippingAddress: {
+          address: userInput.address,
+          country: userInput.country,
+          state: userInput.state,
+          city: userInput.city,
+          postalCode: userInput.postalCode,
+        },
+      }).unwrap();
+      showToast('success', 'DETAILS UPDATED SUCCESSFULLY.');
+    } catch (error) {
+      showToast('error', error?.data?.message || 'FAILED TO UPDATE PROFILE.');
+    }
   };
 
   const handleLogout = async () => {
@@ -105,12 +122,12 @@ export default function Profile() {
           {/* Top block: Square profile details card */}
           <div className="profile-card-square">
             <div className="profile-avatar-square">
-              {profileData.username ? profileData.username.substring(0, 2).toUpperCase() : 'US'}
+              {profileResponse?.user?.username ? profileResponse.user.username.substring(0, 2).toUpperCase() : 'US'}
             </div>
             <h2 className="profile-name-text">
-              {profileData.username}
+              {profileResponse?.user?.username}
             </h2>
-            <p className="profile-email-text">{profileData.email}</p>
+            <p className="profile-email-text">{profileResponse?.user?.email}</p>
           </div>
 
           {/* Bottom block: Navigation list */}
@@ -163,7 +180,7 @@ export default function Profile() {
                 type="submit" 
                 form="profile-details-form" 
                 variant="solid" 
-                disabled={isSaveDisabled}
+                disabled={isUpdating}
               >
                 SAVE DETAILS
               </Button>
@@ -174,78 +191,92 @@ export default function Profile() {
 
             {/* DETAILS TAB PANEL */}
             {activeTab === 'details' && (
-              <form onSubmit={handleSaveDetails} id="profile-details-form" className="profile-details-form">
-                <div className="details-fields-grid">
-                  <Input
-                    label="Username"
-                    name="username"
-                    value={profileData.username}
-                    disabled={true}
-                    required
-                  />
-
-                  <Input
-                    label="Email Address"
-                    type="email"
-                    name="email"
-                    value={profileData.email}
-                    disabled={true}
-                    required
-                  />
-
-                  <Input
-                    label="Phone Number"
-                    type="tel"
-                    name="phone"
-                    value={profileData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="flex-full-width"
-                  />
-
-                  <Textarea
-                    label="Shipping Address"
-                    name="address"
-                    value={profileData.address}
-                    onChange={handleInputChange}
-                    required
-                    rows={3}
-                    className="flex-full-width"
-                  />
-
-                  <Input
-                    label="Country"
-                    name="country"
-                    value={profileData.country}
-                    onChange={handleInputChange}
-                    required
-                  />
-
-                  <Input
-                    label="State"
-                    name="state"
-                    value={profileData.state}
-                    onChange={handleInputChange}
-                    required
-                  />
-
-                  <Input
-                    label="City"
-                    name="city"
-                    value={profileData.city}
-                    onChange={handleInputChange}
-                    required
-                  />
-
-                  <Input
-                    label="Postal Code"
-                    name="zip"
-                    value={profileData.zip}
-                    onChange={handleInputChange}
-                    required
-                  />
+              isProfileLoading ? (
+                <div className="profile-loader-wrapper">
+                  <Loader />
                 </div>
-              </form>
+              ) : (
+                <form onSubmit={handleSaveDetails} id="profile-details-form" className="profile-details-form">
+                  <div className="details-fields-grid">
+                    <Input
+                      label="Username"
+                      name="username"
+                      value={profileResponse?.user?.username || ''}
+                      placeholder="Username"
+                      disabled={true}
+                      required
+                    />
+
+                    <Input
+                      label="Email Address"
+                      type="email"
+                      name="email"
+                      value={profileResponse?.user?.email || ''}
+                      placeholder="Email Address"
+                      disabled={true}
+                      required
+                    />
+
+                    <Input
+                      label="Phone Number"
+                      type="tel"
+                      name="phone"
+                      value={userInput.phone}
+                      onChange={handleInputChange}
+                      placeholder="Phone Number"
+                      required
+                      className="flex-full-width"
+                    />
+
+                    <Textarea
+                      label="Shipping Address"
+                      name="address"
+                      value={userInput.address}
+                      onChange={handleInputChange}
+                      placeholder="Shipping Address"
+                      required
+                      rows={3}
+                      className="flex-full-width"
+                    />
+
+                    <Input
+                      label="Country"
+                      name="country"
+                      value={userInput.country}
+                      onChange={handleInputChange}
+                      placeholder="Country"
+                      required
+                    />
+
+                    <Input
+                      label="State"
+                      name="state"
+                      value={userInput.state}
+                      onChange={handleInputChange}
+                      placeholder="State"
+                      required
+                    />
+
+                    <Input
+                      label="City"
+                      name="city"
+                      value={userInput.city}
+                      onChange={handleInputChange}
+                      placeholder="City"
+                      required
+                    />
+
+                    <Input
+                      label="Postal Code"
+                      name="postalCode"
+                      value={userInput.postalCode}
+                      onChange={handleInputChange}
+                      placeholder="Postal Code"
+                      required
+                    />
+                  </div>
+                </form>
+              )
             )}
 
             {/* ORDERS TAB PANEL */}
