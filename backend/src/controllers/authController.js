@@ -27,9 +27,9 @@ const registerUser = async (req, res) => {
 
     const token = generateToken(res, user._id);
 
-    sendWelcomeEmail(user.email, user.username).catch((err) =>
-      console.error("Welcome email failed:", err.message)
-    );
+    sendWelcomeEmail(user.email, user.username)
+      .then(() => console.log("Welcome email sent to:", user.email))
+      .catch((err) => console.error("Welcome email failed:", err.message));
 
     res.status(201).json({
       status: "SUCCESS",
