@@ -10,6 +10,7 @@ import PaymentSuccess from '@/pages/PaymentSuccess/PaymentSuccess';
 import Auth from '@/pages/Auth/Auth';
 import Profile from '@/pages/Profile/Profile';
 import Admin from '@/pages/Admin/Admin';
+import AdminLogin from '@/pages/Admin/AdminLogin';
 import NotFound from '@/pages/NotFound/NotFound';
 import Loader from '@/components/common/Loader/Loader';
 
@@ -50,7 +51,7 @@ function ScrollToHashElement() {
 
 function AppLayout({ children }) {
   const location = useLocation();
-  const isMinimal = location.pathname === '/checkout' || location.pathname === '/payment-success' || location.pathname === '/auth' || location.pathname === '/admin';
+  const isMinimal = location.pathname === '/checkout' || location.pathname === '/payment-success' || location.pathname === '/auth' || location.pathname === '/admin' || location.pathname === '/admin/login';
 
   return (
     <div className="app-wrapper">
@@ -105,14 +106,8 @@ export default function AppRouter() {
               </ProtectedRoute>
             } 
           />
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute>
-                <Admin />
-              </ProtectedRoute>
-            } 
-          />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppLayout>

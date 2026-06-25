@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Image } from 'lucide-react';
 import Input from '@/components/common/Form/Input';
@@ -13,10 +13,33 @@ import { useCreateProductMutation, useUpdateProductMutation, useGetProductsQuery
 import { useToast } from '@/contexts/ToastContext';
 import './Admin.css';
 
+const SESSION_DURATION = 5 * 60 * 1000;
+
 
 export default function Admin() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+
+  const resetSession = useCallback(() => {
+    localStorage.setItem('adminSessionTime', Date.now().toString());
+  }, []);
+
+  useEffect(() => {
+    const check = () => {
+      const t = localStorage.getItem('adminSessionTime');
+      if (!t || Date.now() - Number(t) > SESSION_DURATION) {
+        localStorage.removeItem('adminSessionTime');
+        navigate('/admin/login');
+      }
+    };
+    check();
+    const interval = setInterval(check, 1000);
+    window.addEventListener('click', resetSession);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('click', resetSession);
+    };
+  }, [navigate, resetSession]);
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();

@@ -10,7 +10,8 @@ import './Collections.css';
 
 const GENDER_OPTIONS = [
   { id: 'men', label: 'MAN' },
-  { id: 'women', label: 'WOMAN' }
+  { id: 'women', label: 'WOMAN' },
+  { id: 'kids', label: 'KIDS' }
 ];
 
 const SORT_OPTIONS = [

@@ -97,7 +97,7 @@
 
 .profile-menu-item:hover {
   color: var(--color-black);
-  background-color: var(--color-gray-light);
+  background-color: #f1f1f1;
 }
 
 .profile-menu-item.active {
