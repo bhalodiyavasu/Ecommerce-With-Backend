@@ -190,14 +190,12 @@ export default function Admin() {
 
   const GENDER_OPTIONS = [
     { label: 'MAN', value: 'man' },
-    { label: 'WOMAN', value: 'woman' },
     { label: 'KIDS', value: 'kids' }
   ];
 
   const STATUS_OPTIONS = [
     { label: 'NEW IN', value: 'New In' },
-    { label: 'BEST SELLER', value: 'Best Seller' },
-    { label: 'SALE', value: 'Sale' }
+    { label: 'BEST SELLER', value: 'Best Seller' }
   ];
 
   const FILTER_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL'];

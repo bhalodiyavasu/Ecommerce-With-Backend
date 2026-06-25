@@ -10,7 +10,6 @@ import './Collections.css';
 
 const GENDER_OPTIONS = [
   { id: 'men', label: 'MAN' },
-  { id: 'women', label: 'WOMAN' },
   { id: 'kids', label: 'KIDS' }
 ];
 
@@ -26,7 +25,6 @@ const STATUS_OPTIONS = [
   { id: 'BEST SELLER', label: 'BEST SELLERS' }
 ];
 
-const RATING_OPTIONS = [5, 4, 3];
 
 export default function Collections() {
   const { data: apiData, isLoading } = useGetProductsQuery();
@@ -68,7 +66,6 @@ export default function Collections() {
     selectedTags: [],
     sortBy: 'all',
     priceRange: 1000,
-    selectedRatings: [],
     selectedStatuses: []
   });
 
@@ -90,7 +87,6 @@ export default function Collections() {
     filterData.selectedColors.length > 0 ||
     filterData.selectedSizes.length > 0 ||
     filterData.selectedStatuses.length > 0 ||
-    filterData.selectedRatings.length > 0 ||
     filterData.priceRange < maxProductPrice;
 
   const handleClearAll = () => {
@@ -102,7 +98,6 @@ export default function Collections() {
       selectedTags: [],
       sortBy: 'all',
       priceRange: maxProductPrice,
-      selectedRatings: [],
       selectedStatuses: []
     });
   };
@@ -114,8 +109,7 @@ export default function Collections() {
     size: true,
     sort: true,
     price: true,
-    status: true,
-    rating: true
+    status: true
   });
 
   const toggleSection = (section) => {
@@ -149,7 +143,6 @@ export default function Collections() {
       selectedTags,
       sortBy,
       priceRange,
-      selectedRatings,
       selectedStatuses
     } = filterData;
 
@@ -189,9 +182,6 @@ export default function Collections() {
       });
     }
 
-    if (selectedRatings.length > 0) {
-      result = result.filter(p => selectedRatings.includes(p.rating));
-    }
 
     if (selectedStatuses.length > 0) {
       result = result.filter(p => {
@@ -391,31 +381,6 @@ export default function Collections() {
           </div>
         )}
       </div>
-
-      {/* Rating Accordion */}
-      <div className="filter-section">
-        <div className="filter-header" onClick={() => toggleSection('rating')}>
-          <span className="filter-label">RATING</span>
-          <span className="accordion-caret">{expandedSections.rating ? '▲' : '▼'}</span>
-        </div>
-        {expandedSections.rating && (
-          <div className="filter-content">
-            {RATING_OPTIONS.map(stars => (
-              <label key={stars} className="checkbox-container">
-                <input 
-                  type="checkbox" 
-                  checked={filterData.selectedRatings.includes(stars)} 
-                  onChange={() => toggleFilterItem('selectedRatings', stars)} 
-                />
-                <span className="checkbox-custom"></span>
-                <span className="checkbox-label">
-                  {'★'.repeat(stars)}{'☆'.repeat(5 - stars)} &amp; UP
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
     </>
   );
 
@@ -485,7 +450,7 @@ export default function Collections() {
             )}
             {filterData.selectedGenders.map(gender => (
               <span className="active-filter-tag" key={gender}>
-                {gender === 'men' ? 'MAN' : 'WOMAN'}
+                {gender === 'men' ? 'MAN' : gender === 'kids' ? 'KIDS' : 'WOMAN'}
                 <button className="clear-tag-btn" onClick={() => toggleFilterItem('selectedGenders', gender)} aria-label={`Clear Gender ${gender}`}>✕</button>
               </span>
             ))}
@@ -505,12 +470,6 @@ export default function Collections() {
               <span className="active-filter-tag" key={status}>
                 Status: {status === 'NEW' ? 'NEW IN' : 'BEST SELLERS'}
                 <button className="clear-tag-btn" onClick={() => toggleFilterItem('selectedStatuses', status)} aria-label={`Clear Status ${status}`}>✕</button>
-              </span>
-            ))}
-            {filterData.selectedRatings.map(rating => (
-              <span className="active-filter-tag" key={rating}>
-                Rating: {rating}★ &amp; Up
-                <button className="clear-tag-btn" onClick={() => toggleFilterItem('selectedRatings', rating)} aria-label={`Clear Rating ${rating}`}>✕</button>
               </span>
             ))}
             {filterData.priceRange < maxProductPrice && (

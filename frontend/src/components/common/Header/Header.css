@@ -259,3 +259,22 @@
   font-weight: 800;
   border-bottom: 2px solid var(--color-black);
 }
+
+.header-login-btn {
+  height: 50px;
+  padding: 0 40px;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: opacity 0.2s ease;
+}
+
+.header-login-btn:hover {
+  opacity: 0.8;
+}

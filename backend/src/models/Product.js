@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
     status: {
       type: String,
       required: false,
-      enum: ["New In", "Best Seller", "Sale"],
+      enum: ["New In", "Best Seller"],
     },
     description: {
       type: String,

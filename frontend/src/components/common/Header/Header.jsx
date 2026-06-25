@@ -67,13 +67,22 @@ export default function Header() {
             <div className="cart-badge-pill">{cartCount}</div>
           </Link>
           
-          <button 
-            className="circular-btn profile-btn" 
-            aria-label="Profile" 
-            onClick={handleProfileClick}
-          >
-            <img src={profileIcon} alt="" className="inverted-icon" />
-          </button>
+          {isLoggedIn ? (
+            <button 
+              className="circular-btn profile-btn" 
+              aria-label="Profile" 
+              onClick={handleProfileClick}
+            >
+              <img src={profileIcon} alt="" className="inverted-icon" />
+            </button>
+          ) : (
+            <button 
+              className="header-login-btn" 
+              onClick={handleProfileClick}
+            >
+              LOG IN
+            </button>
+          )}
         </div>
       </div>
 

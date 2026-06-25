@@ -148,7 +148,7 @@ export default function Auth() {
                   <input type="text" name="email" className="hidden-autofill-bypass" tabIndex={-1} autoComplete="off" />
                   <input type="password" name="password" className="hidden-autofill-bypass" tabIndex={-1} autoComplete="off" />
 
-                  <h2 className="form-action-title">SIGN IN</h2>
+                  <h2 className="form-action-title">LOG IN</h2>
                   <p className="form-action-subtitle">Enter your details to access your account.</p>
 
                   <div className="login-input-group">
@@ -198,7 +198,7 @@ export default function Auth() {
                   </div>
 
                   <Button type="submit" variant="solid" fullWidth layout="split" disabled={loginLoading}>
-                    <span>{loginLoading ? 'Signing In...' : 'Sign In'}</span>
+                    <span>{loginLoading ? 'Logging In...' : 'Log In'}</span>
                     <svg width="40" height="12" viewBox="0 0 40 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0 6H39M39 6L33 1M39 6L33 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>

@@ -168,7 +168,6 @@ export default function Home() {
           <div className="col-slider-controls">
             <div className="filter-group">
               <button className={`filter-btn ${activeFilter === 'men' ? 'active' : ''}`} onClick={() => setActiveFilter('men')}>MEN</button>
-              <button className={`filter-btn ${activeFilter === 'women' ? 'active' : ''}`} onClick={() => setActiveFilter('women')}>WOMEN</button>
               <button className={`filter-btn ${activeFilter === 'kid' ? 'active' : ''}`} onClick={() => setActiveFilter('kid')}>KID</button>
             </div>
             <div className="carousel-nav">
