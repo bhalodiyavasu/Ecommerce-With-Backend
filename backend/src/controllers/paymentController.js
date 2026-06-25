@@ -2,7 +2,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 
-const CLIENT_URL = "http://localhost:5173";
+const CLIENT_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const calculateShipping = (subtotal) => {
   if (subtotal < 200) return 80;

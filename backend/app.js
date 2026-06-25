@@ -16,9 +16,21 @@ app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 //Middleware
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://192.168.2.153:5173',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(
   cores({
-    origin: 'http://localhost:5173',
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   })
 );
