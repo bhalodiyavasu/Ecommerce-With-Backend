@@ -121,12 +121,9 @@ const buildWelcomeHtml = (username) => {
                       DEVELOPED BY <a href="https://github.com/bhalodiyavasu" target="_blank" style="color: #ffffff; text-decoration: underline; font-weight: 700; letter-spacing: 1px;">VASU BHALODIYA</a>
                     </div>
 
-                    <!-- Sign up notice & Unsubscribe -->
-                    <div style="font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; font-size: 11px; color: #888888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">
-                      YOU'RE GETTING THIS BECAUSE YOU SIGNED UP AT <a href="http://eternix.vasubhalodiya.in/" target="_blank" style="color: #ffffff; text-decoration: underline;">ETERNIX</a>
-                    </div>
-                    <div style="font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; font-size: 11px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">
-                      <a href="http://eternix.vasubhalodiya.in/unsubscribe" target="_blank" style="color: #cccccc; text-decoration: underline;">UNSUBSCRIBE</a>
+                    <!-- Sign up notice -->
+                    <div style="font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; font-size: 11px; color: #888888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 24px;">
+                      THIS IS AN ACCOUNT CONFIRMATION EMAIL FROM <a href="http://eternix.vasubhalodiya.in/" target="_blank" style="color: #ffffff; text-decoration: underline;">ETERNIX</a>
                     </div>
                     
                     <!-- Copyright -->
@@ -149,24 +146,19 @@ const buildWelcomeHtml = (username) => {
 `;
 };
 
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 const sendWelcomeEmail = async (toEmail, username) => {
-  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-    method: "POST",
-    headers: {
-      "api-key": process.env.BREVO_API_KEY,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      sender: { name: "Eternix Store", email: process.env.BREVO_SENDER_EMAIL },
-      to: [{ email: toEmail, name: username }],
-      subject: `Welcome to Eternix, ${username}!`,
-      textContent: `Hi ${username}, welcome to Eternix! Your account has been created successfully. Visit us at ${FRONTEND_URL}`,
-      htmlContent: buildWelcomeHtml(username),
-    }),
+  const { error } = await resend.emails.send({
+    from: `Eternix <${process.env.RESEND_SENDER_EMAIL}>`,
+    to: toEmail,
+    subject: `Welcome to Eternix, ${username}!`,
+    html: buildWelcomeHtml(username),
   });
 
-  if (!response.ok) {
-    const error = await response.json();
+  if (error) {
     throw new Error(error.message);
   }
 };
