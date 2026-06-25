@@ -77,31 +77,10 @@ export default function AppRouter() {
             } 
           />
 
-          {/* Protected routes */}
-          <Route 
-            path="/" 
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/collections" 
-            element={
-              <ProtectedRoute>
-                <Collections />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/cart" 
-            element={
-              <ProtectedRoute>
-                <Cart />
-              </ProtectedRoute>
-            } 
-          />
+          {/* Public routes (no login required) */}
+          <Route path="/" element={<Home />} />
+          <Route path="/collections" element={<Collections />} />
+          <Route path="/cart" element={<Cart />} />
           <Route 
             path="/checkout" 
             element={
@@ -134,14 +113,7 @@ export default function AppRouter() {
               </ProtectedRoute>
             } 
           />
-          <Route 
-            path="*" 
-            element={
-              <ProtectedRoute>
-                <NotFound />
-              </ProtectedRoute>
-            } 
-          />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>

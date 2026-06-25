@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from '@/store/actions/cartActions';
+import { getItems, removeItem, updateItem, subscribe } from '@/utils/guestCart';
 import Button from '@/components/common/Button/Button';
 import Loader from '@/components/common/Loader/Loader';
 import minusIcon from '@/assets/icons/minus.svg';
@@ -9,21 +10,30 @@ import './Cart.css';
 
 export default function Cart() {
   const navigate = useNavigate();
-  const { data, isLoading, isFetching, refetch } = useGetCartQuery();
+  const isLoggedIn = !!localStorage.getItem('userToken');
+  const { data, isLoading, isFetching, refetch } = useGetCartQuery(undefined, { skip: !isLoggedIn });
   const [updateCartItem] = useUpdateCartItemMutation();
   const [removeCartItem] = useRemoveFromCartMutation();
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    if (data?.cart?.items) {
-      setCartItems(data.cart.items);
+    if (isLoggedIn) {
+      setCartItems(data?.cart?.items || []);
     } else {
-      setCartItems([]);
+      setCartItems(getItems());
     }
-  }, [data]);
+  }, [data, isLoggedIn]);
+
+  useEffect(() => {
+    if (isLoggedIn) return;
+    return subscribe(() => setCartItems(getItems()));
+  }, [isLoggedIn]);
 
   const removeFromCart = async (productId, size, color) => {
     const colorName = typeof color === 'object' ? color.name : color;
+
+    if (!isLoggedIn) { removeItem(productId, size, colorName); return; }
+
     const targetItem = cartItems.find(item => {
       if (!item.product) return false;
       const itemProductId = item.product._id || item.product.id;
@@ -64,6 +74,13 @@ export default function Cart() {
 
   const updateQuantity = async (productId, size, color, delta) => {
     const colorName = typeof color === 'object' ? color.name : color;
+
+    if (!isLoggedIn) {
+      const newQty = (cartItems.find(i => i.product._id === productId && i.size === size && (typeof i.color === 'object' ? i.color.name : i.color) === colorName)?.quantity || 0) + delta;
+      if (newQty >= 1) updateItem(productId, size, colorName, newQty);
+      return;
+    }
+
     const targetItem = cartItems.find(item => {
       if (!item.product) return false;
       const itemProductId = item.product._id || item.product.id;
@@ -109,9 +126,19 @@ export default function Cart() {
     }
   };
 
+  const handleContinue = () => {
+    if (!isLoggedIn) {
+      navigate('/auth', { state: { from: '/cart' } });
+      return;
+    }
+    navigate('/checkout');
+  };
+
   const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
-  const subtotal = data?.subtotal ?? data?.cart?.subtotal ?? 0;
-  const cartTotal = data?.cartTotal ?? data?.cart?.cartTotal ?? 0;
+  const subtotal = isLoggedIn
+    ? (data?.subtotal ?? data?.cart?.subtotal ?? 0)
+    : cartItems.reduce((t, i) => t + (i.product?.price || 0) * (i.quantity || 0), 0);
+  const cartTotal = isLoggedIn ? (data?.cartTotal ?? data?.cart?.cartTotal ?? 0) : subtotal;
 
   if (isLoading) {
     return (
@@ -176,10 +203,10 @@ export default function Cart() {
                           </div>
                           <div className="spec-item">
                             <span className="spec-label">COLOR:</span>
-                            <span 
-                              className="spec-color-swatch" 
-                              style={{ 
-                                backgroundColor: colorHex 
+                            <span
+                              className="spec-color-swatch"
+                              style={{
+                                backgroundColor: colorHex
                               }}
                               title={colorName}
                             ></span>
@@ -239,14 +266,14 @@ export default function Cart() {
             <aside className="cart-summary-sidebar">
               <div className="cart-summary-card">
                 <h2 className="summary-card-title">ORDER SUMMARY</h2>
-                
+
                 <div className="summary-row-item">
                   <span className="summary-row-label">SUBTOTAL</span>
                   <span className="summary-row-value">
                     {isFetching ? <span className="shimmer-skeleton"></span> : `₹${subtotal.toFixed(2)}`}
                   </span>
                 </div>
-                
+
                 <div className="summary-row-item">
                   <span className="summary-row-label">SHIPPING</span>
                   <span className="summary-row-value shipping-subtxt-custom">Calculated at checkout</span>
@@ -264,7 +291,7 @@ export default function Cart() {
                 <Button
                   variant="solid"
                   layout="center"
-                  onClick={() => navigate('/checkout')}
+                  onClick={handleContinue}
                 >
                   CONTINUE
                 </Button>

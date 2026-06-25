@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useGetCartQuery } from '@/store/actions/cartActions';
+import { subscribe, getCount } from '@/utils/guestCart';
 import logoIcon from '@/assets/icons/logo.svg';
 import cartIcon from '@/assets/icons/cart.svg';
 import profileIcon from '@/assets/icons/profile.svg';
@@ -13,9 +14,10 @@ export default function Header() {
   const isHome = location.pathname === '/';
   const isCollections = location.pathname === '/collections';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data } = useGetCartQuery();
-
-  const cartCount = data?.cart?.items?.length || 0;
+  const isLoggedIn = !!localStorage.getItem('userToken');
+  const { data } = useGetCartQuery(undefined, { skip: !isLoggedIn });
+  const guestCount = useSyncExternalStore(subscribe, getCount);
+  const cartCount = isLoggedIn ? (data?.cart?.items?.length || 0) : guestCount;
 
   const handleProfileClick = () => {
     const session = localStorage.getItem('userToken');

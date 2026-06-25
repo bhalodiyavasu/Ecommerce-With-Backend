@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import { useRegisterMutation, useLoginMutation } from '@/store/actions/authActions';
+import { useAddToCartMutation } from '@/store/actions/cartActions';
+import { getItems, clearItems } from '@/utils/guestCart';
 import Button from '@/components/common/Button/Button';
 import Loader from '@/components/common/Loader/Loader';
 import modelImg from '@/assets/extracted/authImage.png';
@@ -11,9 +13,11 @@ import './Auth.css';
 
 export default function Auth() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { showToast } = useToast();
   const [registerUser, { isLoading: registerLoading }] = useRegisterMutation();
   const [loginUser, { isLoading: loginLoading }] = useLoginMutation();
+  const [addToCart] = useAddToCartMutation();
 
   const [activeTab, setActiveTab] = useState('login');
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -41,6 +45,13 @@ export default function Auth() {
     }
     setShowPassword(false);
   }, []);
+
+  const mergeGuestCart = async () => {
+    for (const item of getItems()) {
+      try { await addToCart({ productId: item.product._id, quantity: item.quantity, size: item.size, color: item.color }).unwrap(); } catch { }
+    }
+    clearItems();
+  };
 
   const handleTabSwitch = (tab) => {
     setActiveTab(tab);
@@ -71,7 +82,8 @@ export default function Auth() {
         showToast('success', res.message || 'WELCOME BACK!');
         localStorage.setItem('userToken', res.token);
         setIsRedirecting(true);
-        navigate('/', { state: { justLoggedIn: true } });
+        await mergeGuestCart();
+        navigate(location.state?.from || '/', { state: { justLoggedIn: true } });
       } else {
         showToast('error', res?.message || 'Login failed.');
       }
@@ -93,7 +105,8 @@ export default function Auth() {
         showToast('success', res.message || 'ACCOUNT CREATED SUCCESSFULLY!');
         localStorage.setItem('userToken', res.token);
         setIsRedirecting(true);
-        navigate('/', { state: { justLoggedIn: true } });
+        await mergeGuestCart();
+        navigate(location.state?.from || '/', { state: { justLoggedIn: true } });
       } else {
         showToast('error', res?.message || 'Registration failed.');
       }

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/contexts/ToastContext';
 import { useGetProductByIdQuery } from '@/store/actions/productActions';
 import { useAddToCartMutation, useGetCartQuery } from '@/store/actions/cartActions';
+import { addItem as addGuestItem } from '@/utils/guestCart';
 import Button from '@/components/common/Button/Button';
 import Loader from '@/components/common/Loader/Loader';
 import './ProductQuickView.css';
@@ -11,8 +12,9 @@ import './ProductQuickView.css';
 export default function ProductQuickView({ product: initialProduct, productId, onClose }) {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const isLoggedIn = !!localStorage.getItem('userToken');
   const [addToCartApi, { isLoading: isAddingToCart }] = useAddToCartMutation();
-  const { refetch: refetchCart } = useGetCartQuery();
+  const { refetch: refetchCart } = useGetCartQuery(undefined, { skip: !isLoggedIn });
 
   const { data: apiData, isLoading } = useGetProductByIdQuery(productId, {
     skip: !productId,
@@ -50,6 +52,12 @@ export default function ProductQuickView({ product: initialProduct, productId, o
       (c) => c.name.toUpperCase() === selectedColor.toUpperCase()
     ) || { name: selectedColor || 'DEFAULT', hex: '#000000' };
 
+    if (!isLoggedIn) {
+      addGuestItem({ product, size: selectedSize, color: colorObj, quantity: 1 });
+      showToast('success', 'PRODUCT ADDED TO CART');
+      return true;
+    }
+
     try {
       const res = await addToCartApi({
         productId: product._id || product.id,
@@ -84,7 +92,7 @@ export default function ProductQuickView({ product: initialProduct, productId, o
     if (success) {
       onClose();
       navigate('/cart');
-    }i
+    }
   };
 
   return createPortal(
