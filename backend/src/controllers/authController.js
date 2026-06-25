@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generateToken = require("../utils/generateToken");
+const { sendWelcomeEmail } = require("../utils/emailService");
 
 const registerUser = async (req, res) => {
   try {
@@ -24,7 +25,11 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    const token = generateToken(res, user._id); 
+    const token = generateToken(res, user._id);
+
+    sendWelcomeEmail(user.email, user.username).catch((err) =>
+      console.error("Welcome email failed:", err.message)
+    );
 
     res.status(201).json({
       status: "SUCCESS",
