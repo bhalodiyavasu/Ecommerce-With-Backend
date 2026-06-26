@@ -163,23 +163,30 @@ export default function PaymentSuccess() {
               </div>
             </div>
             <div className="receipt-meta-details-right">
-              <div className="meta-row">
-                <span className="meta-label">ORDER ID</span>
-                <span className="meta-value">{(order.orderNumber || order._id).toUpperCase()}</span>
-              </div>
-              {order.paymentId && (
-                <div className="meta-row">
-                  <span className="meta-label">PAYMENT ID</span>
-                  <span className="meta-value" style={{ fontFamily: 'monospace' }}>{order.paymentId}</span>
+              <div className="receipt-payment-card">
+                <span className="payment-card-title">PAYMENT & ORDER INFO</span>
+                <div className="payment-card-row">
+                  <span className="card-row-label">ORDER ID</span>
+                  <span className="card-row-value">{(order.orderNumber || order._id).toUpperCase()}</span>
                 </div>
-              )}
-              <div className="meta-row">
-                <span className="meta-label">DATE</span>
-                <span className="meta-value">{new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              </div>
-              <div className="meta-row">
-                <span className="meta-label">STATUS</span>
-                <span className="meta-value">PAID — <span className="receipt-razorpay-txt">STRIPE</span></span>
+                <div className="payment-card-row">
+                  <span className="card-row-label">DATE</span>
+                  <span className="card-row-value">{new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+                <div className="payment-card-row">
+                  <span className="card-row-label">METHOD</span>
+                  <span className="card-row-value">STRIPE</span>
+                </div>
+                {order.paymentId && (
+                  <div className="payment-card-row payment-id-row">
+                    <span className="card-row-label">PAYMENT ID</span>
+                    <span className="card-row-value-mono">{order.paymentId}</span>
+                  </div>
+                )}
+                <div className="payment-card-row">
+                  <span className="card-row-label">STATUS</span>
+                  <span className="card-row-status-badge">PAID</span>
+                </div>
               </div>
             </div>
           </div>

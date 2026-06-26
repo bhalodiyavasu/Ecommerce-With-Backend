@@ -339,7 +339,7 @@
   background-color: var(--color-white);
   border: 1px solid var(--color-black);
   width: 100%;
-  max-width: 580px;
+  max-width: 750px;
   padding: 35px;
   box-sizing: border-box;
   max-height: 90vh;
@@ -377,8 +377,8 @@
 
 .receipt-info-section {
   display: grid;
-  grid-template-columns: 1.7fr 1fr;
-  gap: 40px;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 25px;
   margin-bottom: 30px;
@@ -430,6 +430,72 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.receipt-payment-card {
+  background-color: #fafafa;
+  border: 1px solid var(--color-border-light, #d9d9d9);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.payment-card-title {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-black);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-black);
+  padding-bottom: 8px;
+}
+
+.payment-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 11px;
+}
+
+.payment-card-row.payment-id-row {
+  border-top: 1px dashed #e5e5e5;
+  border-bottom: 1px dashed #e5e5e5;
+  padding: 8px 0;
+}
+
+.card-row-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.card-row-value {
+  font-weight: 700;
+  color: var(--color-black);
+}
+
+.card-row-value-mono {
+  width: auto;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-black);
+  word-break: break-all;
+}
+
+.card-row-status-badge {
+  background-color: #ebfbee;
+  color: #2b8a3e;
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.5px;
 }
 
 .meta-row {
@@ -589,7 +655,7 @@
     max-height: none !important;
     overflow: visible !important;
     width: 100% !important;
-    max-width: 580px !important;
+    max-width: 100% !important;
     padding: 0 !important;
     margin: 0 auto !important;
   }
