@@ -99,6 +99,13 @@ export default function PaymentSuccess() {
                     <span className="summary-item-name">{item.product.name}</span>
                     <div className="summary-item-meta">
                       <span className="meta-badge">{item.size}</span>
+                      {item.color && (
+                        <span 
+                          className="meta-color-box" 
+                          style={{ backgroundColor: item.color.hex || item.color }} 
+                          title={item.color.name || item.color}
+                        />
+                      )}
                       <span className="meta-badge-qty">({item.quantity})</span>
                     </div>
                   </div>

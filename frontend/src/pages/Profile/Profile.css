@@ -380,6 +380,19 @@
   font-size: 8px;
 }
 
+.order-item-color-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-item-color-box {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--color-border-light, #d9d9d9);
+  display: inline-block;
+}
+
 .order-item-math {
   display: flex;
   align-items: center;

@@ -348,7 +348,14 @@ export default function Profile() {
                                       <div className="order-item-specs">
                                         <span>SIZE: <strong>{item.size}</strong></span>
                                         <span className="bullet-dot">•</span>
-                                        <span>COLOR: <strong>{item.color?.name || item.color}</strong></span>
+                                        <span className="order-item-color-wrapper">
+                                          COLOR: <strong>{item.color?.name || item.color}</strong>
+                                          <span 
+                                            className="order-item-color-box" 
+                                            style={{ backgroundColor: item.color?.hex || item.color }} 
+                                            title={item.color?.name || item.color}
+                                          />
+                                        </span>
                                       </div>
                                     </div>
                                     <div className="order-item-math">
