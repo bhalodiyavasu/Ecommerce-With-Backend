@@ -22,14 +22,10 @@ export const userApi = createApi({
       }),
       invalidatesTags: ['Profile'],
     }),
-    createOrder: builder.mutation({
-      query: (orderData) => ({
-        url: '/orders',
-        method: 'POST',
-        body: orderData,
-      }),
+    getMyOrders: builder.query({
+      query: () => '/orders/my-orders',
     }),
   }),
 });
 
-export const { useGetProfileQuery, useUpdateProfileMutation, useCreateOrderMutation } = userApi;
+export const { useGetProfileQuery, useUpdateProfileMutation, useGetMyOrdersQuery } = userApi;

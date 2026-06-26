@@ -17,9 +17,9 @@ export default function Checkout() {
   const { data: profileData } = useGetProfileQuery();
   const [createCheckoutSession, { isLoading: isPaymentLoading }] = useCreateCheckoutSessionMutation();
 
-  const cartItems = data?.cart?.items || [];
-  const subtotal = data?.subtotal ?? data?.cart?.subtotal ?? 0;
-  const cartTotal = data?.cartTotal ?? data?.cart?.cartTotal ?? 0;
+  const cartItems = data?.items || [];
+  const subtotal = data?.subtotal ?? 0;
+  const cartTotal = data?.cartTotal ?? 0;
   const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
 
   const [formData, setFormData] = useState({

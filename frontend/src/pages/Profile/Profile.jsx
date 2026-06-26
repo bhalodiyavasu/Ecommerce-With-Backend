@@ -7,8 +7,9 @@ import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Form/Input';
 import Textarea from '@/components/common/Form/Textarea';
 import { useLogoutMutation } from '@/store/actions/authActions';
-import { useGetProfileQuery, useUpdateProfileMutation } from '@/store/actions/userActions';
+import { useGetProfileQuery, useUpdateProfileMutation, useGetMyOrdersQuery } from '@/store/actions/userActions';
 import Loader from '@/components/common/Loader/Loader';
+import { formatDate, formatAddress, getProductTag } from '@/utils/formatebook';
 import './Profile.css';
 
 // Mock order history populated from ALL_PRODUCTS
@@ -56,6 +57,10 @@ export default function Profile() {
 
   const { data: profileResponse, isLoading: isProfileLoading } = useGetProfileQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  const { data: ordersResponse, isLoading: isOrdersLoading } = useGetMyOrdersQuery(undefined, {
+    skip: activeTab !== 'orders'
+  });
+
 
   useEffect(() => {
     if (profileResponse?.status === 'SUCCESS' && profileResponse?.user) {
@@ -275,92 +280,103 @@ export default function Profile() {
 
             {/* ORDERS TAB PANEL */}
             {activeTab === 'orders' && (
-              <div className="profile-orders-list">
-                {MOCK_ORDERS.length === 0 ? (
-                  <div className="empty-orders-view">
-                    <p className="empty-orders-text">YOU HAVE NOT PLACED ANY ORDERS YET.</p>
-                  </div>
-                ) : (
-                  MOCK_ORDERS.map(order => (
-                    <div key={order.id} className={`order-history-card ${expandedOrder === order.id ? 'expanded' : ''}`}>
-                      <div className="order-summary-row" onClick={() => toggleOrderExpand(order.id)}>
-                        <div className="order-summary-col">
-                          <span className="order-col-lbl">ORDER ID</span>
-                          <span className="order-col-val">{order.id}</span>
-                        </div>
-                        
-                        <div className="order-summary-col">
-                          <span className="order-col-lbl">DATE</span>
-                          <span className="order-col-val">{order.date}</span>
-                        </div>
-
-                        <div className="order-summary-col">
-                          <span className="order-col-lbl">TOTAL</span>
-                          <span className="order-col-val">₹{order.total.toFixed(2)}</span>
-                        </div>
-
-                        <div className="order-summary-col">
-                          <span className="order-col-lbl">STATUS</span>
-                          <span className="order-status-badge">{order.status}</span>
-                        </div>
-
-                        <div className="order-toggle-arrow">
-                          <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                      </div>
-
-                      {expandedOrder === order.id && (
-                        <div className="order-expanded-details">
-                          <div className="order-details-divider"></div>
-                          
-                          <h4 className="expanded-details-title">ORDERED ITEMS</h4>
-                          <div className="order-items-grid">
-                            {order.items.map((item, idx) => (
-                              <div key={`${item.product.id}-${idx}`} className="order-item-detail-row">
-                                <div className="order-item-thumb-wrapper">
-                                  <img src={item.product.image} alt="" className="order-item-thumb" />
-                                </div>
-                                <div className="order-item-text-info">
-                                  <span className="order-item-tag">{item.product.tag}</span>
-                                  <h5 className="order-item-name">{item.product.name}</h5>
-                                  <div className="order-item-specs">
-                                    <span>SIZE: <strong>{item.size}</strong></span>
-                                    <span className="bullet-dot">•</span>
-                                    <span>COLOR: <strong>{item.color}</strong></span>
-                                  </div>
-                                </div>
-                                <div className="order-item-math">
-                                  <span className="order-item-qty">QTY: {item.quantity}</span>
-                                  <span className="order-item-subtotal">₹{(item.product.price * item.quantity).toFixed(2)}</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-
-                          <div className="order-details-divider"></div>
-                          
-                          <div className="order-footer-details">
-                            <div className="order-shipping-summary">
-                              <h4 className="expanded-details-title">SHIPPING ADDRESS</h4>
-                              <p className="shipping-address-txt">{order.shippingAddress}</p>
-                            </div>
-                            <div className="order-actions-summary">
-                              <Button
-                                variant="solid"
-                                onClick={() => showToast('success', 'INVOICE DOWNLOAD STARTED.')}
-                              >
-                                DOWNLOAD INVOICE
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+              isOrdersLoading ? (
+                <div className="profile-loader-wrapper">
+                  <Loader />
+                </div>
+              ) : (
+                <div className="profile-orders-list">
+                  {!ordersResponse?.orders || ordersResponse.orders.length === 0 ? (
+                    <div className="empty-orders-view">
+                      <p className="empty-orders-text">YOU HAVE NOT PLACED ANY ORDERS YET.</p>
                     </div>
-                  ))
-                )}
-              </div>
+                  ) : (
+                    ordersResponse.orders.map(order => (
+                      <div key={order._id} className={`order-history-card ${expandedOrder === order._id ? 'expanded' : ''}`}>
+                        <div className="order-summary-row" onClick={() => toggleOrderExpand(order._id)}>
+                          <div className="order-summary-col">
+                            <span className="order-col-lbl">ORDER ID</span>
+                            <span className="order-col-val">{order._id.toUpperCase()}</span>
+                          </div>
+                          
+                          <div className="order-summary-col">
+                            <span className="order-col-lbl">DATE</span>
+                            <span className="order-col-val">{formatDate(order.createdAt)}</span>
+                          </div>
+
+                          <div className="order-summary-col">
+                            <span className="order-col-lbl">TOTAL</span>
+                            <span className="order-col-val">₹{(order.totalAmount || 0).toFixed(2)}</span>
+                          </div>
+
+                          <div className="order-summary-col">
+                            <span className="order-col-lbl">STATUS</span>
+                            <span className="order-status-badge">{order.status.toUpperCase()}</span>
+                          </div>
+
+                          <div className="order-toggle-arrow">
+                            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                        </div>
+
+                        {expandedOrder === order._id && (
+                          <div className="order-expanded-details">
+                            <div className="order-details-divider"></div>
+                            
+                            <h4 className="expanded-details-title">ORDERED ITEMS</h4>
+                            <div className="order-items-grid">
+                              {order.items.map((item, idx) => {
+                                const hasProduct = !!item.product;
+                                return (
+                                  <div key={`${item.product?._id || idx}-${idx}`} className="order-item-detail-row">
+                                    <div className="order-item-thumb-wrapper">
+                                      {hasProduct ? (
+                                        <img src={item.product.image} alt="" className="order-item-thumb" />
+                                      ) : (
+                                        <div className="order-item-not-found-thumb">?</div>
+                                      )}
+                                    </div>
+                                    <div className="order-item-text-info">
+                                      <span className="order-item-tag">
+                                        {hasProduct ? getProductTag(item.product) : "UNAVAILABLE"}
+                                      </span>
+                                      <h5 className={`order-item-name ${!hasProduct ? 'unavailable' : ''}`}>
+                                        {hasProduct ? item.product.name : "PRODUCT NOT FOUND / DELETED"}
+                                      </h5>
+                                      <div className="order-item-specs">
+                                        <span>SIZE: <strong>{item.size}</strong></span>
+                                        <span className="bullet-dot">•</span>
+                                        <span>COLOR: <strong>{item.color?.name || item.color}</strong></span>
+                                      </div>
+                                    </div>
+                                    <div className="order-item-math">
+                                      <span className="order-item-qty">QTY: {item.quantity}</span>
+                                      <span className="order-item-subtotal">
+                                        ₹{((item.product?.price || 0) * item.quantity).toFixed(2)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            <div className="order-details-divider"></div>
+                            
+                            <div className="order-footer-details">
+                              <div className="order-shipping-summary">
+                                <h4 className="expanded-details-title">SHIPPING ADDRESS</h4>
+                                <p className="shipping-address-txt">{formatAddress(order.shippingInfo)}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              )
             )}
 
           </div>

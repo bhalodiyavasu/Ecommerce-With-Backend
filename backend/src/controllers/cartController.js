@@ -43,7 +43,13 @@ const getCart = async (req, res) => {
     const cart = await Cart.findOne({ user: req.user._id }).populate("items.product");
 
     if (!cart) {
-      return res.status(404).json({ status: "FAILURE", message: "Cart not found" });
+      return res.status(200).json({
+        status: "SUCCESS",
+        items: [],
+        subtotal: 0,
+        shippingCharge: 0,
+        cartTotal: 0
+      });
     }
 
     let subtotal = 0;
@@ -58,14 +64,9 @@ const getCart = async (req, res) => {
     const shippingCharge = 0;
     const cartTotal = subtotal + shippingCharge;
 
-    const cartObj = cart.toObject();
-    cartObj.subtotal = subtotal;
-    cartObj.shippingCharge = shippingCharge;
-    cartObj.cartTotal = cartTotal;
-
     res.status(200).json({
       status: "SUCCESS",
-      cart: cartObj,
+      items: cart.items || [],
       subtotal,
       shippingCharge,
       cartTotal

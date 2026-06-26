@@ -18,7 +18,7 @@ export default function Cart() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      setCartItems(data?.cart?.items || []);
+      setCartItems(data?.items || []);
     } else {
       setCartItems(getItems());
     }
@@ -66,8 +66,9 @@ export default function Cart() {
     } catch (err) {
       console.error("Failed to remove item from cart in backend:", err);
       // Revert if API call fails
-      if (data?.cart?.items) {
-        setCartItems(data.cart.items);
+      const items = data?.items;
+      if (items) {
+        setCartItems(items);
       }
     }
   };
@@ -120,8 +121,9 @@ export default function Cart() {
     } catch (err) {
       console.error("Failed to update cart quantity in backend:", err);
       // Revert local state to query data state
-      if (data?.cart?.items) {
-        setCartItems(data.cart.items);
+      const items = data?.items;
+      if (items) {
+        setCartItems(items);
       }
     }
   };
@@ -136,9 +138,9 @@ export default function Cart() {
 
   const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
   const subtotal = isLoggedIn
-    ? (data?.subtotal ?? data?.cart?.subtotal ?? 0)
+    ? (data?.subtotal ?? 0)
     : cartItems.reduce((t, i) => t + (i.product?.price || 0) * (i.quantity || 0), 0);
-  const cartTotal = isLoggedIn ? (data?.cartTotal ?? data?.cart?.cartTotal ?? 0) : subtotal;
+  const cartTotal = isLoggedIn ? (data?.cartTotal ?? 0) : subtotal;
 
   if (isLoading) {
     return (

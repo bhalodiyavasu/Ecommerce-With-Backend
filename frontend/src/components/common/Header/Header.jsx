@@ -17,7 +17,7 @@ export default function Header() {
   const isLoggedIn = !!localStorage.getItem('userToken');
   const { data } = useGetCartQuery(undefined, { skip: !isLoggedIn });
   const guestCount = useSyncExternalStore(subscribe, getCount);
-  const cartCount = isLoggedIn ? (data?.cart?.items?.length || 0) : guestCount;
+  const cartCount = isLoggedIn ? (data?.items?.length || 0) : guestCount;
 
   const handleProfileClick = () => {
     const session = localStorage.getItem('userToken');
