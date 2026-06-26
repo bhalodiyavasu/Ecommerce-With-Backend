@@ -1,90 +1,62 @@
+const { getAuth } = require("../config/firebaseAdmin");
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const generateToken = require("../utils/generateToken");
 const { sendWelcomeEmail } = require("../utils/emailService");
 
-const registerUser = async (req, res) => {
+const googleAuth = async (req, res) => {
   try {
-    const { username, email, password } = req.body
+    const { idToken } = req.body;
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ status: "FAILURE", message: "All fields are required" });
+    if (!idToken) {
+      return res.status(400).json({ status: "FAILURE", message: "idToken is required" });
     }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ status: "FAILURE", message: "Email already exist" });
-    }
+    const decoded = await getAuth().verifyIdToken(idToken);
+    const { uid, email, name, picture } = decoded;
 
-    const hashedPassword = await bcrypt.hash(String(password), 10);
+    let user = await User.findOne({ email });
 
-    const user = await User.create({
-      username,
-      email,
-      password: hashedPassword,
-    });
+    if (user) {
+      if (!user.googleId) {
+        user.googleId = uid;
+        user.avatar = picture || user.avatar;
+        await user.save();
+      }
+    } else {
+      user = await User.create({
+        username: name || email.split("@")[0],
+        email,
+        googleId: uid,
+        avatar: picture || "",
+      });
 
-    const token = generateToken(res, user._id);
-
-    sendWelcomeEmail(user.email, user.username)
-      .then(() => console.log("Welcome email sent to:", user.email))
-      .catch((err) => console.error("Welcome email failed:", err.message));
-
-    res.status(201).json({
-      status: "SUCCESS",
-      message: "User registered successfully",
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({ status: "FAILURE", message: error.message });
-  }
-};
-
-const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ status: "FAILURE", message: "All fields are required" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ status: "FAILURE", message: "Invalid credentials" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ status: "FAILURE", message: "Invalid credentials" });
+      sendWelcomeEmail(user.email, user.username)
+        .then(() => console.log("Welcome email sent to:", user.email))
+        .catch((err) => console.error("Welcome email failed:", err.message));
     }
 
     const token = generateToken(res, user._id);
 
     res.status(200).json({
       status: "SUCCESS",
-      message: "Login successfully",
+      message: "Logged in successfully",
       token,
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
+        avatar: user.avatar,
       },
     });
   } catch (error) {
-    res.status(500).json({ status: "FAILURE", message: error.message });
+    res.status(401).json({ status: "FAILURE", message: "Invalid Google token" });
   }
 };
 
 const logoutUser = (req, res) => {
   res.cookie("token", "", {
     httpOnly: true,
-    maxAge: 0, // ← immediately expire
+    maxAge: 0,
   });
 
   res.status(200).json({
@@ -93,4 +65,4 @@ const logoutUser = (req, res) => {
   });
 };
 
-module.exports = { registerUser, loginUser, logoutUser };
+module.exports = { googleAuth, logoutUser };

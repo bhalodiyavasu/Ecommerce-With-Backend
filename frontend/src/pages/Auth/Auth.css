@@ -15,7 +15,6 @@
   min-height: 0;
 }
 
-/* Left Column: Editorial cover image */
 .login-media-side {
   flex: 1;
   position: relative;
@@ -73,7 +72,6 @@
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Right Column: Auth Forms */
 .login-form-side {
   flex: 1;
   display: flex;
@@ -93,7 +91,6 @@
   gap: clamp(24px, 3vw, 40px);
 }
 
-/* Logo container style */
 .login-logo-container {
   cursor: pointer;
   display: flex;
@@ -112,11 +109,10 @@
   width: auto;
 }
 
-/* Form block */
 .login-form-block {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .form-action-title {
@@ -136,133 +132,67 @@
   line-height: 1.4;
 }
 
-/* Inputs */
-.login-input-group {
-  position: relative;
-  width: 100%;
-}
-
-.login-input-group input {
-  width: 100%;
-  height: 40px;
-  border: none;
-  border-bottom: 1px solid var(--color-border-light, #d9d9d9);
-  padding: 10px;
-  font-family: var(--font-sans);
-  font-size: 14px;
-  color: var(--color-black, #000000);
-  background-color: transparent;
-  border-radius: 0;
-  transition: border-color 0.3s ease, padding-left 0.3s ease;
-}
-
-.login-input-group input::placeholder {
-  color: var(--color-gray-dark, #787878);
-  transition: color 0.3s ease;
-}
-
-.login-input-group input:focus {
-  outline: none;
-  border-bottom-color: var(--color-black, #000000);
-  padding-left: 4px;
-}
-
-.login-input-group input:focus::placeholder {
-  color: transparent;
-}
-
-/* Forgot password link */
-.forgot-password-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -6px;
-}
-
-.forgot-lnk {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-gray-dark, #787878);
-  cursor: pointer;
-  text-decoration: none;
-  transition: color 0.2s ease;
-  letter-spacing: 0.3px;
-}
-
-.forgot-lnk:hover {
-  color: var(--color-black, #000000);
-}
-
-/* Auth switch row */
-.auth-switch-row {
+/* Google Sign-in Button */
+.google-signin-btn {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 6px;
-}
-
-.auth-switch-text {
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 48px;
+  background-color: var(--color-white, #ffffff);
+  border: 1.5px solid var(--color-border-light, #d9d9d9);
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--color-gray-dark, #787878);
-  letter-spacing: 0.6px;
-}
-
-.auth-switch-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 800;
+  letter-spacing: 1px;
   color: var(--color-black, #000000);
   cursor: pointer;
-  letter-spacing: 0.6px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: opacity 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.auth-switch-btn:hover {
-  opacity: 0.7;
+.google-signin-btn:hover {
+  border-color: var(--color-black, #000000);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background-color: var(--color-bg-light, #f9f9f9);
 }
 
-/* Notice Footer */
-.login-form-footer {
-  border-top: 1px solid var(--color-border-light, #d9d9d9);
-  padding-top: 20px;
+.google-signin-btn:active {
+  transform: scale(0.99);
 }
 
-.login-form-footer p {
-  font-family: var(--font-sans);
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--color-gray-dark, #787878);
-  line-height: 1.6;
+/* Loader */
+.auth-form-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+  max-width: 440px;
+  width: 100%;
+  gap: 16px;
+}
+
+.auth-loader-text {
+  font-family: var(--font-sans, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-gray-dark, #555555);
   letter-spacing: 0.3px;
-  margin: 0;
+  text-transform: uppercase;
 }
 
-/* Keyframes and Animations */
+/* Animation */
 .animate-fade-in {
   animation: loginFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes loginFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 991px) {
   .login-page-container {
     height: auto;
@@ -289,9 +219,7 @@
     right: 40px;
   }
 
-  .media-slogan {
-    font-size: 30px;
-  }
+  .media-slogan { font-size: 30px; }
 
   .login-form-side {
     flex: none;
@@ -301,13 +229,9 @@
 }
 
 @media (max-width: 576px) {
-  .login-page-container {
-    overflow-y: auto;
-  }
+  .login-page-container { overflow-y: auto; }
 
-  .login-media-side {
-    height: 280px;
-  }
+  .login-media-side { height: 280px; }
 
   .login-media-overlay {
     bottom: 30px;
@@ -315,73 +239,9 @@
     right: 24px;
   }
 
-  .media-slogan {
-    font-size: 24px;
-  }
+  .media-slogan { font-size: 24px; }
 
-  .login-form-side {
-    padding: 36px 20px 40px;
-  }
+  .login-form-side { padding: 36px 20px 40px; }
 
-  .login-form-wrapper {
-    gap: 30px;
-  }
-
-  .auth-switch-row {
-    gap: 8px;
-  }
-}
-
-.auth-form-loader-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 350px;
-  max-width: 440px;
-  width: 100%;
-  gap: 16px;
-}
-
-.auth-loader-text {
-  font-family: var(--font-sans, sans-serif);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-gray-dark, #555555);
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
-
-.hidden-autofill-bypass {
-  position: absolute;
-  top: -1000px;
-  left: -1000px;
-}
-
-.password-input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-}
-
-.password-input-field {
-  text-transform: none !important;
-}
-
-.password-toggle-btn {
-  width: 40px !important;
-  height: 40px !important;
-  min-height: 40px !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  flex-shrink: 0;
-}
-
-.password-toggle-icon {
-  width: 16px;
-  height: 16px;
-  display: block;
+  .login-form-wrapper { gap: 30px; }
 }

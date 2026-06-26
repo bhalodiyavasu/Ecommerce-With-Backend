@@ -46,7 +46,17 @@
   font-weight: 800;
   letter-spacing: 1.5px;
   margin-bottom: 24px;
-  border-radius: 0; /* SQUARE PROFILE ICON */
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.profile-avatar-square .profile-avatar-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+  font-size: 12px;
 }
 
 .profile-name-text {

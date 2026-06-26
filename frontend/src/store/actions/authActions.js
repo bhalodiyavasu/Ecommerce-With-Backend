@@ -9,18 +9,11 @@ export const authApi = createApi({
     credentials: 'include',
   }),
   endpoints: (builder) => ({
-    register: builder.mutation({
-      query: (userData) => ({
-        url: '/auth/register',
+    googleAuth: builder.mutation({
+      query: (idToken) => ({
+        url: '/auth/google',
         method: 'POST',
-        body: userData,
-      }),
-    }),
-    login: builder.mutation({
-      query: (userData) => ({
-        url: '/auth/login',
-        method: 'POST',
-        body: userData,
+        body: { idToken },
       }),
     }),
     logout: builder.mutation({
@@ -32,4 +25,4 @@ export const authApi = createApi({
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation } = authApi;
+export const { useGoogleAuthMutation, useLogoutMutation } = authApi;

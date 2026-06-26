@@ -1,6 +1,7 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useGetCartQuery } from '@/store/actions/cartActions';
+import { useGetProfileQuery } from '@/store/actions/userActions';
 import { subscribe, getCount } from '@/utils/guestCart';
 import logoIcon from '@/assets/icons/logo.svg';
 import cartIcon from '@/assets/icons/cart.svg';
@@ -15,13 +16,14 @@ export default function Header() {
   const isCollections = location.pathname === '/collections';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isLoggedIn = !!localStorage.getItem('userToken');
+  const { data: profileData } = useGetProfileQuery(undefined, { skip: !isLoggedIn });
+  const userAvatar = profileData?.user?.avatar || null;
   const { data } = useGetCartQuery(undefined, { skip: !isLoggedIn });
   const guestCount = useSyncExternalStore(subscribe, getCount);
   const cartCount = isLoggedIn ? (data?.items?.length || 0) : guestCount;
 
   const handleProfileClick = () => {
-    const session = localStorage.getItem('userToken');
-    if (session) {
+    if (localStorage.getItem('userToken')) {
       navigate('/profile');
     } else {
       navigate('/auth');
@@ -32,10 +34,9 @@ export default function Header() {
     <header className="header">
       <div className="header-top">
         <div className="header-left">
-          {/* Mobile hamburger menu button */}
-          <button 
-            className="hamburger-btn" 
-            onClick={() => setIsMenuOpen(true)} 
+          <button
+            className="hamburger-btn"
+            onClick={() => setIsMenuOpen(true)}
             aria-label="Open Menu"
           >
             <svg width="26" height="16" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +46,6 @@ export default function Header() {
             </svg>
           </button>
 
-          {/* Desktop nav links */}
           <nav className="nav-links">
             <Link to="/" className={`nav-link ${isHome ? 'active' : ''}`}>HOME</Link>
             <Link to="/collections" className={`nav-link ${isCollections ? 'active' : ''}`}>COLLECTIONS</Link>
@@ -66,27 +66,27 @@ export default function Header() {
             </div>
             <div className="cart-badge-pill">{cartCount}</div>
           </Link>
-          
+
           {isLoggedIn ? (
-            <button 
-              className="circular-btn profile-btn" 
-              aria-label="Profile" 
+            <button
+              className="circular-btn profile-btn"
+              aria-label="Profile"
               onClick={handleProfileClick}
             >
-              <img src={profileIcon} alt="" className="inverted-icon" />
+              {userAvatar ? (
+                <img src={userAvatar} alt="Profile" className="header-avatar-img" />
+              ) : (
+                <img src={profileIcon} alt="" className="inverted-icon" />
+              )}
             </button>
           ) : (
-            <button 
-              className="header-login-btn" 
-              onClick={handleProfileClick}
-            >
+            <button className="header-login-btn" onClick={handleProfileClick}>
               LOG IN
             </button>
           )}
         </div>
       </div>
 
-      {/* Mobile Navigation Drawer Panel */}
       <Drawer
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}

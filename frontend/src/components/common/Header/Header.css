@@ -278,3 +278,11 @@
 .header-login-btn:hover {
   opacity: 0.8;
 }
+
+.circular-btn .header-avatar-img {
+  width: 50px !important;
+  height: 50px !important;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}

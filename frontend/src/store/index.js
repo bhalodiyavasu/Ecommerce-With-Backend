@@ -6,6 +6,13 @@ import { cartApi } from './actions/cartActions';
 import { userApi } from './actions/userActions';
 import { paymentApi } from './actions/paymentActions';
 
+export const resetAllApiStates = () => (dispatch) => {
+  dispatch(userApi.util.resetApiState());
+  dispatch(cartApi.util.resetApiState());
+  dispatch(authApi.util.resetApiState());
+  dispatch(paymentApi.util.resetApiState());
+};
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,

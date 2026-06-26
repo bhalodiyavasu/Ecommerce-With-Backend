@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useToast } from '@/contexts/ToastContext';
 import { ALL_PRODUCTS } from '@/data/mockData';
 import Modal from '@/components/common/Modal/Modal';
@@ -8,6 +9,7 @@ import Input from '@/components/common/Form/Input';
 import Textarea from '@/components/common/Form/Textarea';
 import { useLogoutMutation } from '@/store/actions/authActions';
 import { useGetProfileQuery, useUpdateProfileMutation, useGetMyOrdersQuery } from '@/store/actions/userActions';
+import { resetAllApiStates } from '@/store';
 import Loader from '@/components/common/Loader/Loader';
 import { formatDate, formatAddress, getProductTag } from '@/utils/formatebook';
 import './Profile.css';
@@ -39,6 +41,7 @@ const MOCK_ORDERS = [
 
 export default function Profile() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { showToast } = useToast();
   const [logoutUser] = useLogoutMutation();
 
@@ -107,8 +110,8 @@ export default function Profile() {
     } catch (error) {
       console.error('Logout API call failed:', error);
     }
-    // Clear mock session
     localStorage.removeItem('userToken');
+    dispatch(resetAllApiStates());
     showToast('success', 'LOGGED OUT SUCCESSFULLY.');
     navigate('/auth');
   };
@@ -127,7 +130,11 @@ export default function Profile() {
           {/* Top block: Square profile details card */}
           <div className="profile-card-square">
             <div className="profile-avatar-square">
-              {profileResponse?.user?.username ? profileResponse.user.username.substring(0, 2).toUpperCase() : 'US'}
+              {profileResponse?.user?.avatar ? (
+                <img src={profileResponse.user.avatar} alt="Profile" className="profile-avatar-img" />
+              ) : (
+                profileResponse?.user?.username ? profileResponse.user.username.substring(0, 2).toUpperCase() : 'US'
+              )}
             </div>
             <h2 className="profile-name-text">
               {profileResponse?.user?.username}
