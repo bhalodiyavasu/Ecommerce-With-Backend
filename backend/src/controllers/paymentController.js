@@ -11,6 +11,36 @@ const calculateShipping = (subtotal) => {
   return 0;
 };
 
+const generateOrderNumber = () => {
+  const letters = "abcdefghijklmnopqrstuvwxyz";
+  const digits = "0123456789";
+
+  // 1. Generate 3 random alphabets for the prefix
+  let prefix = "";
+  for (let i = 0; i < 3; i++) {
+    prefix += letters.charAt(Math.floor(Math.random() * letters.length));
+  }
+
+  // 2. For the 5-char alphanumeric suffix, pick 3:2 or 2:3 ratio of letters:numbers randomly
+  const ratioOption = Math.random() < 0.5 ? { l: 3, d: 2 } : { l: 2, d: 3 };
+
+  let suffixChars = [];
+  for (let i = 0; i < ratioOption.l; i++) {
+    suffixChars.push(letters.charAt(Math.floor(Math.random() * letters.length)));
+  }
+  for (let i = 0; i < ratioOption.d; i++) {
+    suffixChars.push(digits.charAt(Math.floor(Math.random() * digits.length)));
+  }
+
+  // Shuffle the suffix characters randomly
+  for (let i = suffixChars.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [suffixChars[i], suffixChars[j]] = [suffixChars[j], suffixChars[i]];
+  }
+
+  return `${prefix}-${suffixChars.join("")}`;
+};
+
 const createOrderFromSession = async (session) => {
   const existing = await Order.findOne({ stripeSessionId: session.id });
   if (existing) return;
@@ -24,6 +54,17 @@ const createOrderFromSession = async (session) => {
 
   const subtotal = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const shippingCharge = calculateShipping(subtotal);
+
+  // Generate unique order number
+  let orderNumber;
+  let isUnique = false;
+  while (!isUnique) {
+    orderNumber = generateOrderNumber();
+    const existingOrder = await Order.findOne({ orderNumber });
+    if (!existingOrder) {
+      isUnique = true;
+    }
+  }
 
   await Order.create({
     user: userId,
@@ -40,6 +81,8 @@ const createOrderFromSession = async (session) => {
     totalAmount: subtotal + shippingCharge,
     paymentStatus: "Paid",
     stripeSessionId: session.id,
+    orderNumber,
+    paymentId: session.payment_intent,
   });
 
   await Cart.findOneAndDelete({ user: userId });

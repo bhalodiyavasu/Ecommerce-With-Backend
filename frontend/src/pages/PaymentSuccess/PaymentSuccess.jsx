@@ -30,7 +30,6 @@ export default function PaymentSuccess() {
     return (
       <div className="success-page-container success-loading-view">
         <Loader />
-        <p className="success-loading-text">PAYMENT RECEIPT GENERATING...</p>
       </div>
     );
   }
@@ -62,8 +61,14 @@ export default function PaymentSuccess() {
         <div className="success-details-grid">
           <div className="success-detail-box">
             <span className="detail-lbl">ORDER NUMBER</span>
-            <span className="detail-val accent-order-id">{order._id}</span>
+            <span className="detail-val accent-order-id">{(order.orderNumber || order._id).toUpperCase()}</span>
           </div>
+          {order.paymentId && (
+            <div className="success-detail-box">
+              <span className="detail-lbl">PAYMENT ID</span>
+              <span className="detail-val" style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>{order.paymentId}</span>
+            </div>
+          )}
           <div className="success-detail-box">
             <span className="detail-lbl">EMAIL ADDRESS</span>
             <span className="detail-val">{contactInfo.email}</span>
@@ -153,8 +158,14 @@ export default function PaymentSuccess() {
             <div className="receipt-meta-details-right">
               <div className="meta-row">
                 <span className="meta-label">ORDER ID</span>
-                <span className="meta-value">{order._id}</span>
+                <span className="meta-value">{(order.orderNumber || order._id).toUpperCase()}</span>
               </div>
+              {order.paymentId && (
+                <div className="meta-row">
+                  <span className="meta-label">PAYMENT ID</span>
+                  <span className="meta-value" style={{ fontFamily: 'monospace' }}>{order.paymentId}</span>
+                </div>
+              )}
               <div className="meta-row">
                 <span className="meta-label">DATE</span>
                 <span className="meta-value">{new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>

@@ -296,7 +296,7 @@ export default function Profile() {
                         <div className="order-summary-row" onClick={() => toggleOrderExpand(order._id)}>
                           <div className="order-summary-col">
                             <span className="order-col-lbl">ORDER ID</span>
-                            <span className="order-col-val">{order._id.toUpperCase()}</span>
+                            <span className="order-col-val">{(order.orderNumber || order._id).toUpperCase()}</span>
                           </div>
                           
                           <div className="order-summary-col">
@@ -369,6 +369,17 @@ export default function Profile() {
                                 <h4 className="expanded-details-title">SHIPPING ADDRESS</h4>
                                 <p className="shipping-address-txt">{formatAddress(order.shippingInfo)}</p>
                               </div>
+                              {order.paymentId && (
+                                <div className="order-shipping-summary">
+                                  <h4 className="expanded-details-title">PAYMENT DETAILS</h4>
+                                  <p className="shipping-address-txt">
+                                    TRANSACTION ID: <strong style={{ fontFamily: 'monospace' }}>{order.paymentId}</strong>
+                                  </p>
+                                  <p className="shipping-address-txt" style={{ marginTop: '4px' }}>
+                                    METHOD: <strong>STRIPE</strong>
+                                  </p>
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}

@@ -18,13 +18,13 @@
 .success-page-container {
   width: 100%;
   max-width: 1280px;
-  height: 100dvh;
+  min-height: 100vh;
+  padding: 50px 15px;
   margin: 0 auto;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
   position: relative;
 }
 
@@ -291,7 +291,6 @@
   flex-direction: row;
   gap: 15px;
   width: 100%;
-  margin-top: 10px;
 }
 
 .success-action-buttons .app-button {
@@ -610,7 +609,7 @@
   }
   
   .success-page-container {
-    padding: 40px 15px;
+    padding: 50px 15px;
   }
 
   .success-action-buttons {

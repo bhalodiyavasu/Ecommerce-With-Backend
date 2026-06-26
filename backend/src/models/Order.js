@@ -59,6 +59,13 @@ const orderSchema = new mongoose.Schema(
     stripeSessionId: {
       type: String,
     },
+    orderNumber: {
+      type: String,
+      unique: true,
+    },
+    paymentId: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
