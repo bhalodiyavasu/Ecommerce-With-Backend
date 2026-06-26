@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useVerifySessionQuery } from '@/store/actions/paymentActions';
 import Button from '@/components/common/Button/Button';
@@ -8,13 +7,29 @@ import './PaymentSuccess.css';
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
-  const [showReceiptModal, setShowReceiptModal] = useState(false);
 
   const { data, isLoading, isError } = useVerifySessionQuery(sessionId, { skip: !sessionId });
 
-  const handlePrint = (e) => {
-    e.preventDefault();
-    window.print();
+  const handleDownloadReceipt = async () => {
+    if (!data?.order) return;
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/orders/${data.order._id}/receipt`,
+        { credentials: 'include' }
+      );
+      if (!response.ok) throw new Error('Failed');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Eternix_Receipt_${(data.order.orderNumber || data.order._id).toUpperCase()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      alert('Failed to download receipt. Please try again.');
+    }
   };
 
   if (!sessionId || isError) {
@@ -134,117 +149,12 @@ export default function PaymentSuccess() {
         <div className="success-divider-line"></div>
 
         <div className="success-action-buttons">
-          <Button type="button" variant="outline" onClick={() => setShowReceiptModal(true)}>
-            VIEW ORDER RECEIPT
-          </Button>
-          <Button type="button" variant="solid" className="success-download-receipt-btn" onClick={handlePrint}>
+          <Button type="button" variant="solid" className="success-download-receipt-btn" onClick={handleDownloadReceipt}>
             DOWNLOAD RECEIPT
           </Button>
           <Button to="/collections" variant="solid">
             CONTINUE SHOPPING
           </Button>
-        </div>
-      </div>
-
-      <div className={`receipt-modal-overlay ${showReceiptModal ? 'active' : ''}`} onClick={() => setShowReceiptModal(false)}>
-        <div className="receipt-modal-box" onClick={(e) => e.stopPropagation()}>
-          <div className="receipt-header-row">
-            <div className="receipt-logo">ETERNIX</div>
-            <button className="receipt-close-btn" onClick={() => setShowReceiptModal(false)}>✕</button>
-          </div>
-
-          <div className="receipt-info-section">
-            <div className="receipt-bill-to-left">
-              <span className="bill-to-label">BILL TO</span>
-              <div className="bill-to-info">
-                <p className="customer-name">{contactInfo.fullName}</p>
-                <p className="customer-phone">{contactInfo.phone}</p>
-                <p className="customer-address">{address}</p>
-              </div>
-            </div>
-            <div className="receipt-meta-details-right">
-              <div className="receipt-payment-card">
-                <span className="payment-card-title">PAYMENT & ORDER INFO</span>
-                <div className="payment-card-row">
-                  <span className="card-row-label">ORDER ID</span>
-                  <span className="card-row-value">{(order.orderNumber || order._id).toUpperCase()}</span>
-                </div>
-                <div className="payment-card-row">
-                  <span className="card-row-label">DATE</span>
-                  <span className="card-row-value">{new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                </div>
-                <div className="payment-card-row">
-                  <span className="card-row-label">METHOD</span>
-                  <span className="card-row-value">STRIPE</span>
-                </div>
-                {order.paymentId && (
-                  <div className="payment-card-row payment-id-row">
-                    <span className="card-row-label">PAYMENT ID</span>
-                    <span className="card-row-value-mono">{order.paymentId}</span>
-                  </div>
-                )}
-                <div className="payment-card-row">
-                  <span className="card-row-label">STATUS</span>
-                  <span className="card-row-status-badge">PAID</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <table className="receipt-table">
-            <thead>
-              <tr>
-                <th>ITEM</th>
-                <th>QTY</th>
-                <th>PRICE</th>
-                <th>AMOUNT</th>
-              </tr>
-            </thead>
-            <tbody>
-              {order.items.map((item, idx) => (
-                <tr key={idx}>
-                  <td>
-                    <div>{item.product.name}</div>
-                    <small className="receipt-item-meta">
-                      SIZE: {item.size} / COLOR: {item.color?.name || item.color}
-                      <span
-                        className="receipt-item-color-box"
-                        style={{ backgroundColor: item.color?.hex || item.color }}
-                        title={item.color?.name || item.color}
-                      />
-                    </small>
-                  </td>
-                  <td>{item.quantity}</td>
-                  <td>₹{item.product.price.toFixed(2)}</td>
-                  <td>₹{(item.product.price * item.quantity).toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div className="receipt-totals">
-            <div className="receipt-total-row">
-              <span>SUBTOTAL:</span>
-              <span>₹{order.subtotal.toFixed(2)}</span>
-            </div>
-            <div className="receipt-total-row">
-              <span>SHIPPING:</span>
-              <span>{order.shippingCharge > 0 ? `₹${order.shippingCharge.toFixed(2)}` : 'FREE'}</span>
-            </div>
-            <div className="receipt-total-row final-amount">
-              <span>TOTAL:</span>
-              <span>₹{order.totalAmount.toFixed(2)}</span>
-            </div>
-          </div>
-
-          <div className="receipt-footer-msg">
-            <p>THANK YOU FOR SHOPPING WITH ETERNIX</p>
-            <p>If you have any questions, contact us at info@eternix.com</p>
-          </div>
-
-          <div className="receipt-modal-actions-bar">
-            <Button variant="solid" onClick={handlePrint}>PRINT RECEIPT</Button>
-          </div>
         </div>
       </div>
     </div>

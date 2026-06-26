@@ -4,7 +4,6 @@
 }
 
 .success-loading-text {
-  font-family: monospace;
   font-size: 13px;
   color: #666;
 }
@@ -482,7 +481,6 @@
 
 .card-row-value-mono {
   width: auto;
-  font-family: monospace;
   font-size: 10px;
   font-weight: 700;
   color: var(--color-black);
