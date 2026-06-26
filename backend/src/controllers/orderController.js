@@ -66,7 +66,6 @@ const generateReceiptHTML = (order) => {
           </div>
         </td>
         <td class="align-center">${item.quantity}</td>
-        <td class="align-right">&#8377;${price.toFixed(2)}</td>
         <td class="align-right">&#8377;${(price * item.quantity).toFixed(2)}</td>
       </tr>`;
     })
@@ -89,28 +88,15 @@ const generateReceiptHTML = (order) => {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: #fff;
     color: #000;
-    width: 210mm;
-    min-height: 297mm;
-    padding: 14mm 15mm 14mm 15mm;
-    position: relative;
     font-size: 10pt;
     display: flex;
     flex-direction: column;
+    min-height: 269mm;
   }
   .content-top { flex: 1; }
-  .content-bottom { margin-top: auto; }
-
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-image: url('data:image/svg+xml;base64,${noiseSvgB64}');
-    background-repeat: repeat;
-    opacity: 0.45;
-    pointer-events: none;
-    z-index: 9999;
-  }
+  .totals-wrap { page-break-inside: avoid; }
+  .content-bottom { page-break-inside: avoid; }
+  thead { display: table-header-group; }
 
   /* ── HEADER ── */
   .header {
@@ -317,12 +303,12 @@ const generateReceiptHTML = (order) => {
         <tr>
           <th>ITEM</th>
           <th class="align-center">QTY</th>
-          <th class="align-right">PRICE</th>
           <th class="align-right">AMOUNT</th>
         </tr>
       </thead>
       <tbody>${itemsHTML}</tbody>
     </table>
+
 
     <!-- TOTALS -->
     <div class="totals-wrap">
@@ -395,7 +381,7 @@ const downloadReceipt = async (req, res) => {
     const pdf = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: { top: "0", bottom: "0", left: "0", right: "0" },
+      margin: { top: "14mm", bottom: "14mm", left: "15mm", right: "15mm" },
     });
 
     await browser.close();
