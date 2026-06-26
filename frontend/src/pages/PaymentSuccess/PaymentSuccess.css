@@ -551,9 +551,19 @@
 }
 
 .receipt-table td small {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 4px;
   color: #666;
+}
+
+.receipt-item-color-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
 }
 
 .receipt-table th:nth-child(2),

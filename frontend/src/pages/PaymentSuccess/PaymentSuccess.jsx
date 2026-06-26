@@ -205,7 +205,14 @@ export default function PaymentSuccess() {
                 <tr key={idx}>
                   <td>
                     <div>{item.product.name}</div>
-                    <small>SIZE: {item.size} / COLOR: {item.color?.name || item.color}</small>
+                    <small className="receipt-item-meta">
+                      SIZE: {item.size} / COLOR: {item.color?.name || item.color}
+                      <span
+                        className="receipt-item-color-box"
+                        style={{ backgroundColor: item.color?.hex || item.color }}
+                        title={item.color?.name || item.color}
+                      />
+                    </small>
                   </td>
                   <td>{item.quantity}</td>
                   <td>₹{item.product.price.toFixed(2)}</td>
