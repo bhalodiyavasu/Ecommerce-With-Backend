@@ -9,7 +9,7 @@ import { getItems, clearItems } from '@/utils/guestCart';
 import { auth, googleProvider } from '@/config/firebase';
 import { signInWithPopup } from 'firebase/auth';
 import Loader from '@/components/common/Loader/Loader';
-import modelImg from '@/assets/extracted/authImage.png';
+import modelImg from '@/assets/images/authImage.png';
 import logoIcon from '@/assets/icons/logo.svg';
 import googleIcon from '@/assets/icons/google.svg';
 import './Auth.css';

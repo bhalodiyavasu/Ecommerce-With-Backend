@@ -5,10 +5,10 @@ import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickV
 import { useGetProductsQuery } from '@/store/actions/productActions';
 import arrowLeft from '@/assets/icons/arrow-left.svg';
 import arrowRight from '@/assets/icons/arrow-right.svg';
-import photo1 from '@/assets/extracted/image4_2_63.jpg';
-import photo2 from '@/assets/extracted/image3_2_63.jpg';
-import photo3 from '@/assets/extracted/image1_2_63.jpg';
-import photo4 from '@/assets/extracted/image5_2_63.png';
+import photo1 from '@/assets/images/image4_2_63.jpg';
+import photo2 from '@/assets/images/image3_2_63.jpg';
+import photo3 from '@/assets/images/image1_2_63.jpg';
+import photo4 from '@/assets/images/image5_2_63.png';
 import './Home.css';
 
 export default function Home() {

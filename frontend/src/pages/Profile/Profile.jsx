@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useToast } from '@/contexts/ToastContext';
-import { ALL_PRODUCTS } from '@/data/mockData';
 import Modal from '@/components/common/Modal/Modal';
 import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Form/Input';
@@ -14,30 +13,6 @@ import Loader from '@/components/common/Loader/Loader';
 import { formatDate, formatAddress, getProductTag } from '@/utils/formatebook';
 import './Profile.css';
 
-// Mock order history populated from ALL_PRODUCTS
-const MOCK_ORDERS = [
-  {
-    id: 'NIX-843910',
-    date: '10 JUN 2026',
-    status: 'DELIVERED',
-    total: 235.00,
-    shippingAddress: '104, Royal Palace, Ahmedabad, Gujarat - 380015, India',
-    items: [
-      { product: ALL_PRODUCTS[0], size: 'L', color: 'Charcoal', quantity: 1 },
-      { product: ALL_PRODUCTS[1], size: 'M', color: 'Midnight Blue', quantity: 1 }
-    ]
-  },
-  {
-    id: 'NIX-329481',
-    date: '24 MAY 2026',
-    status: 'DELIVERED',
-    total: 110.00,
-    shippingAddress: '104, Royal Palace, Ahmedabad, Gujarat - 380015, India',
-    items: [
-      { product: ALL_PRODUCTS[2], size: 'M', color: 'Olive Green', quantity: 1 }
-    ]
-  }
-];
 
 export default function Profile() {
   const navigate = useNavigate();
