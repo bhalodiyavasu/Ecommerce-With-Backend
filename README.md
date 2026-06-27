@@ -63,7 +63,7 @@ Make sure you have these installed on your system before starting:
 
 ### Architecture:
 ```
-┌─────────────────────┐     API Calls      ┌─────────────────────┐
+┌─────────────────────┐     API Calls       ┌─────────────────────┐
 │                     │ ──────────────────► │                     │
 │   FRONTEND (React)  │                     │  BACKEND (Express)  │
 │   Port: 5173        │ ◄────────────────── │  Port: 5000         │
