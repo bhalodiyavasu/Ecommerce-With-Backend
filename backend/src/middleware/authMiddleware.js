@@ -11,6 +11,13 @@ const protect = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = await User.findById(decoded.id).select("-password");
+    if (!req.user) {
+      res.cookie("token", "", {
+        httpOnly: true,
+        maxAge: 0,
+      });
+      return res.status(401).json({ status: "FAILURE", message: "User not found or deleted" });
+    }
 
     next();
   } catch (error) {

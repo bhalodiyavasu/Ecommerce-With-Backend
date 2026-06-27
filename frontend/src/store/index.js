@@ -13,6 +13,17 @@ export const resetAllApiStates = () => (dispatch) => {
   dispatch(paymentApi.util.resetApiState());
 };
 
+const unauthorizedMiddleware = (store) => (next) => (action) => {
+  const status = action.payload?.status || action.error?.status;
+  if (status === 401 || status === 500) {
+    localStorage.removeItem('userToken');
+    if (window.location.pathname !== '/auth') {
+      window.location.href = '/auth';
+    }
+  }
+  return next(action);
+};
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -28,7 +39,8 @@ export const store = configureStore({
       productApi.middleware,
       cartApi.middleware,
       userApi.middleware,
-      paymentApi.middleware
+      paymentApi.middleware,
+      unauthorizedMiddleware
     ),
 });
 
