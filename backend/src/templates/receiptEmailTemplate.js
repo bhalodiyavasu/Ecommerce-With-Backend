@@ -9,7 +9,7 @@ const buildReceiptHtml = (order) => {
     month: "long",
     year: "numeric",
   });
-  const downloadUrl = `${FRONTEND_URL}/payment-recipt?session_id=${stripeSessionId}`;
+  const downloadUrl = `${FRONTEND_URL}/download-receipt?session_id=${stripeSessionId}`;
 
   return `<!DOCTYPE html>
 <html>

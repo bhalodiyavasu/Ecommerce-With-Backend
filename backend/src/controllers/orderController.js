@@ -52,4 +52,42 @@ const downloadReceipt = async (req, res) => {
   }
 };
 
-module.exports = { getMyOrders, downloadReceipt };
+const downloadReceiptBySession = async (req, res) => {
+  let browser;
+  try {
+    const order = await Order.findOne({ stripeSessionId: req.params.sessionId }).populate("items.product");
+
+    if (!order) {
+      return res.status(404).json({ status: "FAILURE", message: "Order not found" });
+    }
+
+    const html = generateReceiptHTML(order);
+
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    });
+
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "domcontentloaded" });
+
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      margin: { top: "14mm", bottom: "14mm", left: "15mm", right: "15mm" },
+    });
+
+    await browser.close();
+    browser = null;
+
+    const filename = `Eternix_Receipt_${String(order.orderNumber || order._id).toUpperCase()}.pdf`;
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.send(pdf);
+  } catch (error) {
+    if (browser) await browser.close();
+    res.status(500).json({ status: "FAILURE", message: error.message });
+  }
+};
+
+module.exports = { getMyOrders, downloadReceipt, downloadReceiptBySession };

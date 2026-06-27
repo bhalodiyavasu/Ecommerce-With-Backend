@@ -7,6 +7,7 @@ import Collections from '@/pages/Collections/Collections';
 import Cart from '@/pages/Cart/Cart';
 import Checkout from '@/pages/Checkout/Checkout';
 import PaymentRecipt from '@/pages/PaymentRecipt/PaymentRecipt';
+import DownloadReceipt from '@/pages/DownloadReceipt/DownloadReceipt';
 import Auth from '@/pages/Auth/Auth';
 import Profile from '@/pages/Profile/Profile';
 import Admin from '@/pages/Admin/Admin';
@@ -72,7 +73,7 @@ function ScrollToHashElement() {
 
 function AppLayout({ children }) {
   const location = useLocation();
-  const isMinimal = location.pathname === '/checkout' || location.pathname === '/payment-recipt' || location.pathname === '/auth' || location.pathname === '/admin' || location.pathname === '/admin/login';
+  const isMinimal = location.pathname === '/checkout' || location.pathname === '/payment-recipt' || location.pathname === '/download-receipt' || location.pathname === '/auth' || location.pathname === '/admin' || location.pathname === '/admin/login';
 
   return (
     <div className="app-wrapper">
@@ -119,6 +120,7 @@ export default function AppRouter() {
               </ProtectedRoute>
             } 
           />
+          <Route path="/download-receipt" element={<DownloadReceipt />} />
           <Route 
             path="/profile" 
             element={

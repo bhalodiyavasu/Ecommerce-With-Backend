@@ -26,7 +26,7 @@ const generateReceiptHTML = (order) => {
   const { contactInfo, shippingInfo, items, orderNumber, paymentId, subtotal, shippingCharge, totalAmount, createdAt } = order;
   const address = `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state} - ${shippingInfo.postalCode}, ${shippingInfo.country}`;
   const orderDate = new Date(createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-  const displayOrderNumber = (orderNumber || order._id).toUpperCase();
+  const displayOrderNumber = String(orderNumber || order._id).toUpperCase();
   const shippingDisplay = shippingCharge > 0 ? `&#8377;${shippingCharge.toFixed(2)}` : "FREE";
 
   const itemsHTML = items

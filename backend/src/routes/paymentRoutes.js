@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post("/create-checkout-session", protect, createCheckoutSession);
 router.post("/webhook", stripeWebhook);
-router.get("/verify-session/:sessionId", protect, verifySession);
+router.get("/verify-session/:sessionId", verifySession);
 
 module.exports = router;

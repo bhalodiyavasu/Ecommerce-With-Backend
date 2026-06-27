@@ -1,0 +1,222 @@
+.download-receipt-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 60px 15px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-color: #fcfcfc;
+}
+
+.download-noise {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../assets/noise.svg');
+  background-repeat: repeat;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.download-receipt-card {
+  width: 100%;
+  max-width: 500px;
+  background-color: #ffffff;
+  border: 1px solid #d9d9d9;
+  padding: 50px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+}
+
+.brand-logo-header {
+  font-family: var(--font-primary);
+  font-size: 26px;
+  font-weight: 800;
+  color: #000000;
+  letter-spacing: 1px;
+  margin-bottom: 40px;
+}
+
+.receipt-icon-container {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: #f5f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+  color: #000000;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.receipt-icon-container.downloading,
+.receipt-icon-container.loading {
+  background-color: #f0f4ff;
+  color: var(--color-blue-accent, #000e8a);
+}
+
+.receipt-icon-container.success {
+  background-color: #ebfbee;
+  color: #2b8a3e;
+}
+
+.receipt-icon-container.failed {
+  background-color: #fff0f0;
+  color: #fa5252;
+}
+
+.pdf-icon {
+  width: 36px;
+  height: 36px;
+  z-index: 2;
+}
+
+.pdf-icon.spinning {
+  animation: floatUpDown 2s ease-in-out infinite;
+}
+
+.success-check-icon {
+  width: 36px;
+  height: 36px;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+  animation: drawCheck 0.6s ease-in-out forwards;
+}
+
+@keyframes drawCheck {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes floatUpDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.pulse-ripple {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: ripple 1.6s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.download-receipt-heading {
+  font-family: var(--font-primary);
+  font-size: 20px;
+  font-weight: 500;
+  color: #000000;
+  text-align: center;
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+.download-receipt-text {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #666666;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0 0 30px 0;
+}
+
+.download-receipt-details {
+  width: 100%;
+  background-color: #fafafa;
+  border: 1px solid #eeeeee;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 35px;
+}
+
+.download-receipt-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 11px;
+}
+
+.download-receipt-detail-item .lbl {
+  font-weight: 700;
+  color: #999999;
+  letter-spacing: 0.5px;
+}
+
+.download-receipt-detail-item .val {
+  font-weight: 700;
+  color: #000000;
+}
+
+.download-receipt-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.download-receipt-main-btn.app-button--solid {
+  width: 100%;
+}
+
+.download-receipt-back-link {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  color: #888888;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.download-receipt-back-link:hover {
+  color: #000000;
+  border-bottom-color: #000000;
+}
+
+@media (max-width: 576px) {
+  .download-receipt-card {
+    padding: 40px 20px;
+  }
+}
