@@ -3,8 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Button/Button';
 import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickView';
 import { useGetProductsQuery } from '@/store/actions/productActions';
-import model1 from '@/assets/extracted/image1_2_63.jpg';
-import model2 from '@/assets/extracted/image2_2_63.jpg';
 import arrowLeft from '@/assets/icons/arrow-left.svg';
 import arrowRight from '@/assets/icons/arrow-right.svg';
 import photo1 from '@/assets/extracted/image4_2_63.jpg';
@@ -106,12 +104,97 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="hero-images">
-          <div className="hero-img-wrapper img-left">
-            <img src={model1} alt="Summer Collection Model Left" className="hero-img" />
+        
+        <div className="hero-right-panel">
+          <div className="creative-showcase-grid">
+            {/* Block 1: 3D-like wireframe hanger/garment */}
+            <div className="showcase-card hanger-card">
+              <div className="hanger-3d-wrapper">
+                <svg viewBox="0 0 100 100" className="hanger-wireframe">
+                  <path d="M50,25 C52,25 55,27 55,30 C55,33 50,35 50,38 L50,42 L20,60 C18,61 18,63 20,64 L80,64 C82,63 82,61 80,60 L50,42 Z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="20" y1="64" x2="80" y2="64" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Block 2: Eternix Brand Values */}
+            <div className="showcase-card brand-card">
+              <div className="brand-header">ETERNIX LABELS</div>
+              <div className="brand-list">
+                <span className="brand-tag">Minimal</span>
+                <span className="brand-tag">Boxy</span>
+                <Link to="/collections?gender=men" className="brand-tag interactive-tag">Men</Link>
+                <Link to="/collections?gender=kids" className="brand-tag interactive-tag">Kids</Link>
+              </div>
+            </div>
+
+            {/* Block 3: Abstract textile weave pattern */}
+            <div className="showcase-card wave-card">
+              <div className="weave-pattern"></div>
+            </div>
+
+            {/* Block 4: Down caret arrow */}
+            <div className="showcase-card arrow-card">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="showcase-arrow-icon">
+                <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+
+            {/* Block 5: Streetwear Barcode Visual */}
+            <div className="showcase-card barcode-card">
+              <div className="barcode-container">
+                <div className="barcode-bars">
+                  <span className="bar thin"></span>
+                  <span className="bar thick"></span>
+                  <span className="bar medium"></span>
+                  <span className="bar thin"></span>
+                  <span className="bar space"></span>
+                  <span className="bar thick"></span>
+                  <span className="bar thin"></span>
+                  <span className="bar medium"></span>
+                  <span className="bar thick"></span>
+                  <span className="bar thin"></span>
+                  <span className="bar thin"></span>
+                  <span className="bar thick"></span>
+                  <span className="bar thin"></span>
+                </div>
+                <div className="barcode-label">ETX-071E6B</div>
+              </div>
+              <div className="barcode-laser"></div>
+            </div>
+
+            {/* Block 6: Pink/orange sunset gradient card */}
+            <div className="showcase-card gradient-card pink-orange-grad">
+              <span className="grad-label">SUNSET DUSK</span>
+            </div>
+
+            {/* Block 7: Blueprint-style garment specs */}
+            <div className="showcase-card pattern-card spec-blueprint">
+              <div className="spec-item">FIT // BOXY</div>
+              <div className="spec-item">WT // 280 GSM</div>
+              <div className="spec-item">CUT // RELAXED</div>
+            </div>
+
+            {/* Block 8: Rotating fashion asterisk logo */}
+            <div className="showcase-card torus-card">
+              <svg viewBox="0 0 100 100" className="fashion-asterisk">
+                <line x1="50" y1="15" x2="50" y2="85" stroke="currentColor" strokeWidth="6" />
+                <line x1="15" y1="50" x2="85" y2="50" stroke="currentColor" strokeWidth="6" />
+                <line x1="25" y1="25" x2="75" y2="75" stroke="currentColor" strokeWidth="6" />
+                <line x1="75" y1="25" x2="25" y2="75" stroke="currentColor" strokeWidth="6" />
+              </svg>
+            </div>
+
+            {/* Block 9: Bottom right gradient card */}
+            <div className="showcase-card gradient-card purple-grad">
+              <span className="grad-label">NIX EDITION</span>
+            </div>
           </div>
-          <div className="hero-img-wrapper img-right">
-            <img src={model2} alt="Summer Collection Model Right" className="hero-img" />
+
+          <div className="agency-description-footer">
+            <p className="agency-desc-text">
+              <strong>Eternix</strong> is the most active design-driven fashion label around the world. We have been working with premium mills and craftspeople for about a year. So, Let's begin the journey.
+            </p>
           </div>
         </div>
       </section>

@@ -3,7 +3,7 @@ import ProductQuickView from '@/components/common/ProductQuickView/ProductQuickV
 import Drawer from '@/components/common/Drawer/Drawer';
 import { FILTER_SIZES, FILTER_COLORS } from '@/data/mockData';
 import searchIcon from '@/assets/icons/search.svg';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useGetProductsQuery } from '@/store/actions/productActions';
 import Loader from '@/components/common/Loader/Loader';
 import './Collections.css';
@@ -12,6 +12,21 @@ const GENDER_OPTIONS = [
   { id: 'men', label: 'MAN' },
   { id: 'kids', label: 'KIDS' }
 ];
+
+const CATEGORY_OPTIONS = [
+  { id: 't-shirt', label: 'T-SHIRT' },
+  { id: 'jacket', label: 'JACKET' },
+  { id: 'shoes', label: 'SHOES' },
+  { id: 'shirt', label: 'SHIRT' }
+];
+
+const normalizeCategory = (str) => {
+  if (!str) return '';
+  return str
+    .toLowerCase()
+    .replace(/[\s-_]/g, '')
+    .replace(/s$/, '');
+};
 
 const SORT_OPTIONS = [
   { id: 'all', label: 'ALL' },
@@ -28,6 +43,7 @@ const STATUS_OPTIONS = [
 
 export default function Collections() {
   const { data: apiData, isLoading } = useGetProductsQuery();
+  const location = useLocation();
 
   const productsList = useMemo(() => {
     return apiData?.products ?? [];
@@ -61,6 +77,7 @@ export default function Collections() {
   const [filterData, setFilterData] = useState({
     searchQuery: '',
     selectedGenders: [],
+    selectedCategories: [],
     selectedColors: [],
     selectedSizes: [],
     selectedTags: [],
@@ -68,6 +85,24 @@ export default function Collections() {
     priceRange: 1000,
     selectedStatuses: []
   });
+
+  // Sync with URL category and gender query parameters
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const categoryParam = params.get('category');
+    const genderParam = params.get('gender');
+    
+    setFilterData(prev => {
+      let updated = { ...prev };
+      if (categoryParam) {
+        updated.selectedCategories = [categoryParam.toLowerCase()];
+      }
+      if (genderParam) {
+        updated.selectedGenders = [genderParam.toLowerCase()];
+      }
+      return updated;
+    });
+  }, [location.search]);
 
   // Sync initial priceRange with maxProductPrice when products load
   useEffect(() => {
@@ -84,6 +119,7 @@ export default function Collections() {
   const hasActiveFilters = 
     filterData.searchQuery.trim() !== '' ||
     filterData.selectedGenders.length > 0 ||
+    filterData.selectedCategories.length > 0 ||
     filterData.selectedColors.length > 0 ||
     filterData.selectedSizes.length > 0 ||
     filterData.selectedStatuses.length > 0 ||
@@ -93,6 +129,7 @@ export default function Collections() {
     setFilterData({
       searchQuery: '',
       selectedGenders: [],
+      selectedCategories: [],
       selectedColors: [],
       selectedSizes: [],
       selectedTags: [],
@@ -105,6 +142,7 @@ export default function Collections() {
   // ─── Consolidated Accordion State ────────────────────────────
   const [expandedSections, setExpandedSections] = useState({
     gender: true,
+    category: true,
     color: true,
     size: true,
     sort: true,
@@ -138,6 +176,7 @@ export default function Collections() {
     const {
       searchQuery,
       selectedGenders,
+      selectedCategories,
       selectedColors,
       selectedSizes,
       selectedTags,
@@ -163,6 +202,13 @@ export default function Collections() {
           if (sel === 'women' && (g === 'women' || g === 'woman')) return true;
           return g === sel;
         });
+      });
+    }
+
+    if (selectedCategories.length > 0) {
+      result = result.filter(p => {
+        const pCat = normalizeCategory(p.category);
+        return selectedCategories.some(sel => normalizeCategory(sel) === pCat);
       });
     }
 
@@ -247,6 +293,29 @@ export default function Collections() {
                   type="checkbox"
                   checked={filterData.selectedGenders.includes(opt.id)}
                   onChange={() => toggleFilterItem('selectedGenders', opt.id)}
+                />
+                <span className="checkbox-custom"></span>
+                <span className="checkbox-label">{opt.label}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Category Accordion */}
+      <div className="filter-section">
+        <div className="filter-header" onClick={() => toggleSection('category')}>
+          <span className="filter-label">CATEGORY</span>
+          <span className="accordion-caret">{expandedSections.category ? '▲' : '▼'}</span>
+        </div>
+        {expandedSections.category && (
+          <div className="filter-content">
+            {CATEGORY_OPTIONS.map(opt => (
+              <label key={opt.id} className="checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={filterData.selectedCategories.includes(opt.id)}
+                  onChange={() => toggleFilterItem('selectedCategories', opt.id)}
                 />
                 <span className="checkbox-custom"></span>
                 <span className="checkbox-label">{opt.label}</span>
@@ -452,6 +521,12 @@ export default function Collections() {
               <span className="active-filter-tag" key={gender}>
                 {gender === 'men' ? 'MAN' : gender === 'kids' ? 'KIDS' : 'WOMAN'}
                 <button className="clear-tag-btn" onClick={() => toggleFilterItem('selectedGenders', gender)} aria-label={`Clear Gender ${gender}`}>✕</button>
+              </span>
+            ))}
+            {filterData.selectedCategories.map(category => (
+              <span className="active-filter-tag" key={category}>
+                Category: {category.toUpperCase()}
+                <button className="clear-tag-btn" onClick={() => toggleFilterItem('selectedCategories', category)} aria-label={`Clear Category ${category}`}>✕</button>
               </span>
             ))}
             {filterData.selectedColors.map(color => (
