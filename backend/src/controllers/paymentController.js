@@ -1,6 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
+const { sendReceiptEmail } = require("../utils/emailService");
 
 const CLIENT_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
@@ -66,7 +67,7 @@ const createOrderFromSession = async (session) => {
     }
   }
 
-  await Order.create({
+  const newOrder = await Order.create({
     user: userId,
     items: cart.items.map((item) => ({
       product: item.product._id,
@@ -86,6 +87,12 @@ const createOrderFromSession = async (session) => {
   });
 
   await Cart.findOneAndDelete({ user: userId });
+
+  const populatedOrder = await Order.findById(newOrder._id).populate("items.product");
+  const toEmail = contactInfo.email;
+  if (toEmail) {
+    sendReceiptEmail(toEmail, populatedOrder).catch(console.error);
+  }
 };
 
 // POST /api/payment/create-checkout-session
