@@ -34,7 +34,7 @@ const corsOptions = {
   exposedHeaders: ['Set-Cookie'],
 };
 
-app.options('*', cores(corsOptions));
+app.options(/.*/, cores(corsOptions));
 app.use(cores(corsOptions));
 
 // Webhook route - raw body must be before express.json()
